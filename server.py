@@ -118,8 +118,8 @@ class Server:
             ranking.RPs = int(float(tba_ranking_list[2]))
             win_tie_lose = tba_ranking_list[7].split('-')
             ranking.wins = int(win_tie_lose[0])
-            ranking.ties = int(win_tie_lose[1])
-            ranking.loses = int(win_tie_lose[2])
+            ranking.ties = int(win_tie_lose[2])
+            ranking.loses = int(win_tie_lose[1])
             ranking.played = int(tba_ranking_list[8])
             self.firebase.update_current_trd(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
@@ -141,15 +141,16 @@ class Server:
                 self.make_ranking_calculations()
                 self.make_pick_list_calculations()
             except:
-                logger.error("Crash")
-                logger.error(traceback.format_exc())
-                if hasattr(self, 'crash_reporter'):
-                    logger.error("Reporting crash")
-                    try:
-                        self.crash_reporter.report_server_crash(traceback.format_exc())
-                    # weird exception that doesn't stop the text
-                    except:
-                        pass
+                if not self.stopped:
+                    logger.error("Crash")
+                    logger.error(traceback.format_exc())
+                    if hasattr(self, 'crash_reporter'):
+                        logger.error("Reporting crash")
+                        try:
+                            self.crash_reporter.report_server_crash(traceback.format_exc())
+                        # weird exception that doesn't stop the text
+                        except:
+                            pass
             end_time = time.time()
             time_taken = end_time - start_time
             logger.info("Iteration Ended")
@@ -306,6 +307,7 @@ if __name__ == "__main__":
 
     def signal_handler(signal, frame):
         server.stop()
-        logger.info("Control-C caught stopping server at the end of this loop")
+        sys.exit()
+        # logger.info("Control-C caught stopping server at the end of this loop")
     signal.signal(signal.SIGINT, signal_handler)
     server.run()
