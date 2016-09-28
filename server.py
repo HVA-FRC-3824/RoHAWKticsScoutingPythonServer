@@ -1,9 +1,11 @@
 import argparse
 import time
 import logging
+import traceback
 
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
+from crash_reporter import CrashReporter
 
 from DataModels.match import Match
 from DataModels.alliance import Alliance
@@ -26,11 +28,13 @@ logger = logging.getLogger(__name__)
 class Server:
     DEFAULT_TIME_BETWEEN_CYCLES = 60 * 4  # 4 minutes
 
-    def __init__(self, event_key, setup, tbc):
+    def __init__(self, event_key, setup, tbc, rc):
         logger.info("Event Key: {0:s}".format(event_key))
         self.event_key = event_key
         self.firebase = FirebaseCom(event_key)
         self.tba = TheBlueAlliance(event_key)
+        if rc:
+            self.crash_reporter = CrashReporter()
         if tbc is not None:
             self.time_between_cycles = tbc
         else:
@@ -114,14 +118,24 @@ class Server:
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
     def run(self):
-        start_time = time.time()
-        self.make_team_calculations()
-        # self.make_super_calculations()
-        # self.make_ranking_calculations()
-        # self.make_pick_list_calculations()
-        end_time = time.time()
-        time_taken = end_time - start_time
-        time.sleep(self.time_between_cycles - time_taken)
+        self.stopped = False
+        while not self.stopped:
+            start_time = time.time()
+            try:
+                self.make_team_calculations()
+                # self.make_super_calculations()
+                self.make_ranking_calculations()
+                self.make_pick_list_calculations()
+            except:
+                if self.crash_reporter is not None:
+                    self.crash_reporter.report_server_crash(traceback.format_exc())
+            end_time = time.time()
+            time_taken = end_time - start_time
+            if self.time_between_cycles - time_taken > 0:
+                time.sleep(self.time_between_cycles - time_taken)
+
+    def stop(self):
+        self.stopped = True
 
     def make_team_calculations(self):
         # make low level calculations
@@ -252,12 +266,14 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-e", "--event_key", required=True, help="Event key for The Blue Alliance")
     ap.add_argument("-l", "--log_level", required=False, help="The level threshold for the logger")
-    ap.add_argument("-s", "--setup", required=False, action="store_true", help="Initial run for this event")
+    ap.add_argument("-s", "--setup", required=False, action="store_true",
+                    help="Setup the database for this event")
     ap.add_argument("-t", "--time_between_cycles", required=False, help="Time between cycles")
-
+    ap.add_argument("-r", "--report_crash", requird=False, action="store_true",
+                    help="Report whenever there is a crash through email and text")
     args = vars(ap.parse_args())
 
-    server = Server(args['event_key'], args['setup'], args['time_between_cycles'])
+    server = Server(args['event_key'], args['setup'], args['time_between_cycles'],
+                    args['report_crash'])
 
-#   while True:
     server.run()
