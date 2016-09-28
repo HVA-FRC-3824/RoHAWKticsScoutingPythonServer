@@ -51,17 +51,14 @@ class Server:
         if setup:
             logger.info("Setting up database...")
             event_matches = self.tba.get_event_matches()
-            logger.info("Grabbed matches from The Blue Alliance")
             team_matches = self.set_matches(event_matches)
             logger.info("Added matches to Firebase")
 
             event_teams = self.tba.get_event_teams()
-            logger.info("Grabbed teams from The Blue Alliance")
             self.set_teams(event_teams, team_matches)
             logger.info("Added teams to Firebase")
 
             event_rankings = self.tba.get_event_rankings()
-            logger.info("Grabbed rankings from The Blue Alliance")
             self.set_rankings(event_rankings)
             logger.info("Added rankings to Firebase")
 
@@ -131,7 +128,7 @@ class Server:
         time_since_last_cache = 0
         while not self.stopped:
             logger.info("Iteration {0:d}".format(iteration))
-            if self.time_between_caches > time_since_last_cache:
+            if self.time_between_caches < time_since_last_cache:
                 self.firebase.cache()
                 time_since_last_cache = 0
 
@@ -200,13 +197,13 @@ class Server:
     def make_ranking_calculations(self):
         # Current Rankings
         event_rankings = self.tba.get_event_rankings()
-        logger.info("Grabbed rankings from The Blue Alliance")
         self.set_rankings(event_rankings)
-        logger.info("Added rankings to Firebase")
+        logger.info("Updated current rankings on Firebase")
 
         # Predicted Rankings
         teams = []
         for team in self.firebase.get_teams().values():
+            print(team.team_number)
             team.predicted_ranking.played = len(team.info.match_numbers)
 
             team.predicted_ranking.RPs = team.current_ranking.RPs
@@ -216,6 +213,7 @@ class Server:
 
             for index in range(len(team.completed_matches), len(team.info.match_numbers)):
                 match = self.firebase.get_match(team.info.match_numbers[index])
+                print(match.match_number)
                 if match.is_blue(team.team_number):
                     ac = AllianceCalculation(Alliance(*match.teams[0:2]))
                     opp = AllianceCalculation(Alliance(*match.teams[3:5]))
@@ -243,7 +241,7 @@ class Server:
             if index > 0 and team.predicted_ranking.RPs != teams[index - 1].predicted_ranking.RPs:
                 rank = index + 1
             self.firebase.update_predicted_trd(team.predicted_ranking)
-            logger.info("Updated predicted ranking info for {0:d}".format(team.team_number))
+            logger.info("Updated predicted ranking for {0:d} on Firebase".format(team.team_number))
 
     def make_pick_list_calculations(self):
         for team in self.firebase.get_teams().values():
@@ -259,7 +257,7 @@ class Server:
             team.first_pick.second_line = "".format()
             team.first_pick.third_line = "".format()
             self.firebase.update_first_tpa(team.first_pick)
-            logger.info("Updated first pick info for {0:d}".format(team.team_number))
+            logger.info("Updated first pick info for {0:d} on Firebase".format(team.team_number))
 
             # Second Pick
             team.second_pick.pick_ability = tc.second_pick_ability()
@@ -271,7 +269,7 @@ class Server:
             team.second_pick.second_line = "".format()
             team.second_pick.third_line = "".format()
             self.firebase.update_second_tpa(team.second_pick)
-            logger.info("Updated second pick info for {0:d}".format(team.team_number))
+            logger.info("Updated second pick info for {0:d} on Firebase".format(team.team_number))
 
             # Third Pick
             team.third_pick.pick_ability = tc.third_pick_ability()
@@ -283,7 +281,7 @@ class Server:
             team.third_pick.second_line = "".format()
             team.third_pick.third_line = "".format()
             self.firebase.update_third_tpa(team.third_pick)
-            logger.info("Updated third pick info for {0:d}".format(team.team_number))
+            logger.info("Updated third pick info for {0:d} on Firebase".format(team.team_number))
 
 
 if __name__ == "__main__":
