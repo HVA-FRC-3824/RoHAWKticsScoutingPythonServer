@@ -143,11 +143,17 @@ class Server:
                 self.make_pick_list_calculations()
             except:
                 logger.error("Crash")
+                logger.error(traceback.format_exc())
                 if hasattr(self, 'crash_reporter'):
                     logger.error("Reporting crash")
-                    self.crash_reporter.report_server_crash(traceback.format_exc())
+                    try:
+                        self.crash_reporter.report_server_crash(traceback.format_exc())
+                    # weird exception that doesn't stop the text
+                    except:
+                        pass
             end_time = time.time()
             time_taken = end_time - start_time
+            logger.info("Iteration Ended")
             if self.time_between_cycles - time_taken > 0:
                 time.sleep(self.time_between_cycles - time_taken)
             time_since_last_cache += self.time_between_cycles

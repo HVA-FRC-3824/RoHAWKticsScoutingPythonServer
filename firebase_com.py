@@ -42,6 +42,8 @@ class FirebaseCom:
         # get logistics information about a match (who was in it, score breakdown, etc)
         ref = "{0:s}/schedule/{1:d}".format(self.base_ref, match_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return Match(match_number=match_number)
         return Match(**response)
 
     def update_tmd(self, tmd):
@@ -53,6 +55,8 @@ class FirebaseCom:
         # get the match data for a specific team in a specific match
         ref = "{0:s}/partial_match/{1:d}_{2:d}".format(self.base_ref, match_number, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TMD(team_number=team_number, match_number=match_number)
         return TMD(**response)
 
     def get_tmds(self):
@@ -69,8 +73,10 @@ class FirebaseCom:
 
     def get_tpd(self, team_number):
         # get the pit data for a specific team
-        ref = "{0:s}/pit/{0:d}".format(self.base_ref, team_number)
+        ref = "{0:s}/pit/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TPD(team_number=team_number)
         return TPD(**response)
 
     def update_smd(self, smd):
@@ -82,6 +88,8 @@ class FirebaseCom:
         # get the super scout data for a specific match
         ref = "{0:s}/super_match/{1:d}".format(self.base_ref, match_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return SMD(match_number=match_number)
         return SMD(**response)
 
     def update_tdtf(self, tdtf):
@@ -93,6 +101,8 @@ class FirebaseCom:
         # get the drive team's feedback about a specific team
         ref = "{0:s}/feedback/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TDTF(team_number=team_number)
         return TDTF(**response)
 
     def update_tid(self, tid):
@@ -104,6 +114,8 @@ class FirebaseCom:
         # get the logistics information about a specific team (nickname, match numbers, etc)
         ref = "{0:s}/info/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TID(team_number=team_number)
         return TID(**response)
 
     def update_tcd(self, tcd):
@@ -115,6 +127,8 @@ class FirebaseCom:
         # get the calculated data for a specific team
         ref = "{0:s}/calculated/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TCD(team_number=team_number)
         return TCD(**response)
 
     def update_current_trd(self, trd):
@@ -126,6 +140,8 @@ class FirebaseCom:
         # get the current ranking data on a specific team
         ref = "{0:s}/rankings/current/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TRD(team_number=team_number)
         return TRD(**response)
 
     def update_predicted_trd(self, trd):
@@ -137,6 +153,8 @@ class FirebaseCom:
         # get the predicted ranking data on a specific team
         ref = "{0:s}/rankings/predicted/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TRD(team_number=team_number)
         return TRD(**response)
 
     def update_first_tpa(self, tpa):
@@ -148,6 +166,8 @@ class FirebaseCom:
         # get the first pick ability data for a specific team
         ref = "{0:s}/first_pick/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TPA(team_number=team_number)
         return TPA(**response)
 
     def update_second_tpa(self, tpa):
@@ -159,6 +179,8 @@ class FirebaseCom:
         # get the second pick ability data for a specific team
         ref = "{0:s}/second_pick/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TPA(team_number=team_number)
         return TPA(**response)
 
     def update_third_tpa(self, tpa):
@@ -170,6 +192,8 @@ class FirebaseCom:
         # get the third pick ability data for a specific team
         ref = "{0:s}/third_pick/{1:d}".format(self.base_ref, team_number)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return TPA(team_number=team_number)
         return TPA(**response)
 
     def update_team(self, team):
@@ -198,7 +222,19 @@ class FirebaseCom:
         team.second_pick = self.get_second_tpa(team_number)
         team.third_pick = self.get_third_tpa(team_number)
         for match_number in team.info.matches:
-            team.completed_matches[match_number] = self.get_tmd(team_number)
+            team.completed_matches[match_number] = self.get_tmd(team_number=team_number,
+                                                                match_number=match_number)
+
+    def get_team_numbers(self):
+        ref = "{0:s}/info".format(self.base_ref)
+        info_dict = self.get_python_object_from_firebase_location(ref)
+        return [int(k) for k in info_dict.keys()]
+
+    def get_teams(self):
+        teams = []
+        for team_number in self.get_team_numbers():
+            teams.append(self.get_team(team_number))
+        return teams
 
     def get_python_object_from_firebase_location(self, location):
         return utils.make_ascii_from_json(firebase.get(location, None))

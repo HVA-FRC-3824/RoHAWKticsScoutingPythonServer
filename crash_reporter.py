@@ -32,13 +32,14 @@ class CrashReporter:
         smtpserver.starttls()
         smtpserver.ehlo()
         smtpserver.login(self.gmail_user, self.gmail_password)
-        header = 'To:' + ', '.join(self.emails) + '\n' + 'From: ' + self.gmail_user + '\n' + 'Subject: Server Crash!!! \n'
+        header = ('To:' + ', '.join(self.emails) + '\n' + 'From: ' + self.gmail_user + '\n' +
+                  'Subject: Server Crash!!! \n')
         msg = header + '\n' + message
         smtpserver.sendmail(self.gmail_user, self.emails, msg)
         smtpserver.close()
 
     def text_report(self, message):
         voice = Voice()
-        voice.login()
+        voice.login(self.gmail_user, self.gmail_password)
         for phone_number in self.mobiles:
             voice.send_sms(phone_number, "Server Crash!!!\n{0:s}".format(message))
