@@ -92,6 +92,15 @@ class FirebaseCom:
             return SMD(match_number=match_number)
         return SMD(**response)
 
+    def get_smds(self):
+        ref = "{0:s}/super_match".format(self.base_ref)
+        response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return []
+        for key, value in iter(response.items()):
+            response[key] = SMD(**value)
+        return response
+
     def update_tdtf(self, tdtf):
         # update the drive team's feedback about a specific team
         ref = "{0:s}/feedback".format(self.base_ref)

@@ -2,6 +2,8 @@ import argparse
 import time
 import logging
 import traceback
+import signal
+import sys
 
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
@@ -135,7 +137,7 @@ class Server:
             start_time = time.time()
             try:
                 self.make_team_calculations()
-                # self.make_super_calculations()
+                self.make_super_calculations()
                 self.make_ranking_calculations()
                 self.make_pick_list_calculations()
             except:
@@ -151,10 +153,12 @@ class Server:
             end_time = time.time()
             time_taken = end_time - start_time
             logger.info("Iteration Ended")
+            logger.info("Time taken: {0:f}s".format(time_taken))
             if self.time_between_cycles - time_taken > 0:
                 time.sleep(self.time_between_cycles - time_taken)
             time_since_last_cache += self.time_between_cycles
             iteration += 1
+        sys.exit()
 
     def stop(self):
         self.stopped = True
@@ -191,7 +195,7 @@ class Server:
         # high level calculations
 
     def make_super_calculations(self):
-        for smd in self.firebase.get_smds().values():
+        for smd in self.firebase.get_smds():
             pass
 
     def make_ranking_calculations(self):
@@ -202,7 +206,7 @@ class Server:
 
         # Predicted Rankings
         teams = []
-        for team in self.firebase.get_teams().values():
+        for team in self.firebase.get_teams():
             print(team.team_number)
             team.predicted_ranking.played = len(team.info.match_numbers)
 
@@ -300,4 +304,8 @@ if __name__ == "__main__":
     server = Server(args['event_key'], args['setup'], args['time_between_cycles'],
                     args['time_between_caches'], args['report_crash'])
 
+    def signal_handler(signal, frame):
+        server.stop()
+        logger.info("Control-C caught stopping server at the end of this loop")
+    signal.signal(signal.SIGINT, signal_handler)
     server.run()
