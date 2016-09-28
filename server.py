@@ -46,7 +46,7 @@ class Server:
         if tbca is not None:
             self.time_between_caches = tbca
         else:
-            self.time.between_caches = self.DEFAULT_TIME_BETWEEN_CACHES
+            self.time_between_caches = self.DEFAULT_TIME_BETWEEN_CACHES
 
         if setup:
             logger.info("Setting up database...")
@@ -142,7 +142,9 @@ class Server:
                 self.make_ranking_calculations()
                 self.make_pick_list_calculations()
             except:
-                if self.crash_reporter is not None:
+                logger.error("Crash")
+                if hasattr(self, 'crash_reporter'):
+                    logger.error("Reporting crash")
                     self.crash_reporter.report_server_crash(traceback.format_exc())
             end_time = time.time()
             time_taken = end_time - start_time
@@ -286,7 +288,7 @@ if __name__ == "__main__":
     ap.add_argument("-s", "--setup", required=False, action="store_true",
                     help="Setup the database for this event")
     ap.add_argument("-t", "--time_between_cycles", required=False, help="Time between cycles")
-    ap.add_argument("-r", "--report_crash", requird=False, action="store_true",
+    ap.add_argument("-r", "--report_crash", required=False, action="store_true",
                     help="Report whenever there is a crash through email and text")
     ap.add_argument("-c", "--time_between_caches", required=False, help="Time between backup caching")
     args = vars(ap.parse_args())

@@ -1,11 +1,14 @@
 import scipy.stats as stats
 
 from DataModels.alliance import Alliance
-from team_calculation import TeamCalculation
 
 
 class AllianceCalculation:
     def __init__(self, alliance, firebase):
+
+        # Solves cyclical dependency
+        from .team_calculation import TeamCalculation
+
         self.alliance = alliance
         self.teams = []
         for team in self.alliance.teams:

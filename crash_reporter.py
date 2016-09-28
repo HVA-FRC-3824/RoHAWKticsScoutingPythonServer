@@ -1,17 +1,22 @@
 import smtplib
-# import threading
+import json
+import os
+
+from googlevoice import Voice
 
 
 class CrashReporter:
     def __init__(self, **kwargs):
         self.use_email = kwargs.get('use_email', True)
         self.emails = kwargs.get('emails', ['akmessing1@yahoo.com'])
-        self.gmail_user = kwargs.get('gmail_user', '')
-        self.gmail_password = kwargs.get('gmail_password', '')
+        with open(('/').join(os.path.abspath(__file__).split('/')[:-1])+"/../server.json") as f:
+            json_dict = json.loads(f.read())
+        self.gmail_user = json_dict['gmail_user']
+        self.gmail_password = json_dict['gmail_password']
+        print(self.gmail_user)
+        print(self.gmail_password)
 
-        # https://www.raspberrypi.org/forums/viewtopic.php?f=29&t=69286
-        # TODO: setup texting when server crashes
-        self.use_texting = kwargs.get('use_texting', False)
+        self.use_texting = kwargs.get('use_texting', True)
         self.mobiles = kwargs.get('mobiles', ['8659631368'])
 
     def report_server_crash(self, message):
@@ -27,10 +32,13 @@ class CrashReporter:
         smtpserver.starttls()
         smtpserver.ehlo()
         smtpserver.login(self.gmail_user, self.gmail_password)
-        header = 'To:' + ', '.join(self.emails) + '\n' + 'From: ' + self.gmail_user + '\n' + 'Subject: Server Crash \n'
+        header = 'To:' + ', '.join(self.emails) + '\n' + 'From: ' + self.gmail_user + '\n' + 'Subject: Server Crash!!! \n'
         msg = header + '\n' + message
         smtpserver.sendmail(self.gmail_user, self.emails, msg)
         smtpserver.close()
 
     def text_report(self, message):
-        pass
+        voice = Voice()
+        voice.login()
+        for phone_number in self.mobiles:
+            voice.send_sms(phone_number, "Server Crash!!!\n{0:s}".format(message))

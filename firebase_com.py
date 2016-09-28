@@ -25,10 +25,12 @@ firebase = fb.FirebaseApplication(url)
 
 
 class FirebaseCom:
-    def __init__(self, event_id):
+    EVENT_ID = ""
+
+    def __init__(self, event_id=EVENT_ID):
         self.matches = []
         self.teams = []
-        self.event_id = event_id
+        self.event_id = self.EVENT_ID = event_id
         self.base_ref = "/{0:s}".format(self.event_id)
 
     def update_match(self, match):

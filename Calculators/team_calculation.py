@@ -1,7 +1,7 @@
 from DataModels.alliance import Alliance
 from DataModels.match import Match
 
-from alliance_calculation import AllianceCalculation
+from .alliance_calculation import AllianceCalculation
 
 from constants import Constants
 
