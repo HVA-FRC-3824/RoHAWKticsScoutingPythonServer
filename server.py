@@ -27,18 +27,26 @@ logger = logging.getLogger(__name__)
 
 class Server:
     DEFAULT_TIME_BETWEEN_CYCLES = 60 * 4  # 4 minutes
+    DEFAULT_TIME_BETWEEN_CACHES = 60 * 60 * 1  # 1 hour
 
-    def __init__(self, event_key, setup, tbc, rc):
+    def __init__(self, event_key, setup, tbc, tbca, rc):
         logger.info("Event Key: {0:s}".format(event_key))
         self.event_key = event_key
         self.firebase = FirebaseCom(event_key)
         self.tba = TheBlueAlliance(event_key)
+
         if rc:
             self.crash_reporter = CrashReporter()
+
         if tbc is not None:
             self.time_between_cycles = tbc
         else:
             self.time_between_cycles = self.DEFAULT_TIME_BETWEEN_CYCLES
+
+        if tbca is not None:
+            self.time_between_caches = tbca
+        else:
+            self.time.between_caches = self.DEFAULT_TIME_BETWEEN_CACHES
 
         if setup:
             logger.info("Setting up database...")
@@ -119,7 +127,14 @@ class Server:
 
     def run(self):
         self.stopped = False
+        iteration = 1
+        time_since_last_cache = 0
         while not self.stopped:
+            logger.info("Iteration {0:d}".format(iteration))
+            if self.time_between_caches > time_since_last_cache:
+                self.firebase.cache()
+                time_since_last_cache = 0
+
             start_time = time.time()
             try:
                 self.make_team_calculations()
@@ -133,6 +148,8 @@ class Server:
             time_taken = end_time - start_time
             if self.time_between_cycles - time_taken > 0:
                 time.sleep(self.time_between_cycles - time_taken)
+            time_since_last_cache += self.time_between_cycles
+            iteration += 1
 
     def stop(self):
         self.stopped = True
@@ -271,9 +288,10 @@ if __name__ == "__main__":
     ap.add_argument("-t", "--time_between_cycles", required=False, help="Time between cycles")
     ap.add_argument("-r", "--report_crash", requird=False, action="store_true",
                     help="Report whenever there is a crash through email and text")
+    ap.add_argument("-c", "--time_between_caches", required=False, help="Time between backup caching")
     args = vars(ap.parse_args())
 
     server = Server(args['event_key'], args['setup'], args['time_between_cycles'],
-                    args['report_crash'])
+                    args['time_between_caches'], args['report_crash'])
 
     server.run()

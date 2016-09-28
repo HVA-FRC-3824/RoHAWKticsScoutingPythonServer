@@ -201,7 +201,7 @@ class FirebaseCom:
     def get_python_object_from_firebase_location(self, location):
         return utils.make_ascii_from_json(firebase.get(location, None))
 
-    def cache_firebase(self):
+    def cache(self):
         while True:
             try:
                 data = json.dumps(firebase.get("/", None))
