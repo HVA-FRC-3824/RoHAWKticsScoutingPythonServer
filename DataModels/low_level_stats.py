@@ -5,6 +5,9 @@ from .data_model import DataModel
 
 class LowLevelStats(DataModel):
     def __init__(self, list_):
+        pass
+
+    def from_list(self, list_):
         self.max = 0.0
         self.min = 0.0
         self.average = 0.0
@@ -23,7 +26,7 @@ class LowLevelStats(DataModel):
         else:
             raise Exception("Unknown type")
 
-    def boolean_init(self, list_):
+    def from_boolean(self, list_):
         self.max = 0.0
         self.min = 1.0
 
@@ -44,7 +47,7 @@ class LowLevelStats(DataModel):
         self.std /= len(list_)
         self.std = math.sqrt(self.std)
 
-    def int_init(self, list_):
+    def from_int(self, list_):
         self.max = -float("inf")
         self.min = float("inf")
 
@@ -64,7 +67,7 @@ class LowLevelStats(DataModel):
         self.std /= len(list_)
         self.std = math.sqrt(self.std)
 
-    def float_init(self, list_):
+    def from_float(self, list_):
         self.max = sys.floatmin
         self.min = sys.floatmax
 

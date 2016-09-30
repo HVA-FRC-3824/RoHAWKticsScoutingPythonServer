@@ -1,4 +1,5 @@
 from .data_model import DataModel
+from .low_level_stats import LowLevelStats
 
 
 class TCD(DataModel):
@@ -10,15 +11,15 @@ class TCD(DataModel):
         # Endgame
 
         # Post Match
-        self.no_show = None
-        self.stopped_moving = None
-        self.dq = None
+        self.no_show = LowLevelStats()
+        self.stopped_moving = LowLevelStats()
+        self.dq = LowLevelStats()
 
         # Fouls
-        self.fouls = None
-        self.tech_fouls = None
-        self.yellow_cards = None
-        self.red_cards = None
+        self.fouls = LowLevelStats()
+        self.tech_fouls = LowLevelStats()
+        self.yellow_cards = LowLevelStats()
+        self.red_cards = LowLevelStats()
 
         # Qualitative
         self.zscore_speed = 0.0

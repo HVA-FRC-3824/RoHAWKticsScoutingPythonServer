@@ -189,8 +189,8 @@ class Server:
             tcd = TCD()
             tcd.team_number = team_number
             for key, l in iter(lists.items()):
-                if key in tcd.__dict__:
-                    tcd.__dict__[key] = LowLevelStats(l)
+                if key in tcd.__dict__ and isinstance(tcd.__dict__[key], LowLevelStats):
+                    tcd.__dict__[key] = LowLevelStats().from_list(l)
             self.firebase.update_tcd(tcd)
             logger.info("Updated Low Level Calculations for Team {0:d}".format(team_number))
         # high level calculations
