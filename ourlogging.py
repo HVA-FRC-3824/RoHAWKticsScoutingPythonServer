@@ -2,6 +2,8 @@ import logging
 import logging.handlers
 import os
 import sys
+import re
+from colors import color
 
 
 class GroupWriteRotatingFileHandler(logging.handlers.RotatingFileHandler):
@@ -13,6 +15,30 @@ class GroupWriteRotatingFileHandler(logging.handlers.RotatingFileHandler):
         os.umask(prevumask)
         return rtv
 
+re_color_codes = re.compile(r'\033\[(\d;)?\d+m')
+
+
+class AnsiColorFormatter(logging.Formatter):
+    def __init__(self, msgfmt=None, datefmt=None):
+        self.formatter = logging.Formatter(msgfmt)
+
+    def format(self, record):
+
+        s = self.formatter.format(record)
+
+        if record.levelname == 'CRITICAL':
+            s = color(s, fg='red', style='negative')
+        elif record.levelname == 'ERROR':
+            s = color(s, fg='red')
+        elif record.levelname == 'WARNING':
+            s = color(s, fg='yellow')
+        elif record.levelname == 'DEBUG':
+            s = color(s, fg='blue')
+        elif record.levelname == 'INFO':
+            pass
+
+        return s
+
 
 def setup_logging(fn):
 
@@ -21,28 +47,29 @@ def setup_logging(fn):
     root.setLevel(logging.DEBUG)
 
     # create file handler which logs even debug messages
-    logfn = '%s/log/%s.log' % (('/').join(os.path.abspath(fn).split('/')[:-1]), os.path.split(fn)[-1].split('.')[0])
-    # fh_ = logging.FileHandler('/var/log/spine/%s.log' % os.path.split(__file__)[-1])
+    logfn = '/var/log/scouting_server/%s.log' % os.path.split(fn)[-1].split('.')[0]
     fh_ = GroupWriteRotatingFileHandler(logfn, maxBytes=1024 * 1024 * 5, backupCount=10)
     fh_.setLevel(logging.DEBUG)
     # Normally our Python scripts steady-state at 3.8%. With memory log buffering, this will increase.
     # Can be 5.0% after running arm_test.py now.
     fh = logging.handlers.MemoryHandler(1024 * 1024 * 10, logging.ERROR, fh_)
 
+    # previous_handler = root.hasHandlers()
+
+    formatter = logging.Formatter(fmt)
+    fh_.setFormatter(formatter)
+    root.addHandler(fh)
+
+    # if not previous_handler:
     # create console handler with a higher log level
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
 
     # create formatter and add it to the handlers
-    formatter = logging.Formatter(fmt)
-    ch.setFormatter(formatter)
-    fh_.setFormatter(formatter)
+    ch.setFormatter(AnsiColorFormatter(fmt))
 
     # add the handlers to logger
-    # logger.addHandler(ch)
-    # logger.addHandler(fh)
     root.addHandler(ch)
-    root.addHandler(fh)
 
     def my_excepthook(excType, excValue, traceback, logger=logging):
         logger.error("Logging an uncaught exception",

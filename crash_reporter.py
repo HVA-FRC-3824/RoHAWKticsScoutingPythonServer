@@ -1,30 +1,43 @@
 import smtplib
 import json
 import os
+from multiprocessing import Lock as PLock
+from threading import Lock as TLock
 
 from googlevoice import Voice
 
 
 class CrashReporter:
-    def __init__(self, **kwargs):
-        self.use_email = kwargs.get('use_email', True)
-        self.emails = kwargs.get('emails', ['akmessing1@yahoo.com'])
-        with open(('/').join(os.path.abspath(__file__).split('/')[:-1])+"/../server.json") as f:
-            json_dict = json.loads(f.read())
-        self.gmail_user = json_dict['gmail_user']
-        self.gmail_password = json_dict['gmail_password']
-        print(self.gmail_user)
-        print(self.gmail_password)
+    shared_state = {}
 
-        self.use_texting = kwargs.get('use_texting', True)
-        self.mobiles = kwargs.get('mobiles', ['8659631368'])
+    def __init__(self, **kwargs):
+        self.__dict__ = self.shared_state
+        if not hasattr(self, 'instance'):
+            self.use_email = kwargs.get('use_email', True)
+            self.emails = kwargs.get('emails', ['akmessing1@yahoo.com'])
+            with open(('/').join(os.path.abspath(__file__).split('/')[:-1])+"/../server.json") as f:
+                json_dict = json.loads(f.read())
+            self.gmail_user = json_dict['gmail_user']
+            self.gmail_password = json_dict['gmail_password']
+
+            self.use_texting = kwargs.get('use_texting', True)
+            self.mobiles = kwargs.get('mobiles', ['8659631368'])
+
+            self.tlock = TLock()
+            self.plock = PLock()
+
+            self.instance = True
 
     def report_server_crash(self, message):
+        self.tlock.acquire()
+        self.plock.acquire()
         if self.use_email:
             self.email_report(message)
 
         if self.use_texting:
             self.text_report(message)
+        self.tlock.release()
+        self.plock.release()
 
     def email_report(self, message):
         smtpserver = smtplib.SMTP("smtp.gmail.com", 587)

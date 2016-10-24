@@ -3,6 +3,9 @@ import datetime
 from firebase import firebase as fb
 import utils
 
+from threading import Lock as TLock
+from multiprocessing import Lock as PLock
+
 from DataModels.match import Match
 from DataModels.team import Team
 from DataModels.tid import TID
@@ -13,6 +16,12 @@ from DataModels.tdtf import TDTF
 from DataModels.tpa import TPA
 from DataModels.trd import TRD
 from DataModels.tcd import TCD
+
+import logging
+from ourlogging import setup_logging
+setup_logging(__file__)
+logger = logging.getLogger(__name__)
+
 
 # TODO: add authentication
 
@@ -26,17 +35,44 @@ firebase = fb.FirebaseApplication(url)
 
 class FirebaseCom:
     EVENT_ID = ""
+    shared_state = {}
 
     def __init__(self, event_id=EVENT_ID):
-        self.matches = []
-        self.teams = []
-        self.event_id = self.EVENT_ID = event_id
-        self.base_ref = "/{0:s}".format(self.event_id)
+        self.__dict__ = self.shared_state
+        if event_id != self.EVENT_ID:
+            self.matches = []
+            self.teams = []
+            self.event_id = self.EVENT_ID = event_id
+            self.base_ref = "/{0:s}".format(self.event_id)
+        if not hasattr(self, "instance"):
+            self.instance = True
+            self.plock = PLock()
+            self.tlock = TLock()
 
     def update_match(self, match):
         # update logistics information about a match (who was in it, score breakdown, etc)
         ref = "{0:s}/schedule".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(match.match_number), match.to_dict())
+        if isinstance(match, Match):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(match.match_number), match.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating match {0:d}".format(match.match_number))
+                raise Exception("Error updating match {0:d}".format(match.match_number))
+        elif isinstance(match, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(match['match_number']), match)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating match {0:d}".format(match['match_number']))
+                raise Exception("Error updateing match {0:d}".format(match['match_number']))
+        else:
+            logger.e("match variable not a Match object or dict")
+            raise TypeError("match variable not a Match object or dict")
 
     def get_match(self, match_number):
         # get logistics information about a match (who was in it, score breakdown, etc)
@@ -49,7 +85,31 @@ class FirebaseCom:
     def update_tmd(self, tmd):
         # update the match data for a specific team that was in that match
         ref = "{0:s}/partial_match".format(self.base_ref)
-        return firebase.put(ref, "{0:d}_{1:d}".format(tmd.match_number, tmd.team_number), tmd.to_dict())
+        if isinstance(tmd, TMD):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}_{1:d}".format(tmd.match_number, tmd.team_number), tmd.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tmd with match number {0:d} and team number {1:d}"
+                         .format(tmd.match_number, tmd.team_number))
+                raise Exception("Error updating tmd with match number {0:d} and team number {1:d}"
+                                .format(tmd.match_number, tmd.team_number))
+        elif isinstance(tmd, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}_{1:d}".format(tmd['match_number'], tmd['team_number']), tmd)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tmd with match number{0:d} and team number {1:d}"
+                         .format(tmd['match-Number'], tmd['team_number']))
+                raise Exception("Error updating tmd with match {0:d} and team number {1:d}"
+                                .format(tmd['match_number'], tmd['team_number']))
+        else:
+            logger.e("tmd variable not a TMD object or dict")
+            raise TypeError("tmd variable not a TMD object or dict")
 
     def get_tmd(self, team_number, match_number):
         # get the match data for a specific team in a specific match
@@ -71,7 +131,27 @@ class FirebaseCom:
     def update_tpd(self, tpd):
         # update the pit data for a specific team
         ref = "{0:s}/pit".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tpd.team_number), tpd.to_dict())
+        if isinstance(tpd, TPD):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpd.team_number), tpd.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tpd {0:d}".format(tpd.team_number))
+                raise Exception("Error updating tpd {0:d}".format(tpd.team_number))
+        elif isinstance(tpd, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpd['team_number']), tpd)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tpd {0:d}".format(tpd['team_number']))
+                raise Exception("Error updating tpd {0:d}".format(tpd['team_number']))
+        else:
+            logger.e("tpd variable not a TPD object or dict")
+            raise TypeError("tpd variable not a TPD object or dict")
 
     def get_tpd(self, team_number):
         # get the pit data for a specific team
@@ -84,7 +164,27 @@ class FirebaseCom:
     def update_smd(self, smd):
         # update the super scout data for a specific match
         ref = "{0:s}/super_match".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(smd.match_number), smd.to_dict())
+        if isinstance(smd, SMD):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(smd.match_number), smd.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating smd {0:d}".format(smd.match_number))
+                raise Exception("Error updating smd {0:d}".format(smd.match_number))
+        elif isinstance(smd, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(smd['match_number']), smd)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating smd {0:d}".format(smd['match_number']))
+                raise Exception("Error updating smd {0:d}".format(smd['match_number']))
+        else:
+            logger.e("smd variable is not a SMD object or dict")
+            raise TypeError("smd variable is not a SMD object or dict")
 
     def get_smd(self, match_number):
         # get the super scout data for a specific match
@@ -106,7 +206,27 @@ class FirebaseCom:
     def update_tdtf(self, tdtf):
         # update the drive team's feedback about a specific team
         ref = "{0:s}/feedback".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tdtf.team_number), tdtf.to_dict())
+        if isinstance(tdtf, TDTF):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tdtf.team_number), tdtf.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tdtf {0:d}".format(tdtf.team_number))
+                raise Exception("Error updating tdtf {0:d}".format(tdtf.team_number))
+        elif isinstance(tdtf, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tdtf['team_number']), tdtf)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tdtf {0:d}".format(tdtf['team_number']))
+                raise Exception("Error updating tdtf {0:d}".format(tdtf['team_number']))
+        else:
+            logger.e("tdtf variable is not a TDTF object or dict")
+            raise TypeError("tdtf variable is not a TDTF object or dict")
 
     def get_tdtf(self, team_number):
         # get the drive team's feedback about a specific team
@@ -119,7 +239,27 @@ class FirebaseCom:
     def update_tid(self, tid):
         # update the logistics information about a specific team (nickname, match numbers, etc)
         ref = "{0:s}/info".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tid.team_number), tid.to_dict())
+        if isinstance(tid, TID):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tid.team_number), tid.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tid {0:d}".format(tid.team_number))
+                raise Exception("Error updating tid {0:d}".format(tid.team_number))
+        elif isinstance(tid, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tid['team_number']), tid)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tid {0:d}".format(tid['team_number']))
+                raise Exception("Error updating tid {0:d}".format(tid['team_number']))
+        else:
+            logger.e("tid variable is not a TID object or dict")
+            raise TypeError("tid variable is not a TID object or dict")
 
     def get_tid(self, team_number):
         # get the logistics information about a specific team (nickname, match numbers, etc)
@@ -132,7 +272,27 @@ class FirebaseCom:
     def update_tcd(self, tcd):
         # update the calculated data for a specific team
         ref = "{0:s}/calculated".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tcd.team_number), tcd.to_dict())
+        if isinstance(tcd, TCD):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tcd.team_number), tcd.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tcd {0:d}".format(tcd.team_number))
+                raise Exception("Error updating tcd {0:d}".format(tcd.team_number))
+        elif isinstance(tcd, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            return firebase.put(ref, "{0:d}".format(tcd['team_number']), tcd)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating tcd {0:d}".format(tcd['team_number']))
+                raise Exception("Error updating tcd {0:d}".format(tcd['team_number']))
+        else:
+            logger.e("tcd variable is not a TCD object or dict")
+            raise TypeError("tcd variable is not a TCD object or dict")
 
     def get_tcd(self, team_number):
         # get the calculated data for a specific team
@@ -145,7 +305,27 @@ class FirebaseCom:
     def update_current_trd(self, trd):
         # update the current ranking data on a specific team
         ref = "{0:s}/rankings/current".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(trd.team_number), trd.to_dict())
+        if isinstance(trd, TRD):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(trd.team_number), trd.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating c trd {0:d}".format(trd.team_number))
+                raise Exception("Error updating c trd {0:d}".format(trd.team_number))
+        elif isinstance(trd, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(trd['team_number']), trd)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating c trd {0:d}".format(trd['team_number']))
+                raise Exception("Error updating c trd {0:d}".format(trd['team_number']))
+        else:
+            logger.e("c trd variable is not a TRD object or dict")
+            raise TypeError("c trd variable is not a TRD object or dict")
 
     def get_current_trd(self, team_number):
         # get the current ranking data on a specific team
@@ -158,7 +338,27 @@ class FirebaseCom:
     def update_predicted_trd(self, trd):
         # update the predicted ranking data on a specific team
         ref = "{0:s}/rankings/predicted".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(trd.team_number), trd.to_dict())
+        if isinstance(trd, TRD):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(trd.team_number), trd.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating p trd {0:d}".format(trd.team_number))
+                raise Exception("Error updating p trd {0:d}".format(trd.team_number))
+        elif isinstance(trd, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(trd['team_number']), trd)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating p trd {0:d}".format(['trd.team_number']))
+                raise Exception("Error updating p trd {0:d}".format(trd['team_number']))
+        else:
+            logger.e("p trd variable is not a TRD object or dict")
+            raise TypeError("p trd variable is not a TRD object or dict")
 
     def get_predicted_trd(self, team_number):
         # get the predicted ranking data on a specific team
@@ -171,7 +371,27 @@ class FirebaseCom:
     def update_first_tpa(self, tpa):
         # update the first pick ability data for a specific team
         ref = "{0:s}/first_pick".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tpa.team_number), tpa.to_dict())
+        if isinstance(tpa, TPA):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpa.team_number), tpa.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating 1st tpa {0:d}".format(tpa.team_number))
+                raise Exception("Error updating 1st tpa {0:d}".format(tpa.team_number))
+        elif isinstance(tpa, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating 1st tpa {0:d}".format(tpa['team_number']))
+                raise Exception("Error updating 1st tpa {0:d}".format(tpa['team_number']))
+        else:
+            logger.e("1st tpa variable is not a TPA object or dict")
+            raise TypeError("1st tpa variable is not a TPA object or dict")
 
     def get_first_tpa(self, team_number):
         # get the first pick ability data for a specific team
@@ -184,7 +404,27 @@ class FirebaseCom:
     def update_second_tpa(self, tpa):
         # update the second pick ability data for a specific team
         ref = "{0:s}/second_pick".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tpa.team_number), tpa.to_dict())
+        if isinstance(tpa, TPA):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpa.team_number), tpa.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating 2nd tpa {0:d}".format(tpa.team_number))
+                raise Exception("Error updating 2nd tpa {0:d}".format(tpa.team_number))
+        elif isinstance(tpa, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating 2nd tpa {0:d}".format(tpa['team_number']))
+                raise Exception("Error updating 2nd tpa {0:d}".format(tpa['team_number']))
+        else:
+            logger.e("2nd tpa variable is not a TPA object or dict")
+            raise TypeError("2nd tpa variabel is not a TPA object or dict")
 
     def get_second_tpa(self, team_number):
         # get the second pick ability data for a specific team
@@ -197,7 +437,27 @@ class FirebaseCom:
     def update_third_tpa(self, tpa):
         # update the third pick ability data for a specific team
         ref = "{0:s}/third_pick".format(self.base_ref)
-        return firebase.put(ref, "{0:d}".format(tpa.team_number), tpa.to_dict())
+        if isinstance(tpa, TPA):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpa.team_number), tpa.to_dict())
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating 3rd tpa {0:d}".format(tpa.team_number))
+                raise Exception("Error updating 3rd tpa {0:d}".format(tpa.team_number))
+        elif isinstance(tpa, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            success = firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.e("Error updating 3rd tpa {0:d}".format(tpa['team_number']))
+                raise Exception("Error updating 3rd tpa {0:d}".format(tpa['team_number']))
+        else:
+            logger.e("3rd tpa variable is not a TPA object or dict")
+            raise TypeError("3rd tpa variable is not a TPA object or dict")
 
     def get_third_tpa(self, team_number):
         # get the third pick ability data for a specific team
@@ -208,17 +468,33 @@ class FirebaseCom:
         return TPA(**response)
 
     def update_team(self, team):
-        self.update_tid(team.info)
-        self.update_tpd(team.pit)
-        self.update_tdtf(team.drive_team_feedback)
-        self.update_tcd(team.calc)
-        self.update_current_trd(team.current_ranking)
-        self.update_predicted_trd(team.predicted_ranking)
-        self.update_first_tpa(team.first_pick)
-        self.update_second_tpa(team.second_pick)
-        self.update_third_tpa(team.third_pick)
-        for tmd in team.completed_matches.values():
-            self.update_tmd(tmd)
+        if isinstance(team, Team):
+            self.update_tid(team.info)
+            self.update_tpd(team.pit)
+            self.update_tdtf(team.drive_team_feedback)
+            self.update_tcd(team.calc)
+            self.update_current_trd(team.current_ranking)
+            self.update_predicted_trd(team.predicted_ranking)
+            self.update_first_tpa(team.first_pick)
+            self.update_second_tpa(team.second_pick)
+            self.update_third_tpa(team.third_pick)
+            for tmd in team.completed_matches.values():
+                self.update_tmd(tmd)
+        elif isinstance(team, dict):
+            self.update_tid(team['info'])
+            self.update_tpd(team['pit'])
+            self.update_tdtf(team['drive_team_feedback'])
+            self.update_tcd(team['calc'])
+            self.update_current_trd(team['current_ranking'])
+            self.update_predicted_trd(['team.predicted_ranking'])
+            self.update_first_tpa(team['first_pick'])
+            self.update_second_tpa(team['second_pick'])
+            self.update_third_tpa(team['third_pick'])
+            for tmd in team['completed_matches'].values():
+                self.update_tmd(tmd)
+        else:
+            logger.e("team variable is not Team object or dict")
+            raise TypeError("team variable is not Team object or dict")
 
     def get_team(self, team_number):
         team = Team()
@@ -260,4 +536,4 @@ class FirebaseCom:
                     f.close()
                     break
             except:
-                pass
+                logger.e("Error with caching firebase")

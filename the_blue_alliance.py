@@ -1,11 +1,11 @@
 import requests
 import utils
 import logging
+from ourlogging import setup_logging
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-from ourlogging import setup_logging
 
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
