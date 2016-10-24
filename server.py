@@ -127,6 +127,9 @@ class Server:
     def run(self):
         self.stopped = False
         iteration = 1
+
+        # initial run cache
+        self.firebase.cache()
         time_since_last_cache = 0
         while not self.stopped:
             logger.info("Iteration {0:d}".format(iteration))

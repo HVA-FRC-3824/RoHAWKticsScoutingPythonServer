@@ -4,7 +4,7 @@ from .data_model import DataModel
 
 
 class LowLevelStats(DataModel):
-    def __init__(self, list_):
+    def __init__(self):
         pass
 
     def from_list(self, list_):

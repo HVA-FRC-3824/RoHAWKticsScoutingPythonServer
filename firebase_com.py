@@ -62,6 +62,8 @@ class FirebaseCom:
     def get_tmds(self):
         ref = "{0:s}/partial_match".format(self.base_ref)
         response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return {}
         for key, tmd in iter(response.items()):
             response[key] = TMD(**tmd)
         return response
