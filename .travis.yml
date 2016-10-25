@@ -6,5 +6,5 @@ install:
 script:
   flake8
 
-notifications:
-  slack: rohawktics:h4XxvdXXCij2pDs5FNYnNNRj
+# notifications:
+#   slack: rohawktics:h4XxvdXXCij2pDs5FNYnNNRj
