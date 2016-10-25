@@ -5,6 +5,9 @@ class TMD(DataModel):
     def __init__(self, **kwargs):
         self.team_number = -1
         self.match_number = -1
+        self.alliance_color = ""
+        self.allaince_number = -1
+        self.scout_name = ""
 
         # Autonomous
 

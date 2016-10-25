@@ -19,7 +19,7 @@ class AllianceCalculation:
         '''
             Predicted Score
 
-            pScore = ∑_(T in A) auto_ability(T)
+            pScore = Sum_(T in A) auto_ability(T)
         '''
         p_score = 0.0
         for team in self.teams:
@@ -30,7 +30,7 @@ class AllianceCalculation:
         '''
             Standard Deviation of Predicted Score
 
-            std_pScore = sqrt(∑_(T in A) std_autoAbility(T)^2)
+            std_pScore = sqrt(Sum_(T in A) std_autoAbility(T)^2)
         '''
         std_p_score = 0.0
         for team in self.teams:
@@ -70,7 +70,7 @@ class AllianceCalculation:
             approximated by the Welch-Satterthwaite equation
             (https://en.wikipedia.org/wiki/WelchSatterthwaite_equation)
 
-                v ≈ (s_1^2 / N_1 + s_2^2 / N_2)^2 / (s_1^4 / (N_1^2 * v_1) + s_2^4 / (N_2^2 * v_2))
+                v almost_equivalent (s_1^2 / N_1 + s_2^2 / N_2)^2 / (s_1^4 / (N_1^2 * v_1) + s_2^4 / (N_2^2 * v_2))
 
             where v_1 = N_1 - 1 (the degrees of freedom for the first variance) and v_2 = N_2 -1
         '''

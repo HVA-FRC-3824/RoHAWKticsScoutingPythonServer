@@ -529,7 +529,7 @@ class FirebaseCom:
     def cache(self):
         while True:
             try:
-                data = json.dumps(firebase.get("/", None))
+                data = json.dumps(firebase.get("/", None), indent=4)
                 now = str(datetime.datetime.now())
                 with open("./CachedFirebases/" + now + '.json', 'w') as f:
                     f.write(data)

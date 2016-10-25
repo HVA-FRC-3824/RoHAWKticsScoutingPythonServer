@@ -8,6 +8,8 @@ import sys
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
 from crash_reporter import CrashReporter
+from bluetooth_server import BluetoothServer
+from adb_server import AdbServer
 
 from DataModels.match import Match
 from DataModels.alliance import Alliance
@@ -31,26 +33,33 @@ class Server:
     DEFAULT_TIME_BETWEEN_CYCLES = 60 * 4  # 4 minutes
     DEFAULT_TIME_BETWEEN_CACHES = 60 * 60 * 1  # 1 hour
 
-    def __init__(self, event_key, setup, tbc, tbca, rc):
+    def __init__(self, **kwargs):
+        event_key = kwargs.get('event_key', "")
         logger.info("Event Key: {0:s}".format(event_key))
         self.event_key = event_key
         self.firebase = FirebaseCom(event_key)
         self.tba = TheBlueAlliance(event_key)
 
-        if rc:
+        if kwargs.get('crash_reporter', False):
             self.crash_reporter = CrashReporter()
 
-        if tbc is not None:
-            self.time_between_cycles = tbc
+        if kwargs.get('time_between_cycles', False):
+            self.time_between_cycles = kwargs.get('time_between_cycles')
         else:
             self.time_between_cycles = self.DEFAULT_TIME_BETWEEN_CYCLES
 
-        if tbca is not None:
-            self.time_between_caches = tbca
+        if kwargs.get('time_between_caches', False):
+            self.time_between_caches = kwargs.get('time_between_caches')
         else:
             self.time_between_caches = self.DEFAULT_TIME_BETWEEN_CACHES
 
-        if setup:
+        if kwargs.get('bluetooth', False):
+            self.bluetooth = BluetoothServer()
+
+        if kwargs.get('adb', False):
+            self.adb = AdbServer()
+
+        if kwargs.get('setup', False):
             logger.info("Setting up database...")
             event_matches = self.tba.get_event_matches()
             team_matches = self.set_matches(event_matches)
@@ -131,6 +140,13 @@ class Server:
         # initial run cache
         self.firebase.cache()
         time_since_last_cache = 0
+
+        if hasattr(self, 'bluetooth'):
+            self.bluetooth.start()
+
+        if hasattr(self, 'adb'):
+            self.adb.start()
+
         while not self.stopped:
             logger.info("Iteration {0:d}".format(iteration))
             if self.time_between_caches < time_since_last_cache:
@@ -166,6 +182,10 @@ class Server:
 
     def stop(self):
         self.stopped = True
+        if hasattr(self, 'bluetooth'):
+            self.bluetooth.stop()
+        if hasattr(self, 'adb'):
+            self.adb.stop()
 
     def make_team_calculations(self):
         # make low level calculations
@@ -303,10 +323,13 @@ if __name__ == "__main__":
     ap.add_argument("-r", "--report_crash", required=False, action="store_true",
                     help="Report whenever there is a crash through email and text")
     ap.add_argument("-c", "--time_between_caches", required=False, help="Time between backup caching")
+    ap.add_argument("-b", "--bluetooth", required=False, action="store_true",
+                    help="Turn on the bluetooth server")
+    ap.add_argument("-a", "--adb", required=False, action="store_true",
+                    help="Turn on the adb server")
     args = vars(ap.parse_args())
 
-    server = Server(args['event_key'], args['setup'], args['time_between_cycles'],
-                    args['time_between_caches'], args['report_crash'])
+    server = Server(**args)
 
     def signal_handler(signal, frame):
         server.stop()
