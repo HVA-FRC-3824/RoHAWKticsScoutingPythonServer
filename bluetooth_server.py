@@ -1,6 +1,7 @@
-import serial
-import md5
+# import serial
+# import md5
 import logging
+from bluetooth import *
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -21,7 +22,14 @@ class BluetoothServer(Looper):
         Looper.__init__(self)
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
-            self.bluetooth = serial.Serial("/dev/rfcomm1", baudrate=9600)
+            nearby_devices = discover_devices(lookup_names=True)
+            for addr, name in nearby_devices:
+                print("  %s - %s" % (addr, name))
+
+            self.bluetooth = BluetoothSocket(RF_COMM)
+            self.bluetooth.bind(("", PORT_ANY))
+            self.bluetooth.listen(1)
+
             self.state = self.RECEIVING
             self.message_handler = MessageHandler()
             self.instance = True
