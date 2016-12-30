@@ -3,6 +3,8 @@ import logging
 import socket
 import time
 import select
+import subprocess
+import os
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -20,6 +22,7 @@ class SocketClient(Looper):
         self.state = self.RECEIVING
         self.socket = conn
         self.message_handler = message_handler
+        logger.info("Socket client created")
 
     def start(self):
         self.tstart()
@@ -35,28 +38,35 @@ class SocketClient(Looper):
 
             while self.running:
                 if waiting_for_header:
-                    header = self.bluetooth.recv(1)
-                    header_bytes[header_index] = header
+                    header = self.socket.recv(1)
+                    if len(header) == 0:
+                        # closing hack
+                        self.running = False
+                        return
+                    header_bytes[header_index] = header[0]
                     header_index += 1
 
                     if header_index == 22:
                         if header_bytes[0] == self.HEADER_MSB and header_bytes[1] == self.HEADER_LSB:
-                            total_size = self.byte_array_to_int(header_bytes[2:6])
+                            total_size = self.bytearray_to_int(header_bytes[2:6])
                             digest = header_bytes[6:22]
                             waiting_for_header = False
                         else:
                             logger.error("Received message does not have correct header")
                             break
                 else:
-                    buffer = self.bluetooth.recv(total_size)
-                    if self.digest_match(self.get_digest(buffer), digest):
-                        self.bluetooth.write(digest)
-                        reply = self.message_handler.handle_message(buffer.decode())
+                    buf = self.socket.recv(total_size)
+                    if self.digest_match(self.get_digest(buf), digest):
+                        self.socket.send(digest)
+                        logger.info("Received message: {0:s}".format(buf.decode()))
+                        reply = self.message_handler.handle_message(buf.decode())
                         if reply is not None:
                             self.write(reply)
+                        break
                     else:
                         logger.error("Received message digest does not match")
-        while self.socket in read_list and self.state != self.RECEIVING and self.running:
+        read_list, write_list, error_list = select.select(socket_list, [], [])
+        while self.socket not in read_list and self.state != self.RECEIVING and self.running:
             time.sleep(0.1)
             read_list, write_list, error_list = select.select(socket_list, [], [])
 
@@ -91,8 +101,8 @@ class SocketClient(Looper):
                     else:
                         logger.error("Written message digest does not match")
                         return False
-            logger.error("SerialTimeoutExcpetion on write")
         except:
+            logger.error("TimeoutExcpetion on write")
             return False
 
     def bytearray_to_int(self, b):
@@ -109,7 +119,7 @@ class SocketClient(Looper):
     def get_digest(self, message_bytes):
         m = hashlib.md5()
         m.update(message_bytes)
-        return m.digest
+        return m.digest()
 
     def digest_match(self, digest1, digest2):
         if len(digest1) != len(digest2):
@@ -125,12 +135,15 @@ class SocketServer(Looper):
     shared_state = {}
 
     def __init__(self):
-        Looper.__init__(self)
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
+            Looper.__init__(self)
+            port = 38240
+            subprocess.call([os.path.expanduser("~/Library/Android/sdk/platform-tools/adb"), "reverse", "tcp:{0:d}".format(port), "tcp:{0:d}".format(port)])
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.server.bind(('localhost', 38240))
+            self.server.bind(('', port))
             self.server.listen(9)
+            self.server.settimeout(5)
 
             self.clients = []
 
@@ -140,11 +153,19 @@ class SocketServer(Looper):
     def start(self):
         self.tstart()
 
+    def on_tstart(self):
+        logger.info("Thread started")
+
     def on_tloop(self):
-        (conn, address) = self.server.accept()
-        self.clients.append(SocketClient(conn, self.message_handler))
+        try:
+            (conn, address) = self.server.accept()
+            self.clients.append(SocketClient(conn, self.message_handler))
+            self.clients[-1].start()
+        except:
+            pass
 
     def stop(self):
+        self.server.close()
         for client in self.clients:
             client.stop()
         Looper.stop(self)

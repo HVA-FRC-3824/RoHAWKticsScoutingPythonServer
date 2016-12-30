@@ -37,24 +37,29 @@ class BluetoothClient(Looper):
             while self.running:
                 if waiting_for_header:
                     header = self.bluetooth.recv(1)
-                    header_bytes[header_index] = header
+                    if len(header) == 0:
+                        # closing hack
+                        self.running = False
+                        return
+                    header_bytes[header_index] = header[0]
                     header_index += 1
 
                     if header_index == 22:
                         if header_bytes[0] == self.HEADER_MSB and header_bytes[1] == self.HEADER_LSB:
-                            total_size = self.byte_array_to_int(header_bytes[2:6])
+                            total_size = self.bytearray_to_int(header_bytes[2:6])
                             digest = header_bytes[6:22]
                             waiting_for_header = False
                         else:
                             logger.error("Received message does not have correct header")
                             break
                 else:
-                    buffer = self.bluetooth.recv(total_size)
-                    if self.digest_match(self.get_digest(buffer), digest):
+                    buf = self.bluetooth.recv(total_size)
+                    if self.digest_match(self.get_digest(buf), digest):
                         self.bluetooth.write(digest)
-                        reply = self.message_handler.handle_message(buffer.decode())
+                        reply = self.message_handler.handle_message(buf.decode())
                         if reply is not None:
                             self.write(reply)
+                        break
                     else:
                         logger.error("Received message digest does not match")
         read_list, write_list, error_list = select.select(socket_list, [], [])
@@ -111,7 +116,7 @@ class BluetoothClient(Looper):
     def get_digest(self, message_bytes):
         m = hashlib.md5()
         m.update(message_bytes)
-        return m.digest
+        return m.digest()
 
     def digest_match(self, digest1, digest2):
         if len(digest1) != len(digest2):
