@@ -1,0 +1,10 @@
+{
+  "event_key" : "2016cars",
+  "socket": true,
+  "bluetooth": false,
+  "setup": false,
+  "log_level": "debug",
+  "time_between_cycles": 600,
+  "time_between_caches": 3600,
+  "report_crash": true
+}

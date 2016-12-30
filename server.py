@@ -5,6 +5,8 @@ import traceback
 import signal
 import sys
 import os
+import json
+import threading
 
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
@@ -39,6 +41,7 @@ class Server:
         self.event_key = event_key
         self.firebase = FirebaseCom(event_key)
         self.tba = TheBlueAlliance(event_key)
+        self.event = None
 
         if kwargs.get('crash_reporter', False):
             self.crash_reporter = CrashReporter()
@@ -176,13 +179,17 @@ class Server:
             logger.info("Iteration Ended")
             logger.info("Time taken: {0:f}s".format(time_taken))
             if self.time_between_cycles - time_taken > 0:
-                time.sleep(self.time_between_cycles - time_taken)
+                self.event = threading.Event()
+                self.event.wait(timeout=self.time_between_cycles - time_taken)
+                self.event = None
             time_since_last_cache += self.time_between_cycles
             iteration += 1
         sys.exit()
 
     def stop(self):
         self.stopped = True
+        if self.event is not None:
+            self.event.set()
         if hasattr(self, 'bluetooth'):
             self.bluetooth.stop()
         if hasattr(self, 'socket'):
@@ -316,25 +323,18 @@ class Server:
 if __name__ == "__main__":
     # Collect command line arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-e", "--event_key", required=True, help="Event key for The Blue Alliance")
-    ap.add_argument("-l", "--log_level", required=False, help="The level threshold for the logger")
-    ap.add_argument("-s", "--setup", required=False, action="store_true",
-                    help="Setup the database for this event")
-    ap.add_argument("-t", "--time_between_cycles", required=False, help="Time between cycles")
-    ap.add_argument("-r", "--report_crash", required=False, action="store_true",
-                    help="Report whenever there is a crash through email and text")
-    ap.add_argument("-c", "--time_between_caches", required=False, help="Time between backup caching")
-    ap.add_argument("-b", "--bluetooth", required=False, action="store_true",
-                    help="Turn on the bluetooth server")
-    ap.add_argument("-u", "--socket", required=False, action="store_true",
-                    help="Turn on the socket server")
+    ap.add_argument("-c", "--config", required=True, help="Config file with settings for the server")
     args = vars(ap.parse_args())
 
-    server = Server(**args)
+    f = open(args['config'])
+    text = f.read()
+    j = json.loads(text)
+
+    server = Server(**j)
 
     def signal_handler(signal, frame):
+        logging.info("Control-C caught stopping server at the end of this loop")
         server.stop()
         sys.exit()
-        logging.info("Control-C caught stopping server at the end of this loop")
     signal.signal(signal.SIGINT, signal_handler)
     server.run()
