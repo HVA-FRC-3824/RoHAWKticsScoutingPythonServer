@@ -4,7 +4,6 @@ import logging
 import traceback
 import signal
 import sys
-import os
 import json
 import threading
 
@@ -43,18 +42,13 @@ class Server:
         self.tba = TheBlueAlliance(event_key)
         self.event = None
 
+        self.aggregate = kwargs.get('aggregate', False)
+
         if kwargs.get('crash_reporter', False):
             self.crash_reporter = CrashReporter()
 
-        if kwargs.get('time_between_cycles', False):
-            self.time_between_cycles = kwargs.get('time_between_cycles')
-        else:
-            self.time_between_cycles = self.DEFAULT_TIME_BETWEEN_CYCLES
-
-        if kwargs.get('time_between_caches', False):
-            self.time_between_caches = kwargs.get('time_between_caches')
-        else:
-            self.time_between_caches = self.DEFAULT_TIME_BETWEEN_CACHES
+        self.time_between_cycles = kwargs.get('time_between_cycles', self.DEFAULT_TIME_BETWEEN_CYCLES)
+        self.time_between_caches = kwargs.get('time_between_caches', self.DEFAULT_TIME_BETWEEN_CACHES)
 
         if kwargs.get('bluetooth', False):
             from bluetooth_server import BluetoothServer
@@ -158,22 +152,23 @@ class Server:
                 time_since_last_cache = 0
 
             start_time = time.time()
-            try:
-                self.make_team_calculations()
-                self.make_super_calculations()
-                self.make_ranking_calculations()
-                self.make_pick_list_calculations()
-            except:
-                if not self.stopped:
-                    logger.error("Crash")
-                    logger.error(traceback.format_exc())
-                    if hasattr(self, 'crash_reporter'):
-                        logger.error("Reporting crash")
-                        try:
-                            self.crash_reporter.report_server_crash(traceback.format_exc())
-                        # weird exception that doesn't stop the text
-                        except:
-                            pass
+            if self.aggregate:
+                try:
+                    self.make_team_calculations()
+                    self.make_super_calculations()
+                    self.make_ranking_calculations()
+                    self.make_pick_list_calculations()
+                except:
+                    if not self.stopped:
+                        logger.error("Crash")
+                        logger.error(traceback.format_exc())
+                        if hasattr(self, 'crash_reporter'):
+                            logger.error("Reporting crash")
+                            try:
+                                self.crash_reporter.report_server_crash(traceback.format_exc())
+                            # weird exception that doesn't stop the text
+                            except:
+                                pass
             end_time = time.time()
             time_taken = end_time - start_time
             logger.info("Iteration Ended")

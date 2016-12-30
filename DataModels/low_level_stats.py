@@ -18,11 +18,11 @@ class LowLevelStats(DataModel):
             return
 
         if isinstance(list_[0], bool):
-            self.boolean_init(list_)
+            self.from_boolean(list_)
         elif isinstance(list_[0], int):
-            self.int_init(list_)
+            self.from_int(list_)
         elif isinstance(list_[0], float):
-            self.float_init(list_)
+            self.from_float(list_)
         else:
             raise Exception("Unknown type")
 

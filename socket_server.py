@@ -5,6 +5,8 @@ import time
 import select
 import subprocess
 import os
+import re
+import usb1
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -12,11 +14,13 @@ from ourlogging import setup_logging
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
+
 class SocketClient(Looper):
     HEADER_MSB = 0x10
     HEADER_LSB = 0x55
     RECEIVING = 0
     SENDING = 1
+
     def __init__(self, conn, message_handler):
         Looper.__init__(self)
         self.state = self.RECEIVING
@@ -134,14 +138,18 @@ class SocketServer(Looper):
     # Singleton
     shared_state = {}
 
+    ANDROID_VENDOR_IDS = ["18d1"]
+    ANDROID_PRODUCT_IDS = ["4ee2"]
+
     def __init__(self):
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
             Looper.__init__(self)
-            port = 38240
-            subprocess.call([os.path.expanduser("~/Library/Android/sdk/platform-tools/adb"), "reverse", "tcp:{0:d}".format(port), "tcp:{0:d}".format(port)])
+            self.port = 38240
+            self.setup_adb_bridge()
+            self.pstart()
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.server.bind(('', port))
+            self.server.bind(('', self.port))
             self.server.listen(9)
             self.server.settimeout(5)
 
@@ -149,6 +157,40 @@ class SocketServer(Looper):
 
             self.message_handler = MessageHandler()
             self.instance = True
+
+    def setup_adb_bridge(self):
+        self.adb = "adb-arm/adb"
+        dir = os.path.dirname(__file__)
+        if not os.path.exists(os.path.join(dir, self.adb)):
+            logger.error("adb is not compiled")
+            raise Exception("adb is not compiled")
+
+        devices_text = subprocess.check_output([self.adb, "devices"], universal_newlines=True)
+        pattern = re.compile(r'(.+)\tdevice')
+        devices = []
+        for line in devices_text.split('\n'):
+            matches = pattern.match(line)
+            if matches is not None:
+                logger.info("Found android device: {}".matches.group(matches.lastindex))
+                devices.append(matches.group(matches.lastindex))
+
+        for device in devices:
+            subprocess.call([self.adb, "-s", device, "reverse", "tcp:{0:d}".format(self.port),
+                             "tcp:{0:d}".format(self.port)])
+
+    def on_pstart(self):
+        self.context = usb1.USBContext().__enter__()
+        self.context.hotplayRegisterCallback(self.hotplug_callback)
+
+    def on_ploop(self, message):
+        self.context.handleEvents()
+
+    def hotplug_callback(self, context, device, event):
+        if event == usb1.HOTPLUG_EVENT_DEVICE_ARRIVED:
+            if(device.device_descriptor.idVendor in self.ANDROID_VENDOR_IDS and
+               device.device_dscriptor.idProduct in self.ANDROID_PRODUCT_IDS):
+                subprocess.call([self.adb, "-s", device.device_descriptor.iSerialNumber, "reverse",
+                                 "tcp:{0:d}".format(self.port), "tcp:{0:d}".format(self.port)])
 
     def start(self):
         self.tstart()

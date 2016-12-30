@@ -1,0 +1,3 @@
+[submodule "adb-arm"]
+	path = adb-arm
+	url = git@github.com:HVA-FRC-3824/adb-arm.git
