@@ -1,7 +1,7 @@
 # import serial
 import md5
 import logging
-from bluetooth import *
+import socket
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -9,7 +9,7 @@ from ourlogging import setup_logging
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
-class BluetoothClient(Looper):
+class SocketClient(Looper):
     HEADER_MSB = 0x10
     HEADER_LSB = 0x55
     RECEIVING = 0
@@ -17,16 +17,16 @@ class BluetoothClient(Looper):
     def __init__(self, conn, message_handler):
         Looper.__init__(self)
         self.state = self.RECEIVING
-        self.bluetooth = conn
+        self.socket = conn
         self.message_handler = message_handler
 
     def start(self):
         self.tstart()
 
     def on_tloop(self):
-        socket_list = [self.bluetooth]
+        socket_list = [self.socket]
         read_list, write_list, error_list = select.select(socket_list, [], [])
-        if self.bluetooth in read_list and self.state == self.RECEIVING:
+        if self.socket in read_list and self.state == self.RECEIVING:
             waiting_for_header = True
             header_bytes = bytearray([0]*22)
             digest = bytearray([0]*16)
@@ -55,8 +55,7 @@ class BluetoothClient(Looper):
                             self.write(reply)
                     else:
                         logger.error("Received message digest does not match")
-        read_list, write_list, error_list = select.select(socket_list, [], [])
-        while self.bluetooth in read_list and self.state != self.RECEIVING and self.running:
+        while self.socket in read_list and self.state != self.RECEIVING and self.running:
             time.sleep(0.1)
             read_list, write_list, error_list = select.select(socket_list, [], [])
 
@@ -120,7 +119,7 @@ class BluetoothClient(Looper):
         return True
 
 
-class BluetoothServer(Looper):
+class SocketServer(Looper):
     # Singleton
     shared_state = {}
 
@@ -128,13 +127,9 @@ class BluetoothServer(Looper):
         Looper.__init__(self)
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
-            nearby_devices = discover_devices(lookup_names=True)
-            for addr, name in nearby_devices:
-                print("  %s - %s" % (addr, name))
-
-            self.bluetooth = BluetoothSocket(RF_COMM)
-            self.bluetooth.bind(("", PORT_ANY))
-            self.bluetooth.listen(9)
+            self.server = socket.socket()
+            self.server.bind(('localhost'), 3824))
+            self.server.listen(9)
 
             self.clients = []
 
@@ -145,8 +140,8 @@ class BluetoothServer(Looper):
         self.tstart()
 
     def on_tloop(self):
-        (conn, address) = self.bluetooth.accept()
-        self.clients.append(BluetoothClient(conn, self.message_handler))
+        (conn, address) = self.server.accept()
+        self.clients.append(SocketClient(conn, self.message_handler))
 
     def stop(self):
         for client in self.clients:
