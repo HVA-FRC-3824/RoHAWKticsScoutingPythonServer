@@ -4,12 +4,12 @@ import logging
 import traceback
 import signal
 import sys
+import os
 
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
 from crash_reporter import CrashReporter
-from bluetooth_server import BluetoothServer
-from adb_server import AdbServer
+from socket_server import SocketServer
 
 from DataModels.match import Match
 from DataModels.alliance import Alliance
@@ -54,10 +54,11 @@ class Server:
             self.time_between_caches = self.DEFAULT_TIME_BETWEEN_CACHES
 
         if kwargs.get('bluetooth', False):
+            from bluetooth_server import BluetoothServer
             self.bluetooth = BluetoothServer()
 
-        if kwargs.get('adb', False):
-            self.adb = AdbServer()
+        if kwargs.get('socket', False):
+            self.socket = SocketServer()
 
         if kwargs.get('setup', False):
             logger.info("Setting up database...")
@@ -144,8 +145,8 @@ class Server:
         if hasattr(self, 'bluetooth'):
             self.bluetooth.start()
 
-        if hasattr(self, 'adb'):
-            self.adb.start()
+        if hasattr(self, 'socket'):
+            self.socket.start()
 
         while not self.stopped:
             logger.info("Iteration {0:d}".format(iteration))
@@ -184,8 +185,8 @@ class Server:
         self.stopped = True
         if hasattr(self, 'bluetooth'):
             self.bluetooth.stop()
-        if hasattr(self, 'adb'):
-            self.adb.stop()
+        if hasattr(self, 'socket'):
+            self.socket.stop()
 
     def make_team_calculations(self):
         # make low level calculations
@@ -325,8 +326,8 @@ if __name__ == "__main__":
     ap.add_argument("-c", "--time_between_caches", required=False, help="Time between backup caching")
     ap.add_argument("-b", "--bluetooth", required=False, action="store_true",
                     help="Turn on the bluetooth server")
-    ap.add_argument("-a", "--adb", required=False, action="store_true",
-                    help="Turn on the adb server")
+    ap.add_argument("-u", "--socket", required=False, action="store_true",
+                    help="Turn on the socket server")
     args = vars(ap.parse_args())
 
     server = Server(**args)
@@ -334,6 +335,6 @@ if __name__ == "__main__":
     def signal_handler(signal, frame):
         server.stop()
         sys.exit()
-        # logger.info("Control-C caught stopping server at the end of this loop")
+        logging.info("Control-C caught stopping server at the end of this loop")
     signal.signal(signal.SIGINT, signal_handler)
     server.run()

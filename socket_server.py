@@ -1,7 +1,8 @@
-# import serial
-import md5
+import hashlib
 import logging
 import socket
+import time
+import select
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -90,8 +91,8 @@ class SocketClient(Looper):
                     else:
                         logger.error("Written message digest does not match")
                         return False
-        except serial.SerialTimeoutException:
             logger.error("SerialTimeoutExcpetion on write")
+        except:
             return False
 
     def bytearray_to_int(self, b):
@@ -106,7 +107,7 @@ class SocketClient(Looper):
         return ret
 
     def get_digest(self, message_bytes):
-        m = md5.new()
+        m = hashlib.md5()
         m.update(message_bytes)
         return m.digest
 
@@ -127,8 +128,8 @@ class SocketServer(Looper):
         Looper.__init__(self)
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
-            self.server = socket.socket()
-            self.server.bind(('localhost'), 3824))
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server.bind(('localhost', 38240))
             self.server.listen(9)
 
             self.clients = []

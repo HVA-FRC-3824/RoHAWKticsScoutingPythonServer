@@ -37,9 +37,9 @@ class FirebaseCom:
     EVENT_ID = ""
     shared_state = {}
 
-    def __init__(self, event_id=EVENT_ID):
+    def __init__(self, event_id=None):
         self.__dict__ = self.shared_state
-        if event_id != self.EVENT_ID:
+        if event_id is not None and event_id != self.EVENT_ID:
             self.matches = []
             self.teams = []
             self.event_id = self.EVENT_ID = event_id

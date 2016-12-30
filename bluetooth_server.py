@@ -1,6 +1,7 @@
-# import serial
-import md5
+import hashlib
 import logging
+import time
+import select
 from bluetooth import *
 
 from message_handler import MessageHandler
@@ -14,6 +15,7 @@ class BluetoothClient(Looper):
     HEADER_LSB = 0x55
     RECEIVING = 0
     SENDING = 1
+
     def __init__(self, conn, message_handler):
         Looper.__init__(self)
         self.state = self.RECEIVING
@@ -91,8 +93,8 @@ class BluetoothClient(Looper):
                     else:
                         logger.error("Written message digest does not match")
                         return False
-        except serial.SerialTimeoutException:
             logger.error("SerialTimeoutExcpetion on write")
+        except:
             return False
 
     def bytearray_to_int(self, b):
@@ -107,7 +109,7 @@ class BluetoothClient(Looper):
         return ret
 
     def get_digest(self, message_bytes):
-        m = md5.new()
+        m = hashlib.md5()
         m.update(message_bytes)
         return m.digest
 
