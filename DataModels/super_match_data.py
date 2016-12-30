@@ -1,9 +1,10 @@
 from .data_model import DataModel
 
 
-class SMD(DataModel):
+class SuperMatchData(DataModel):
     def __init__(self, **kwargs):
         self.match_number = -1
+        self.scout_name = ""
 
         self.blue_speed = []
         self.red_speed = []

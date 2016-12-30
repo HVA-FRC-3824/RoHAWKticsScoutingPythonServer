@@ -1,13 +1,14 @@
 from .data_model import DataModel
 
 
-class TPD(DataModel):
+class TeamPitData(DataModel):
     def __init__(self, **kwargs):
         self.team_number = -1
+        self.scout_name = ""
 
-        self.pit_scouted = False
-        self.robot_image_filepath = ""
-        self.robot_image_url = ""
+        self.robot_image_default = -1
+        self.robot_image_filepaths = []
+        self.robot_image_urls = []
 
         self.weight = 0.0
         self.width = 0.0

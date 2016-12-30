@@ -35,29 +35,69 @@ class MessageHandler:
         self.plock.release()
 
     def handle_match(self, message):
-        logger.d("Received Match Data")
+        logger.info("Received Match Data")
         matches = json.loads(message)
-        for tmd in matches:
-            if not self.firebase.update_tmd(tmd):
-                logger.e("Error with updating tmd")
+        if isinstance(matches, dict):
+            try:
+                self.firebase.update_team_match_data(matches)
+            except:
+                logger.error("Error with updating tmd")
+        elif isinstance(matches, list):
+            for tmd in matches:
+                try:
+                    self.firebase.update_team_match_data(tmd)
+                except:
+                    logger.error("Error with updating tmd")
+        else:
+            logger.error("message is not a dict or list")
 
     def handle_super(self, message):
-        logger.d("Received Super Data")
+        logger.info("Received Super Data")
         matches = json.loads(message)
-        for smd in matches:
-            if not self.firebase.update_smd(smd):
-                logger.e("Error with updating smd")
+        if isinstance(matches, dict):
+            try:
+                self.firebase.update_super_match_data(matches)
+            except:
+                logger.error("Error with updating smd")
+        elif isinstance(matches, list):
+            for smd in matches:
+                try:
+                    self.firebase.update_super_match_data(smd)
+                except:
+                    logger.error("Error with updating smd")
+        else:
+            logger.error("message is not a dict or list")
 
     def handle_dt_feedback(self, message):
-        logger.d("Received Drive Team Feedback")
+        logger.info("Received Drive Team Feedback")
         matches = json.loads(message)
-        for tdtf in matches:
-            if not self.firebase.update_tdtf(tdtf):
-                logger.e("Error with updating tdtf")
+        if isinstance(matches, dict):
+            try:
+                self.firebase.update_team_dt_feedback(matches)
+            except:
+                logger.error("Error with updating tdtf")
+        elif isinstance(matches, list):
+            for tdtf in matches:
+                try:
+                    self.firebase.update_team_dt_feedback(tdtf)
+                except:
+                    logger.error("Error with updating tdtf")
+        else:
+            logger.error("message is not a dict or list")
 
     def handle_pit(self, message):
-        logger.d("Received Pit Data")
+        logger.info("Received Pit Data")
         pits = json.loads(message)
-        for tpd in pits:
-            if not self.firebase.update_tpd(tpd):
-                logger.e("Error with updating tpd")
+        if isinstance(pits, dict):
+            try:
+                self.firebase.update_team_pit_data(pits)
+            except:
+                logger.error("Error with updating tpd")
+        elif isinstance(pits, list):
+            for tpd in pits:
+                try:
+                    self.firebase.update_team_pit_data(tpd)
+                except:
+                    logger.error("Error with updating tpd")
+        else:
+            logger.error("message is not a dict or list")

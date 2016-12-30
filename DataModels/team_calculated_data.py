@@ -2,8 +2,9 @@ from .data_model import DataModel
 from .low_level_stats import LowLevelStats
 
 
-class TCD(DataModel):
+class TeamCalculatedData(DataModel):
     def __init__(self, **kwargs):
+        self.team_number = -1
         # Autonomous
 
         # Teleop

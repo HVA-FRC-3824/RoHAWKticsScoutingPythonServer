@@ -13,11 +13,11 @@ from socket_server import SocketServer
 
 from DataModels.match import Match
 from DataModels.alliance import Alliance
-from DataModels.tid import TID
-from DataModels.tpd import TPD
-from DataModels.trd import TRD
-from DataModels.tpa import TPA
-from DataModels.tcd import TCD
+from DataModels.team_logistics import TeamLogistics
+from DataModels.team_pit_data import TeamPitData
+from DataModels.team_ranking_data import TeamRankingData
+from DataModels.team_pick_ability import TeamPickAbility
+from DataModels.team_calculated_data import TeamCalculatedData
 from DataModels.low_level_stats import LowLevelStats
 
 from Calculators.team_calculation import TeamCalculation
@@ -97,22 +97,22 @@ class Server:
 
     def set_teams(self, event_teams, team_matches):
         for tba_team in event_teams:
-            info = TID()
+            info = TeamLogistics()
             info.team_number = tba_team['team_number']
             info.nickname = tba_team['nickname']
             info.matches = team_matches[info.team_number]
-            self.firebase.update_tid(info)
+            self.firebase.update_team_logistics(info)
 
-            pit = TPD()
+            pit = TeamPitData()
             pit.team_number = info.team_number
-            self.firebase.update_tpd(pit)
+            self.firebase.update_team_pit_data(pit)
 
-            pick = TPA()
+            pick = TeamPickAbility()
             pick.team_number = info.team_number
             pick.nickname = info.nickname
-            self.firebase.update_first_tpa(pick)
-            self.firebase.update_second_tpa(pick)
-            self.firebase.update_third_tpa(pick)
+            self.firebase.update_first_team_pick_ability(pick)
+            self.firebase.update_second_team_pick_ability(pick)
+            self.firebase.update_third_team_pick_ability(pick)
             logger.info("Team {0:d} added".format(info.team_number))
 
     def set_rankings(self, event_rankings):
@@ -122,7 +122,7 @@ class Server:
                 first = False
                 continue
             tba_ranking_list = list(tba_ranking)
-            ranking = TRD()
+            ranking = TeamRankingData()
             ranking.team_number = int(tba_ranking_list[1])
             ranking.rank = int(tba_ranking_list[0])
             ranking.RPs = int(float(tba_ranking_list[2]))
@@ -131,7 +131,7 @@ class Server:
             ranking.ties = int(win_tie_lose[2])
             ranking.loses = int(win_tie_lose[1])
             ranking.played = int(tba_ranking_list[8])
-            self.firebase.update_current_trd(ranking)
+            self.firebase.update_current_team_ranking_data(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
     def run(self):
@@ -191,7 +191,7 @@ class Server:
     def make_team_calculations(self):
         # make low level calculations
         list_dict = {}
-        for tmd in self.firebase.get_tmds().values():
+        for tmd in self.firebase.get_all_team_match_data().values():
             if tmd.team_number not in list_dict:
                 list_dict[tmd.team_number] = {}
             for key in tmd.__dict__.keys():
@@ -210,17 +210,17 @@ class Server:
                     list_dict[tmd.team_number][key] = []
                 list_dict[tmd.team_number][key].append(tmd.__dict__[key])
         for team_number, lists in iter(list_dict.items()):
-            tcd = TCD()
+            tcd = TeamCalculatedData()
             tcd.team_number = team_number
             for key, l in iter(lists.items()):
                 if key in tcd.__dict__ and isinstance(tcd.__dict__[key], LowLevelStats):
                     tcd.__dict__[key] = LowLevelStats().from_list(l)
-            self.firebase.update_tcd(tcd)
+            self.firebase.update_team_calculated_data(tcd)
             logger.info("Updated Low Level Calculations for Team {0:d}".format(team_number))
         # high level calculations
 
     def make_super_calculations(self):
-        for smd in self.firebase.get_smds():
+        for smd in self.firebase.get_all_super_match_data():
             pass
 
     def make_ranking_calculations(self):
@@ -269,7 +269,7 @@ class Server:
             index += 1
             if index > 0 and team.predicted_ranking.RPs != teams[index - 1].predicted_ranking.RPs:
                 rank = index + 1
-            self.firebase.update_predicted_trd(team.predicted_ranking)
+            self.firebase.update_predicted_team_ranking_data(team.predicted_ranking)
             logger.info("Updated predicted ranking for {0:d} on Firebase".format(team.team_number))
 
     def make_pick_list_calculations(self):
@@ -285,7 +285,7 @@ class Server:
             team.first_pick.top_line = "PA: {0:f}".format(team.first_pick.pick_ability)
             team.first_pick.second_line = "".format()
             team.first_pick.third_line = "".format()
-            self.firebase.update_first_tpa(team.first_pick)
+            self.firebase.update_first_team_pick_ability(team.first_pick)
             logger.info("Updated first pick info for {0:d} on Firebase".format(team.team_number))
 
             # Second Pick
@@ -297,7 +297,7 @@ class Server:
             team.second_pick.top_line = "PA: {0:f}".format(team.second_pick.pick_ability)
             team.second_pick.second_line = "".format()
             team.second_pick.third_line = "".format()
-            self.firebase.update_second_tpa(team.second_pick)
+            self.firebase.update_second_team_pick_ability(team.second_pick)
             logger.info("Updated second pick info for {0:d} on Firebase".format(team.team_number))
 
             # Third Pick
@@ -309,7 +309,7 @@ class Server:
             team.third_pick.top_line = "PA: {0:f}".format(team.third_pick.pick_ability)
             team.third_pick.second_line = "".format()
             team.third_pick.third_line = "".format()
-            self.firebase.update_third_tpa(team.third_pick)
+            self.firebase.update_third_team_pick_ability(team.third_pick)
             logger.info("Updated third pick info for {0:d} on Firebase".format(team.team_number))
 
 

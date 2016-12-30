@@ -1,7 +1,7 @@
 from .data_model import DataModel
 
 
-class TMD(DataModel):
+class TeamMatchData(DataModel):
     def __init__(self, **kwargs):
         self.team_number = -1
         self.match_number = -1
