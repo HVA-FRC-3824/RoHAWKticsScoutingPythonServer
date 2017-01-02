@@ -440,4 +440,4 @@ class FirebaseCom:
                     f.close()
                     break
             except:
-                logger.e("Error with caching firebase")
+                logger.error("Error with caching firebase")

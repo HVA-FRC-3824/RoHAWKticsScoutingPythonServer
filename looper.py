@@ -42,11 +42,14 @@ class Looper:
         self.running = True
         self.on_pstart()
         while self.running:
-            message = pipe.recv()
-            if message == "stop":
-                self.stop()
+            if pipe.poll():
+                message = pipe.recv()
+                if message == "stop":
+                    self.stop()
+                else:
+                    self.on_ploop(message)
             else:
-                self.on_ploop(message)
+                self.on_ploop()
 
     def on_tstart(self):
         pass

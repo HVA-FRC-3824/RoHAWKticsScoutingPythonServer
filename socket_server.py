@@ -138,8 +138,8 @@ class SocketServer(Looper):
     # Singleton
     shared_state = {}
 
-    ANDROID_VENDOR_IDS = ["18d1"]
-    ANDROID_PRODUCT_IDS = ["4ee2"]
+    ANDROID_VENDOR_IDS = ["0x18d1"]
+    ANDROID_PRODUCT_IDS = ["0x4ee2"]
 
     def __init__(self):
         self.__dict__ = self.shared_state
@@ -180,21 +180,23 @@ class SocketServer(Looper):
                              "tcp:{0:d}".format(self.port)])
 
     def on_pstart(self):
+        logger.info("hotplug process started")
         self.context = usb1.USBContext().__enter__()
         self.context.hotplugRegisterCallback(self.hotplug_callback)
 
-    def on_ploop(self, message):
+    def on_ploop(self, message=""):
         self.context.handleEvents()
 
     def hotplug_callback(self, context, device, event):
-        logger.info("Hotplug")
         if event == usb1.HOTPLUG_EVENT_DEVICE_ARRIVED:
-            logger.info("Devices {}:{} plugged in".format(device.device_descriptor.idVendor,
-                                                          device.device_descriptor.idProduct))
-            if(device.device_descriptor.idVendor in self.ANDROID_VENDOR_IDS and
-               device.device_dscriptor.idProduct in self.ANDROID_PRODUCT_IDS):
-                logger.info("Reverse port forwarding on {}".format(device.device_descriptor.iSerialNumber))
-                subprocess.call([self.adb, "-s", device.device_descriptor.iSerialNumber, "reverse",
+            logger.info("Devices {0:s}:{1:s} plugged in".format(hex(device.getVendorID()),
+                                                                hex(device.getProductID())))
+            if(hex(device.getVendorID()) in self.ANDROID_VENDOR_IDS and
+               hex(device.getProductID()) in self.ANDROID_PRODUCT_IDS):
+                logger.info("Reverse port forwarding on {0:s}".format(device.getSerialNumber()))
+                # Delay so adb can find the device
+                time.sleep(1)
+                subprocess.call([self.adb, "-s", device.getSerialNumber(), "reverse",
                                  "tcp:{0:d}".format(self.port), "tcp:{0:d}".format(self.port)])
 
     def start(self):
