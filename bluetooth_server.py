@@ -2,7 +2,8 @@ import hashlib
 import logging
 import time
 import select
-from bluetooth import BluetoothSocket, RF_COMM, discover_devices, PORT_ANY
+from bluetooth.bluez import BluetoothSocket, discover_devices
+from bluetooth.btcommon import *  # RFCOMM, PORT_ANY
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -17,19 +18,23 @@ class BluetoothClient(Looper):
     RECEIVING = 0
     SENDING = 1
 
-    def __init__(self, conn, message_handler):
+    def __init__(self, conn, address, message_handler):
         Looper.__init__(self)
         self.state = self.RECEIVING
+        self.address = address
         self.bluetooth = conn
         self.message_handler = message_handler
 
     def start(self):
         self.tstart()
 
+    def on_tstart(self):
+        logger.info("BTC {} thread started".format(self.address))
+
     def on_tloop(self):
-        socket_list = [self.bluetooth]
+        socket_list = [self.bluetooth._sock]
         read_list, write_list, error_list = select.select(socket_list, [], [])
-        if self.bluetooth in read_list and self.state == self.RECEIVING:
+        if self.bluetooth._sock in read_list and self.state == self.RECEIVING:
             waiting_for_header = True
             header_bytes = bytearray([0]*22)
             digest = bytearray([0]*16)
@@ -37,11 +42,16 @@ class BluetoothClient(Looper):
 
             while self.running:
                 if waiting_for_header:
-                    header = self.bluetooth.recv(1)
-                    if len(header) == 0:
-                        # closing hack
+                    try:
+                        header = self.bluetooth.recv(1)
+                        if len(header) == 0:
+                            # closing hack
+                            self.running = False
+                            return
+                    except BluetoothError as e:
                         self.running = False
                         return
+
                     header_bytes[header_index] = header[0]
                     header_index += 1
 
@@ -56,7 +66,8 @@ class BluetoothClient(Looper):
                 else:
                     buf = self.bluetooth.recv(total_size)
                     if self.digest_match(self.get_digest(buf), digest):
-                        self.bluetooth.write(digest)
+                        self.bluetooth.send(bytes(digest))
+                        logger.info("Received message: {0:s}".format(buf.decode()))
                         reply = self.message_handler.handle_message(buf.decode())
                         if reply is not None:
                             self.write(reply)
@@ -64,22 +75,23 @@ class BluetoothClient(Looper):
                     else:
                         logger.error("Received message digest does not match")
         read_list, write_list, error_list = select.select(socket_list, [], [])
-        while self.bluetooth in read_list and self.state != self.RECEIVING and self.running:
+        while self.bluetooth._sock in read_list and self.state != self.RECEIVING and self.running:
             time.sleep(0.1)
             read_list, write_list, error_list = select.select(socket_list, [], [])
 
     def write(self, message):
+        logger.info("BTC writing {}".format(message))
         try:
-            self.bluetooth.write(self.HEADER_MSB)
-            self.bluetooth.write(self.HEADER_LSB)
+            self.bluetooth.send(self.HEADER_MSB)
+            self.bluetooth.send(self.HEADER_LSB)
 
             message_len = self.int_to_bytearray(len(message))
             self.write(message_len)
 
             message_bytes = bytearray(message)
 
-            self.write(message_bytes)
-            self.flush()
+            self.bluetooth.send(message_bytes)
+            self.bluetooth.flush()
             digest = self.get_digest(message_bytes)
 
             incoming_digest = [0]*16
@@ -133,17 +145,17 @@ class BluetoothServer(Looper):
     shared_state = {}
 
     def __init__(self):
-        Looper.__init__(self)
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
+            Looper.__init__(self)
             nearby_devices = discover_devices(lookup_names=True)
             for addr, name in nearby_devices:
-                print("  %s - %s" % (addr, name))
+                logger.info("BT: %s - %s" % (addr, name))
 
-            self.bluetooth = BluetoothSocket(RF_COMM)
-            self.bluetooth.bind(("", PORT_ANY))
+            self.bluetooth = BluetoothSocket()  # defaults to RF_COMM
+            self.bluetooth.bind(("", 0))  # PORT_ANY = 0
             self.bluetooth.listen(9)
-
+            self.bluetooth.settimeout(5)
             self.clients = []
 
             self.message_handler = MessageHandler()
@@ -152,9 +164,17 @@ class BluetoothServer(Looper):
     def start(self):
         self.tstart()
 
+    def on_tstart(self):
+        logger.info("Bluetooth accept thread started")
+
     def on_tloop(self):
-        (conn, address) = self.bluetooth.accept()
-        self.clients.append(BluetoothClient(conn, self.message_handler))
+        try:
+            (conn, address) = self.bluetooth.accept()
+            logger.info("New connection accepted: {}".format(address))
+            self.clients.append(BluetoothClient(conn, address, self.message_handler))
+            self.clients[-1].start()
+        except Exception as e:
+            pass
 
     def stop(self):
         for client in self.clients:
