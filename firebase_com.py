@@ -2,7 +2,6 @@ import json
 import datetime
 from firebase import firebase as fb
 import utils
-import os
 
 from threading import Lock as TLock
 from multiprocessing import Lock as PLock
@@ -89,7 +88,7 @@ class FirebaseCom:
             self.plock.release()
             if not success:
                 logger.error("Error updating tmd with match number{0:d} and team number {1:d}"
-                         .format(tmd['match_number'], tmd['team_number']))
+                             .format(tmd['match_number'], tmd['team_number']))
                 raise Exception("Error updating tmd with match {0:d} and team number {1:d}"
                                 .format(tmd['match_number'], tmd['team_number']))
         else:
@@ -203,9 +202,9 @@ class FirebaseCom:
     def update_team_logistics(self, tl):
         # update the logistics information about a specific team (nickname, match numbers, etc)
         ref = "{0:s}/info".format(self.base_ref)
-        if isinstance(tid, TeamLogistics):
+        if isinstance(tl, TeamLogistics):
             self.update_team_logistics(tl.to_dict())
-        elif isinstance(tid, dict):
+        elif isinstance(tl, dict):
             self.tlock.acquire()
             self.plock.acquire()
             success = firebase.put(ref, "{0:d}".format(tl['team_number']), tl)
@@ -234,7 +233,7 @@ class FirebaseCom:
         elif isinstance(tcd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            return firebase.put(ref, "{0:d}".format(tcd['team_number']), tcd)
+            success = firebase.put(ref, "{0:d}".format(tcd['team_number']), tcd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -415,7 +414,7 @@ class FirebaseCom:
         team.third_pick = self.get_third_team_pick_ability(team_number)
         for match_number in team.info.matches:
             team.completed_matches[match_number] = self.get_team_match_data(team_number=team_number,
-                                                                match_number=match_number)
+                                                                            match_number=match_number)
 
     def get_team_numbers(self):
         ref = "{0:s}/info".format(self.base_ref)

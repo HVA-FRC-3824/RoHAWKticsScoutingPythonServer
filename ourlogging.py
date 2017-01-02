@@ -2,7 +2,6 @@ import logging
 import logging.handlers
 import os
 import sys
-import re
 from colors import color
 
 
@@ -12,8 +11,6 @@ class GroupWriteRotatingFileHandler(logging.handlers.RotatingFileHandler):
         rtv = logging.handlers.RotatingFileHandler._open(self)
         os.umask(prevumask)
         return rtv
-
-re_color_codes = re.compile(r'\033\[(\d;)?\d+m')
 
 
 class AnsiColorFormatter(logging.Formatter):

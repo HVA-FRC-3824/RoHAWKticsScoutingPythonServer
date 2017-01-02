@@ -189,7 +189,8 @@ class SocketServer(Looper):
     def hotplug_callback(self, context, device, event):
         logger.info("Hotplug")
         if event == usb1.HOTPLUG_EVENT_DEVICE_ARRIVED:
-            logger.info("Devices {}:{} plugged in".format(device.device_descriptor.idVendor, device.device_descriptor.idProduct))
+            logger.info("Devices {}:{} plugged in".format(device.device_descriptor.idVendor,
+                                                          device.device_descriptor.idProduct))
             if(device.device_descriptor.idVendor in self.ANDROID_VENDOR_IDS and
                device.device_dscriptor.idProduct in self.ANDROID_PRODUCT_IDS):
                 logger.info("Reverse port forwarding on {}".format(device.device_descriptor.iSerialNumber))

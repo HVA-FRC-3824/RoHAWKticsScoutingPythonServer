@@ -2,13 +2,14 @@ import hashlib
 import logging
 import time
 import select
-from bluetooth import *
+from bluetooth import BluetoothSocket, RF_COMM, discover_devices, PORT_ANY
 
 from message_handler import MessageHandler
 from looper import Looper
 from ourlogging import setup_logging
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
+
 
 class BluetoothClient(Looper):
     HEADER_MSB = 0x10

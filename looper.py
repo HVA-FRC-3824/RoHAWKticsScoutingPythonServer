@@ -1,5 +1,5 @@
 from multiprocessing import Process, Pipe, Lock as PLock
-from threading import Thread, Lock as TLock
+from threading import Event, Thread, Lock as TLock
 import time
 
 
@@ -34,7 +34,7 @@ class Looper:
             end_time = time.time()
             delta_time = end_time - start_time
             if self.loop_time - delta_time > 0 and self.running:
-                self.event = threading.Event()
+                self.event = Event()
                 self.event.wait(timeout=self.loop_time - delta_time)
                 self.event = None
 
