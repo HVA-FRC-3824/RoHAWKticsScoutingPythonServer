@@ -9,7 +9,7 @@ This is the server to be run at competition for the scouting tablets. It can rec
 If using the socket server the adb server must be start with sudo in order to recognise the android devices.
 ```
   sudo ./adb start-server
-  python3 server.py -c config.json
+  sudo python3 server.py -c config.json
 ```
 
 # Config
