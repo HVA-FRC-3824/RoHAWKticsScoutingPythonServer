@@ -159,7 +159,7 @@ class SocketServer(Looper):
             self.instance = True
 
     def setup_adb_bridge(self):
-        self.adb = "adb-arm/adb"
+        self.adb = "./adb"
         dir = os.path.dirname(__file__)
         if not os.path.exists(os.path.join(dir, self.adb)):
             logger.error("adb is not compiled")
@@ -171,24 +171,28 @@ class SocketServer(Looper):
         for line in devices_text.split('\n'):
             matches = pattern.match(line)
             if matches is not None:
-                logger.info("Found android device: {}".matches.group(matches.lastindex))
+                logger.info("Found android device: {}".format(matches.group(matches.lastindex)))
                 devices.append(matches.group(matches.lastindex))
 
         for device in devices:
+            logger.info("Reverse port forwarding {0:s}".format(device))
             subprocess.call([self.adb, "-s", device, "reverse", "tcp:{0:d}".format(self.port),
                              "tcp:{0:d}".format(self.port)])
 
     def on_pstart(self):
         self.context = usb1.USBContext().__enter__()
-        self.context.hotplayRegisterCallback(self.hotplug_callback)
+        self.context.hotplugRegisterCallback(self.hotplug_callback)
 
     def on_ploop(self, message):
         self.context.handleEvents()
 
     def hotplug_callback(self, context, device, event):
+        logger.info("Hotplug")
         if event == usb1.HOTPLUG_EVENT_DEVICE_ARRIVED:
+            logger.info("Devices {}:{} plugged in".format(device.device_descriptor.idVendor, device.device_descriptor.idProduct))
             if(device.device_descriptor.idVendor in self.ANDROID_VENDOR_IDS and
                device.device_dscriptor.idProduct in self.ANDROID_PRODUCT_IDS):
+                logger.info("Reverse port forwarding on {}".format(device.device_descriptor.iSerialNumber))
                 subprocess.call([self.adb, "-s", device.device_descriptor.iSerialNumber, "reverse",
                                  "tcp:{0:d}".format(self.port), "tcp:{0:d}".format(self.port)])
 
