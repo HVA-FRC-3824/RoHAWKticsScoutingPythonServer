@@ -6,5 +6,6 @@ class TeamLogistics(DataModel):
         self.team_number = -1
         self.nickname = ""
         self.matches = []
+        self.surrogate_match_number = -1
 
         self.__dict__.update(kwargs)

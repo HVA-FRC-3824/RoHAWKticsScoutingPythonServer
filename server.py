@@ -6,6 +6,7 @@ import signal
 import sys
 import json
 import threading
+import scipy.stats as stats
 
 from looper import Looper
 
@@ -105,12 +106,14 @@ class Server(Looper):
         return team_matches
 
     def set_teams(self, event_teams, team_matches):
+        team_logistics = []
+
         for tba_team in event_teams:
             info = TeamLogistics()
             info.team_number = tba_team['team_number']
             info.nickname = tba_team['nickname']
             info.matches = team_matches[info.team_number]
-            self.firebase.update_team_logistics(info)
+            team_logistics.append(info)
 
             pit = TeamPitData()
             pit.team_number = info.team_number
@@ -123,6 +126,16 @@ class Server(Looper):
             self.firebase.update_second_team_pick_ability(pick)
             self.firebase.update_third_team_pick_ability(pick)
             logger.info("Team {0:d} added".format(info.team_number))
+
+        min_matches = 100
+        for team in team_logistics:
+            if len(team.matches) < min_matches:
+                min_matches = len(team_matches)
+
+        for team in team_logistics:
+            if len(team.matches) > min_matches:
+                team.surrogate_match_number = team.matches[3]
+            self.firebase.update_team_logistics(info)
 
     def set_rankings(self, event_rankings):
         first = True
@@ -245,8 +258,59 @@ class Server(Looper):
         # high level calculations
 
     def make_super_calculations(self):
+        lists = {}
+        tcd = self.firebase.get_team_calculated_data(-1)
+        for key in tcd.__dict__.keys():
+            if 'zscore' in key:
+                lists[key[6:]] = {}
+
+        # get match rankings from super match data and put in lists for averaging
         for smd in self.firebase.get_all_super_match_data():
-            pass
+            for key, value in smd.__dict__.items():
+                if 'blue' in key:
+                    key = key[5:]
+                elif 'red' in key:
+                    key = key[4:]
+
+                if key in lists:
+                    for i, team_number in enumerate(value):
+                        if team_number not in lists[key]:
+                            lists[key][team_number] = []
+                        match_rank = 3 - i
+                        if match_rank == 3:
+                            match_rank = 4
+                        lists[key][team_number].append(match_rank)
+
+        zscore_components = {}
+        for key in lists:
+            zscore_components[key] = {}
+            zscore_components[key]['team_numbers'] = []
+            zscore_components[key]['averages'] = []
+            zscore_components[key]['zscore'] = []
+            zscore_components[key]['rank'] = []
+            for team_number in lists[key]:
+                average = 0.0
+                for value in lists[key][team_number]:
+                    average += value
+                zscore_components[key]['team_number'].append(team_number)
+                zscore_components[key]['averages'].append(average / len(list[key][team_number]))
+            zscore_components[key]['zscores'] = stats.zscore(zscore_components[key]['averages'])
+
+            # Create list for sorting
+            teams = []
+            for i in range(len(zscore_components[key]['team_number'])):
+                team = {}
+                team['team_number'] = zscore_components[key]['team_number'][i]
+                team['zscore'] = zscore_components[key]['zscores'][i]
+            # Make the zscore negative for sorting so larger numbers are at the beginning
+            teams = sorted(teams, key=lambda team: -team['zscore'])
+
+            # add calculations to firebase
+            for i, team in enumerate(teams):
+                firebase_team = self.firebase.get_team_calculated_data(team['team_number'])
+                firebase_team.__dict__["zscore_"+key] = team['zscore']
+                firebase_team.__dict__["rank_"+key] = i + 1
+                self.firebase.update_team_calculated_data(firebase_team)
 
     def make_ranking_calculations(self):
         # Current Rankings
@@ -267,7 +331,9 @@ class Server(Looper):
 
             for index in range(len(team.completed_matches), len(team.info.match_numbers)):
                 match = self.firebase.get_match(team.info.match_numbers[index])
-                print(match.match_number)
+                if match.match_number == team.info.surrogate_match_number:
+                    continue
+
                 if match.is_blue(team.team_number):
                     ac = AllianceCalculation(Alliance(*match.teams[0:2]))
                     opp = AllianceCalculation(Alliance(*match.teams[3:5]))
