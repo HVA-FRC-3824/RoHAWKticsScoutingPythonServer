@@ -172,7 +172,7 @@ class BluetoothServer(Looper):
             logger.info("New connection accepted: {}".format(address))
             self.clients.append(BluetoothClient(conn, address, self.message_handler))
             self.clients[-1].start()
-        except Exception as e:
+        except:
             pass
 
     def stop(self):
