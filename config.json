@@ -15,7 +15,7 @@
 	    "teleop_threshold": 10,
 	    "endgame_threshold": 10
 	},
-	"gmail_login": "../gmail_login.json",
+	"logins_file": "../logins.json",
 	"use_email": true,
 	"emails": [
 		"akmessing1@yahoo.com"

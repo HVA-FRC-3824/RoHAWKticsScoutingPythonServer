@@ -85,6 +85,9 @@ class ScouterAnalysis(Looper):
         matches = self.tba.get_event_matches()
         matches = sorted(matches, key=lambda match: int(match['match_number']))
         for tba_match in matches:
+            if tba_match['comp_level'] != "qm":
+                continue
+
             match_number = tba_match['match_number']
             logger.info("analyzing match {0:d}".format(match_number))
             # We have caught up to the current match
