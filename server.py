@@ -7,22 +7,25 @@ import sys
 import json
 import threading
 
+from looper import Looper
+
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
 from crash_reporter import CrashReporter
 from socket_server import SocketServer
+from scouter_analysis import ScouterAnalysis
 
-from DataModels.match import Match
-from DataModels.alliance import Alliance
-from DataModels.team_logistics import TeamLogistics
-from DataModels.team_pit_data import TeamPitData
-from DataModels.team_ranking_data import TeamRankingData
-from DataModels.team_pick_ability import TeamPickAbility
-from DataModels.team_calculated_data import TeamCalculatedData
-from DataModels.low_level_stats import LowLevelStats
+from data_models.match import Match
+from data_models.alliance import Alliance
+from data_models.team_logistics import TeamLogistics
+from data_models.team_pit_data import TeamPitData
+from data_models.team_ranking_data import TeamRankingData
+from data_models.team_pick_ability import TeamPickAbility
+from data_models.team_calculated_data import TeamCalculatedData
+from data_models.low_level_stats import LowLevelStats
 
-from Calculators.team_calculation import TeamCalculation
-from Calculators.alliance_calculation import AllianceCalculation
+from calculators.team_calculation import TeamCalculation
+from calculators.alliance_calculation import AllianceCalculation
 
 from ourlogging import setup_logging
 
@@ -30,11 +33,12 @@ setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
 
-class Server:
+class Server(Looper):
     DEFAULT_TIME_BETWEEN_CYCLES = 60 * 4  # 4 minutes
     DEFAULT_TIME_BETWEEN_CACHES = 60 * 60 * 1  # 1 hour
 
     def __init__(self, **kwargs):
+        Looper.__init__(self)
         event_key = kwargs.get('event_key', "")
         logger.info("Event Key: {0:s}".format(event_key))
         self.event_key = event_key
@@ -45,10 +49,12 @@ class Server:
         self.aggregate = kwargs.get('aggregate', False)
 
         if kwargs.get('crash_reporter', False):
-            self.crash_reporter = CrashReporter()
+            self.crash_reporter = CrashReporter(**kwargs)
 
         self.time_between_cycles = kwargs.get('time_between_cycles', self.DEFAULT_TIME_BETWEEN_CYCLES)
         self.time_between_caches = kwargs.get('time_between_caches', self.DEFAULT_TIME_BETWEEN_CACHES)
+
+        self.set_loop_time(self.time_between_cycles)
 
         if kwargs.get('bluetooth', False):
             from bluetooth_server import BluetoothServer
@@ -56,6 +62,9 @@ class Server:
 
         if kwargs.get('socket', False):
             self.socket = SocketServer()
+
+        if kwargs.get('scouter_analysis', False):
+            self.scouter_analysis = ScouterAnalysis(self.time_between_cycles, **kwargs)
 
         if kwargs.get('setup', False):
             logger.info("Setting up database...")
@@ -70,6 +79,9 @@ class Server:
             event_rankings = self.tba.get_event_rankings()
             self.set_rankings(event_rankings)
             logger.info("Added rankings to Firebase")
+
+    def start(self):
+        self.tstart()
 
     def set_matches(self, event_matches):
         team_matches = {}
@@ -131,13 +143,12 @@ class Server:
             self.firebase.update_current_team_ranking_data(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
-    def run(self):
-        self.stopped = False
-        iteration = 1
+    def on_tstart(self):
+        self.iteration = 1
 
         # initial run cache
         self.firebase.cache()
-        time_since_last_cache = 0
+        self.time_since_last_cache = 0
 
         if hasattr(self, 'bluetooth'):
             self.bluetooth.start()
@@ -145,50 +156,52 @@ class Server:
         if hasattr(self, 'socket'):
             self.socket.start()
 
-        while not self.stopped:
-            logger.info("Iteration {0:d}".format(iteration))
-            if self.time_between_caches < time_since_last_cache:
-                self.firebase.cache()
-                time_since_last_cache = 0
+        if hasattr(self, 'scouter_analysis'):
+            self.scouter_analysis.start()
 
-            start_time = time.time()
-            if self.aggregate:
-                try:
-                    self.make_team_calculations()
-                    self.make_super_calculations()
-                    self.make_ranking_calculations()
-                    self.make_pick_list_calculations()
-                except:
-                    if not self.stopped:
-                        logger.error("Crash")
-                        logger.error(traceback.format_exc())
-                        if hasattr(self, 'crash_reporter'):
-                            logger.error("Reporting crash")
-                            try:
-                                self.crash_reporter.report_server_crash(traceback.format_exc())
-                            # weird exception that doesn't stop the text
-                            except:
-                                pass
-            end_time = time.time()
-            time_taken = end_time - start_time
-            logger.info("Iteration Ended")
-            logger.info("Time taken: {0:f}s".format(time_taken))
-            if self.time_between_cycles - time_taken > 0:
-                self.event = threading.Event()
-                self.event.wait(timeout=self.time_between_cycles - time_taken)
-                self.event = None
-            time_since_last_cache += self.time_between_cycles
-            iteration += 1
-        sys.exit()
+    def on_tloop(self):
+        logger.info("Iteration {0:d}".format(self.iteration))
+        if self.time_between_caches < self.time_since_last_cache:
+            self.firebase.cache()
+            self.time_since_last_cache = 0
+
+        start_time = time.time()
+        if self.aggregate:
+            try:
+                self.make_team_calculations()
+                self.make_super_calculations()
+                self.make_ranking_calculations()
+                self.make_pick_list_calculations()
+            except:
+                if self.running:
+                    logger.error("Crash")
+                    logger.error(traceback.format_exc())
+                    if hasattr(self, 'crash_reporter'):
+                        logger.error("Reporting crash")
+                        try:
+                            self.crash_reporter.report_server_crash(traceback.format_exc())
+                        # weird exception that doesn't stop the text
+                        except:
+                            pass
+        end_time = time.time()
+        time_taken = end_time - start_time
+        logger.info("Iteration Ended")
+        logger.info("Time taken: {0:f}s".format(time_taken))
+        if self.time_between_cycles - time_taken > 0:
+            self.event = threading.Event()
+            self.event.wait(timeout=self.time_between_cycles - time_taken)
+            self.event = None
+        self.time_since_last_cache += self.time_between_cycles
+        self.iteration += 1
 
     def stop(self):
-        self.stopped = True
-        if self.event is not None:
-            self.event.set()
         if hasattr(self, 'bluetooth'):
             self.bluetooth.stop()
         if hasattr(self, 'socket'):
             self.socket.stop()
+        if hasattr(self, 'scouter_analysis'):
+            self.scouter_analysis.stop()
+        Looper.stop(self)
 
     def make_team_calculations(self):
         # make low level calculations
@@ -332,4 +345,4 @@ if __name__ == "__main__":
         server.stop()
         sys.exit()
     signal.signal(signal.SIGINT, signal_handler)
-    server.run()
+    server.start()

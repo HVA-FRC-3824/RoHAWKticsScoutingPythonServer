@@ -1,7 +1,7 @@
-from DataModels.alliance import Alliance
-from DataModels.match import Match
+from data_models.alliance import Alliance
+from data_models.match import Match
 
-from .alliance_calculation import AllianceCalculation
+from calculators.alliance_calculation import AllianceCalculation
 
 from constants import Constants
 

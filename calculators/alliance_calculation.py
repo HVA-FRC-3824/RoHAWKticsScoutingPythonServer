@@ -1,6 +1,6 @@
 import scipy.stats as stats
 
-from DataModels.alliance import Alliance
+from data_models.alliance import Alliance
 
 
 class AllianceCalculation:

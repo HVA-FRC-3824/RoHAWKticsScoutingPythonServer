@@ -12,11 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 class TheBlueAlliance:
-    def __init__(self, event_id):
-        self.event_id = event_id
-        self.basic_url = "http://www.thebluealliance.com/api/v2"
-        self.header_key = "X-TBA-App-Id"
-        self.header_value = "frc3824:scouting-system:v1"
+    shared_state = {}
+
+    def __init__(self, event_id=None):
+        self.__dict__ = self.shared_state
+        if event_id is not None:
+            self.event_id = event_id
+        if not hasattr(self, 'instance'):
+            self.basic_url = "http://www.thebluealliance.com/api/v2"
+            self.header_key = "X-TBA-App-Id"
+            self.header_value = "frc3824:scouting-system:v1"
+            self.instance = True
 
     def make_request(self, url):
         return utils.make_ascii_from_json(requests.get(url, headers={self.header_key: self.header_value}).json())

@@ -6,16 +6,17 @@ import utils
 from threading import Lock as TLock
 from multiprocessing import Lock as PLock
 
-from DataModels.match import Match
-from DataModels.team import Team
-from DataModels.team_logistics import TeamLogistics
-from DataModels.team_pit_data import TeamPitData
-from DataModels.team_match_data import TeamMatchData
-from DataModels.super_match_data import SuperMatchData
-from DataModels.team_dt_feedback import TeamDTFeedback
-from DataModels.team_pick_ability import TeamPickAbility
-from DataModels.team_ranking_data import TeamRankingData
-from DataModels.team_calculated_data import TeamCalculatedData
+from data_models.match import Match
+from data_models.team import Team
+from data_models.team_logistics import TeamLogistics
+from data_models.team_pit_data import TeamPitData
+from data_models.team_match_data import TeamMatchData
+from data_models.super_match_data import SuperMatchData
+from data_models.team_dt_feedback import TeamDTFeedback
+from data_models.team_pick_ability import TeamPickAbility
+from data_models.team_ranking_data import TeamRankingData
+from data_models.team_calculated_data import TeamCalculatedData
+from data_models.scout_accuracy import ScoutAccuracy
 
 import logging
 from ourlogging import setup_logging
@@ -23,12 +24,8 @@ setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
 
-# TODO: add authentication
-
 (secret, url) = ('TSkriBv7Z81MpfvsUM332f4HmtoAOjSUiN5xRLAb',
                  'https://rohawktics-scouting-2017.firebaseio.com/')
-
-# auth = fb.FirebaseAuthentication(secret, "", True, True)
 
 firebase = fb.FirebaseApplication(url)
 
@@ -422,10 +419,41 @@ class FirebaseCom:
         return [int(k) for k in info_dict.keys()]
 
     def get_teams(self):
-        teams = []
-        for team_number in self.get_team_numbers():
-            teams.append(self.get_team(team_number))
-        return teams
+        return [self.get_team(x) for x in self.get_team_numbers()]
+
+    def update_scout_accuracy(self, scout):
+        # update the data for scouter accuracy
+        ref = "{0:s}/scout_accuracy".format(self.base_ref)
+        if isinstance(scout, ScoutAccuracy):
+            self.update_scout_accuracy(scout.to_dict())
+        elif isinstance(scout, dict):
+            self.tlock.acquire()
+            self.plock.acquire()
+            print(scout['name'])
+            success = firebase.put(ref, scout['name'], scout)
+            self.tlock.release()
+            self.plock.release()
+            if not success:
+                logger.error("Error updating scout analysis for {0:s}".format(scout['name']))
+                raise Exception("Error updating scout analysis for {0:s}".format(scout['name']))
+        else:
+            logger.error("scout_analysis variable is not a ScoutAccuracy or dict")
+            raise Exception("scout_analysis variable is not a Scout Accuracy or dict")
+
+    def get_scout_accuracy(self, scout_name):
+        # get the data for scouter accuracy
+        ref = "{0:s}/scout_accuracy/{1:s}".format(self.base_ref, scout_name)
+        response = self.get_python_object_from_firebase_location(ref)
+        if response is None:
+            return ScoutAccuracy(name=scout_name)
+        return ScoutAccuracy(**response)
+
+    def get_all_scout_accuracy(self):
+        ref = "{0:s}/scout_accuracy".format(self.base_ref)
+        scout_dict = self.get_python_object_from_firebase_location(ref)
+        if scout_dict is None:
+            return []
+        return [ScoutAccuracy(**x) for x in scout_dict.values()]
 
     def get_python_object_from_firebase_location(self, location):
         return utils.make_ascii_from_json(firebase.get(location, None))
@@ -435,7 +463,7 @@ class FirebaseCom:
             try:
                 data = json.dumps(firebase.get("/", None), indent=4)
                 now = str(datetime.datetime.now())
-                with open("./CachedFirebases/" + now + '.json', 'w') as f:
+                with open("./cached_firebases/" + now + '.json', 'w') as f:
                     f.write(data)
                     f.close()
                     break

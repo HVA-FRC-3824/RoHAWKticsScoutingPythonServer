@@ -15,7 +15,8 @@ class CrashReporter:
         if not hasattr(self, 'instance'):
             self.use_email = kwargs.get('use_email', True)
             self.emails = kwargs.get('emails', ['akmessing1@yahoo.com'])
-            with open(('/').join(os.path.abspath(__file__).split('/')[:-1])+"/../server.json") as f:
+            with open(os.path.dirname(__file__) +
+                      kwargs.get('gmail_login', "../gmail_login.json")) as f:
                 json_dict = json.loads(f.read())
             self.gmail_user = json_dict['gmail_user']
             self.gmail_password = json_dict['gmail_password']

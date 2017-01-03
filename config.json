@@ -1,11 +1,27 @@
 {
-  "event_key" : "2016cars",
-  "socket": true,
-  "bluetooth": false,
-  "setup": false,
-  "log_level": "debug",
-  "time_between_cycles": 600,
-  "time_between_caches": 3600,
-  "report_crash": true,
-  "aggregate": false
+	"event_key" : "2016cars",
+    "socket": false,
+    "bluetooth": false,
+    "setup": false,
+    "log_level": "debug",
+    "time_between_cycles": 600,
+    "time_between_caches": 3600,
+    "report_crash": true,
+    "aggregate": false,
+    "scouter_analysis": true,
+    "scouter_analysis_config": {
+		"total_threshold": 10,
+	    "auto_threshold": 10,
+	    "teleop_threshold": 10,
+	    "endgame_threshold": 10
+	},
+	"gmail_login": "../gmail_login.json",
+	"use_email": true,
+	"emails": [
+		"akmessing1@yahoo.com"
+	],
+	"use_texting": true,
+	"mobiles": [
+		"8659631368"
+	]
 }

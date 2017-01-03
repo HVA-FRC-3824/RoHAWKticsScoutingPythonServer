@@ -3,7 +3,6 @@ import logging
 import time
 import select
 from bluetooth.bluez import BluetoothSocket, discover_devices
-from bluetooth.btcommon import *  # RFCOMM, PORT_ANY
 
 from message_handler import MessageHandler
 from looper import Looper
@@ -48,7 +47,7 @@ class BluetoothClient(Looper):
                             # closing hack
                             self.running = False
                             return
-                    except BluetoothError as e:
+                    except:
                         self.running = False
                         return
 
