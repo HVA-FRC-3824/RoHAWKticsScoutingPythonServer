@@ -14,11 +14,33 @@ If using the socket server the adb server must be start with sudo in order to re
 
 # Config
 event_key - Event key used by The Blue Alliance. Must also use for the tablets.
+
 socket - whether the socket server should be running
+
 bluetooth - whether the bluetooth server should be running
+
 setup - whether the database should be setup for a new event (must be run the first time for a new event)
+
 log_level - what level of logging is printed to the screen
+
 time_between_cycles - if a cycle finishes faster than this time then the server will wait before starting a new cycle
+
 time_between_caches - time between backing up firebase
+
 report_crash - if on then emails and texts will be sent if a crash happens
+
 aggregate - whether the server should run calculation on the data
+
+scouter_analysis - whether the server should compare scouter's records to the blue alliance
+
+scouter_analysis_config - thresholds for errors
+
+logins_file - location for the file with various logins (currently gmail/twilio)
+
+use_email - whether emails can be sent for crashes
+
+emails - list of emails to send messages to
+
+use_texting - whether texts can be sent for crashes
+
+mobiles = lists of phone numbers to send messages to
