@@ -43,4 +43,4 @@ emails - list of emails to send messages to
 
 use_texting - whether texts can be sent for crashes
 
-mobiles = lists of phone numbers to send messages to
+mobiles - lists of phone numbers to send messages to
