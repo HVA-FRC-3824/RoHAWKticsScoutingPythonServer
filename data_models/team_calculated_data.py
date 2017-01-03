@@ -5,11 +5,17 @@ from .low_level_stats import LowLevelStats
 class TeamCalculatedData(DataModel):
     def __init__(self, **kwargs):
         self.team_number = -1
+
+        self.total_points = LowLevelStats()
+
         # Autonomous
+        self.auto_points = LowLevelStats()
 
         # Teleop
+        self.teleop_points = LowLevelStats()
 
         # Endgame
+        self.endgame_points = LowLevelStats()
 
         # Post Match
         self.no_show = LowLevelStats()

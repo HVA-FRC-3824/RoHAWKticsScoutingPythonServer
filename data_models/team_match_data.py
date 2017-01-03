@@ -9,11 +9,16 @@ class TeamMatchData(DataModel):
         self.allaince_number = -1
         self.scout_name = ""
 
+        self.total_points = -1
+
         # Autonomous
+        self.auto_points = -1
 
         # Teleop
+        self.teleop_points = -1
 
         # Endgame
+        self.endgame_points = -1
 
         # Post Match
         self.no_show = False

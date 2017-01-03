@@ -85,17 +85,20 @@ class ScouterAnalysis(Looper):
         matches = self.tba.get_event_matches()
         matches = sorted(matches, key=lambda match: int(match['match_number']))
         for tba_match in matches:
+            # Ignore elimination matches as we do not scout those
             if tba_match['comp_level'] != "qm":
                 continue
 
             match_number = tba_match['match_number']
             logger.info("analyzing match {0:d}".format(match_number))
+
             # We have caught up to the current match
             if tba_match['alliances']['blue']['score'] == -1:
                 self.last_match = match_number - 1
                 logger.info("Last match: {0:d}".format(self.last_match))
                 break
 
+            # Each alliance gets graded separately
             for color in ['blue', 'red']:
                 team_numbers = []
                 for team_key in tba_match['alliances'][color]['teams']:
@@ -111,16 +114,19 @@ class ScouterAnalysis(Looper):
                 for team_number in team_numbers:
                     firebase_team = self.firebase.get_team_match_data(team_number=team_number,
                                                                       match_number=match_number)
-                    if(firebase_team.scout_name == ""):
+                    # don't grade is not all the data is in or if points have not been calculated
+                    if(firebase_team.scout_name == "" or firebase_team.total_points == -1):
                         logger.info("Match {0:d} {1:s} incomplete".format(match_number, color))
                         incomplete = True
                         break
-                    scout_scores['scout'].append(firebase_team.scout_name)
-                    scout_scores['total'] += 0
-                    scout_scores['auto'] += 0
-                    scout_scores['teleop'] += 0
-                    scout_scores['endgame'] += 0
 
+                    scout_scores['scout'].append(firebase_team.scout_name)
+                    scout_scores['total'] += firebase_team.total_points
+                    scout_scores['auto'] += firebase_team.auto_points
+                    scout_scores['teleop'] += firebase_team.teleop_points
+                    scout_scores['endgame'] += firebase_team.endgame_points
+
+                # If incomplete move on to the next alliance
                 if incomplete:
                     continue
 
@@ -154,6 +160,7 @@ class ScouterAnalysis(Looper):
                     error_message += ("The endgame error for match {0:d} {1:s} exceeds the threshold.\n"
                                       .format(match_number, color))
 
+                # Log errors to the screen
                 for line in error_message.split('\n')[:-1]:
                     logger.error(line)
 

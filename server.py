@@ -219,11 +219,21 @@ class Server(Looper):
                 elif tmd.__dict__[key] == 'false':
                     tmd.__dict__[key] = False
 
+                # strings don't have low level calculations
                 if isinstance(tmd.__dict__[key], str):
                     continue
+
+                # calculate the points score by this particular team in this match
+                tmd.auto_points = 0
+                tmd.teleop_points = 0
+                tmd.endgame_points = 0
+                tmd.total_points = tmd.auto_points + tmd.teleop_points + tmd.endgame_points
+
+                # create lists for low level stats calculations
                 if key is not list_dict[tmd.team_number]:
                     list_dict[tmd.team_number][key] = []
                 list_dict[tmd.team_number][key].append(tmd.__dict__[key])
+        # Create LowLevelStats
         for team_number, lists in iter(list_dict.items()):
             tcd = TeamCalculatedData()
             tcd.team_number = team_number
@@ -275,7 +285,7 @@ class Server(Looper):
                     team.predicted_ranking.RPs += 1
             teams.append(team)
         # Sort for ranking
-        # TODO: add in tie breaker to sort
+        # TODO: add in tie breaker to sort base on competition
         teams.sort(key=lambda x: x.predicted_ranking.RPs, reverse=True)
         rank = 1
         index = 0
