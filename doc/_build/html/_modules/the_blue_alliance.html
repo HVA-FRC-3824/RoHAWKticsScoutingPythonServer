@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>the_blue_alliance &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for the_blue_alliance</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">ourlogging</span> <span class="k">import</span> <span class="n">setup_logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;requests&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;urllib3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
+
+<span class="n">setup_logging</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TheBlueAlliance"><a class="viewcode-back" href="../the_blue_alliance.html#the_blue_alliance.TheBlueAlliance">[docs]</a><span class="k">class</span> <span class="nc">TheBlueAlliance</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Singleton for collecting information from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event_id (`str`): the event id used by `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">shared_state</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">behind_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_state</span>
+        <span class="k">if</span> <span class="n">event_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_id</span> <span class="o">=</span> <span class="n">event_id</span>
+
+        <span class="k">if</span> <span class="n">behind_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">behind_threshold</span> <span class="o">=</span> <span class="n">behind_threshold</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;instance&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">basic_url</span> <span class="o">=</span> <span class="s2">&quot;http://www.thebluealliance.com/api/v2&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header_key</span> <span class="o">=</span> <span class="s2">&quot;X-TBA-App-Id&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header_value</span> <span class="o">=</span> <span class="s2">&quot;frc3824:scouting-system:v1&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;behind_threshold&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">behind_threshold</span> <span class="o">=</span> <span class="mi">3</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="TheBlueAlliance.make_request"><a class="viewcode-back" href="../the_blue_alliance.html#the_blue_alliance.TheBlueAlliance.make_request">[docs]</a>    <span class="k">def</span> <span class="nf">make_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Send request a url</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url (`str`): the url where the data is</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">make_ascii_from_json</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">header_key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_value</span><span class="p">})</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TheBlueAlliance.get_event_teams"><a class="viewcode-back" href="../the_blue_alliance.html#the_blue_alliance.TheBlueAlliance.get_event_teams">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_teams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Gets all the team logistic information for an event&#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading teams from The Blue Alliance for </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_id</span><span class="p">))</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:s}</span><span class="s2">/event/</span><span class="si">{1:s}</span><span class="s2">/teams&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basic_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TheBlueAlliance.get_event_rankings"><a class="viewcode-back" href="../the_blue_alliance.html#the_blue_alliance.TheBlueAlliance.get_event_rankings">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_rankings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Gets all the ranking information for an event&#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading rankings from The Blue Alliance for </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_id</span><span class="p">))</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:s}</span><span class="s2">/event/</span><span class="si">{1:s}</span><span class="s2">/rankings&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basic_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TheBlueAlliance.get_event_matches"><a class="viewcode-back" href="../the_blue_alliance.html#the_blue_alliance.TheBlueAlliance.get_event_matches">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Gets all the match information for an event&#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading matches from The Blue Alliance for </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_id</span><span class="p">))</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:s}</span><span class="s2">/event/</span><span class="si">{1:s}</span><span class="s2">/matches&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basic_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TheBlueAlliance.is_behind"><a class="viewcode-back" href="../the_blue_alliance.html#the_blue_alliance.TheBlueAlliance.is_behind">[docs]</a>    <span class="k">def</span> <span class="nf">is_behind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Checks if `The Blue Alliance &lt;thebluealliance.com&gt;`_ is behind compared to the scouters&#39;&#39;&#39;</span>
+        <span class="n">completed_matches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;comp_level&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;qm&quot;</span>
+                                       <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;score_breakdown&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_event_matches</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">-</span> <span class="n">completed_matches</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">behind_threshold</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

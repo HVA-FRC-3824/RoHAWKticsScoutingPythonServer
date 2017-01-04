@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>looper &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for looper</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">PLock</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">TLock</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="Looper"><a class="viewcode-back" href="../looper.html#looper.Looper">[docs]</a><span class="k">class</span> <span class="nc">Looper</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Parent class to set up looping threads/processes</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">kDefaultLoopTime</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kDefaultLoopTime</span>
+
+<div class="viewcode-block" id="Looper.set_loop_time"><a class="viewcode-back" href="../looper.html#looper.Looper.set_loop_time">[docs]</a>    <span class="k">def</span> <span class="nf">set_loop_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_time</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Sets the minimum time for a loop</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop_time (float): minimum time in seconds for each loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">=</span> <span class="n">loop_time</span></div>
+
+<div class="viewcode-block" id="Looper.tstart"><a class="viewcode-back" href="../looper.html#looper.Looper.tstart">[docs]</a>    <span class="k">def</span> <span class="nf">tstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Starts a looping thread</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlock</span> <span class="o">=</span> <span class="n">TLock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tloop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Looper.pstart"><a class="viewcode-back" href="../looper.html#looper.Looper.pstart">[docs]</a>    <span class="k">def</span> <span class="nf">pstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Starts a looping process</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe</span><span class="p">,</span> <span class="n">other_pipe</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plock</span> <span class="o">=</span> <span class="n">PLock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ploop</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">other_pipe</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Looper.tloop"><a class="viewcode-back" href="../looper.html#looper.Looper.tloop">[docs]</a>    <span class="k">def</span> <span class="nf">tloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs the thread loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_tstart</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_tloop</span><span class="p">()</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">delta_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">-</span> <span class="n">delta_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">-</span> <span class="n">delta_time</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_tend</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Looper.ploop"><a class="viewcode-back" href="../looper.html#looper.Looper.ploop">[docs]</a>    <span class="k">def</span> <span class="nf">ploop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipe</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs the process loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_pstart</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">poll</span><span class="p">():</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s2">&quot;stop&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">on_ploop</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_ploop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_pend</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Looper.on_tstart"><a class="viewcode-back" href="../looper.html#looper.Looper.on_tstart">[docs]</a>    <span class="k">def</span> <span class="nf">on_tstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs once before the thread loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Looper.on_tend"><a class="viewcode-back" href="../looper.html#looper.Looper.on_tend">[docs]</a>    <span class="k">def</span> <span class="nf">on_tend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs once after the thread loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Looper.on_pstart"><a class="viewcode-back" href="../looper.html#looper.Looper.on_pstart">[docs]</a>    <span class="k">def</span> <span class="nf">on_pstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs once before the process loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Looper.on_pend"><a class="viewcode-back" href="../looper.html#looper.Looper.on_pend">[docs]</a>    <span class="k">def</span> <span class="nf">on_pend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs once after the process loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Looper.on_tloop"><a class="viewcode-back" href="../looper.html#looper.Looper.on_tloop">[docs]</a>    <span class="k">def</span> <span class="nf">on_tloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs on each loop of the thread</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: if the derivative class does not implement</span>
+<span class="sd">            this function and is running a thread loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;on_tloop&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Looper.on_ploop"><a class="viewcode-back" href="../looper.html#looper.Looper.on_ploop">[docs]</a>    <span class="k">def</span> <span class="nf">on_ploop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs on each loop of the process</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: if the derivative class does not implement</span>
+<span class="sd">            this function and is running a process loop</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;on_ploop&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Looper.stop"><a class="viewcode-back" href="../looper.html#looper.Looper.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Stops the thread or process</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;stop&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

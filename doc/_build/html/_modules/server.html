@@ -1,0 +1,570 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>server &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for server</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+
+<span class="kn">from</span> <span class="nn">looper</span> <span class="k">import</span> <span class="n">Looper</span>
+
+<span class="kn">from</span> <span class="nn">firebase_com</span> <span class="k">import</span> <span class="n">FirebaseCom</span>
+<span class="kn">from</span> <span class="nn">the_blue_alliance</span> <span class="k">import</span> <span class="n">TheBlueAlliance</span>
+<span class="kn">from</span> <span class="nn">crash_reporter</span> <span class="k">import</span> <span class="n">CrashReporter</span>
+<span class="kn">from</span> <span class="nn">socket_server</span> <span class="k">import</span> <span class="n">SocketServer</span>
+<span class="kn">from</span> <span class="nn">scouter_analysis</span> <span class="k">import</span> <span class="n">ScouterAnalysis</span>
+
+<span class="kn">from</span> <span class="nn">data_models.match</span> <span class="k">import</span> <span class="n">Match</span>
+<span class="kn">from</span> <span class="nn">data_models.alliance</span> <span class="k">import</span> <span class="n">Alliance</span>
+<span class="kn">from</span> <span class="nn">data_models.team_logistics</span> <span class="k">import</span> <span class="n">TeamLogistics</span>
+<span class="kn">from</span> <span class="nn">data_models.team_pit_data</span> <span class="k">import</span> <span class="n">TeamPitData</span>
+<span class="kn">from</span> <span class="nn">data_models.team_ranking_data</span> <span class="k">import</span> <span class="n">TeamRankingData</span>
+<span class="kn">from</span> <span class="nn">data_models.team_pick_ability</span> <span class="k">import</span> <span class="n">TeamPickAbility</span>
+<span class="kn">from</span> <span class="nn">data_models.team_calculated_data</span> <span class="k">import</span> <span class="n">TeamCalculatedData</span>
+<span class="kn">from</span> <span class="nn">data_models.low_level_stats</span> <span class="k">import</span> <span class="n">LowLevelStats</span>
+
+<span class="kn">from</span> <span class="nn">calculators.team_calculation</span> <span class="k">import</span> <span class="n">TeamCalculation</span>
+<span class="kn">from</span> <span class="nn">calculators.alliance_calculation</span> <span class="k">import</span> <span class="n">AllianceCalculation</span>
+
+<span class="kn">from</span> <span class="nn">ourlogging</span> <span class="k">import</span> <span class="n">setup_logging</span>
+
+<span class="n">setup_logging</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Server"><a class="viewcode-back" href="../server.html#server.Server">[docs]</a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">Looper</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Main server class that interprets the config file and starts various threads&#39;&#39;&#39;</span>
+    <span class="n">DEFAULT_TIME_BETWEEN_CYCLES</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">4</span>  <span class="c1"># 4 minutes</span>
+    <span class="n">DEFAULT_TIME_BETWEEN_CACHES</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1</span>  <span class="c1"># 1 hour</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Initialization of all the server components based on the config</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            The config json converted to a `dict`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">Looper</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">event_key</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_key&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Event Key: </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event_key</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_key</span> <span class="o">=</span> <span class="n">event_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span> <span class="o">=</span> <span class="n">FirebaseCom</span><span class="p">(</span><span class="n">event_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tba</span> <span class="o">=</span> <span class="n">TheBlueAlliance</span><span class="p">(</span><span class="n">event_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggregate</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;aggregate&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;crash_reporter&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crash_reporter</span> <span class="o">=</span> <span class="n">CrashReporter</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_between_cycles</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time_between_cycles&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_TIME_BETWEEN_CYCLES</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_between_caches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time_between_caches&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_TIME_BETWEEN_CACHES</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_loop_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_between_cycles</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bluetooth&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">bluetooth_server</span> <span class="k">import</span> <span class="n">BluetoothServer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bluetooth</span> <span class="o">=</span> <span class="n">BluetoothServer</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;socket&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="n">SocketServer</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;scouter_analysis&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scouter_analysis</span> <span class="o">=</span> <span class="n">ScouterAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_between_cycles</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;setup&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting up database...&quot;</span><span class="p">)</span>
+            <span class="n">event_matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tba</span><span class="o">.</span><span class="n">get_event_matches</span><span class="p">()</span>
+            <span class="n">team_matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_matches</span><span class="p">(</span><span class="n">event_matches</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Added matches to Firebase&quot;</span><span class="p">)</span>
+
+            <span class="n">event_teams</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tba</span><span class="o">.</span><span class="n">get_event_teams</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_teams</span><span class="p">(</span><span class="n">event_teams</span><span class="p">,</span> <span class="n">team_matches</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Added teams to Firebase&quot;</span><span class="p">)</span>
+
+            <span class="n">event_rankings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tba</span><span class="o">.</span><span class="n">get_event_rankings</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_rankings</span><span class="p">(</span><span class="n">event_rankings</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Added rankings to Firebase&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Server.start"><a class="viewcode-back" href="../server.html#server.Server.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Starts the main thread loop&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlock</span> <span class="o">=</span> <span class="n">TLock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_tstart</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_tloop</span><span class="p">()</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">delta_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">-</span> <span class="n">delta_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">-</span> <span class="n">delta_time</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Server.set_matches"><a class="viewcode-back" href="../server.html#server.Server.set_matches">[docs]</a>    <span class="k">def</span> <span class="nf">set_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_matches</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Converts the match information pulled from `The Blue Alliance &lt;thebluealliance.com&gt;`_ into :class:`Match`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_matches (dict): The match information pulled from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">                A `dict` contain all the match numbers for each team</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">team_matches</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tba_match</span> <span class="ow">in</span> <span class="n">event_matches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tba_match</span><span class="p">[</span><span class="s1">&#39;comp_level&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;qm&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">match</span> <span class="o">=</span> <span class="n">Match</span><span class="p">()</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">match_number</span> <span class="o">=</span> <span class="n">tba_match</span><span class="p">[</span><span class="s1">&#39;match_number&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">team_key</span> <span class="ow">in</span> <span class="n">tba_match</span><span class="p">[</span><span class="s1">&#39;alliances&#39;</span><span class="p">][</span><span class="n">color</span><span class="p">][</span><span class="s1">&#39;teams&#39;</span><span class="p">]:</span>
+                    <span class="n">match</span><span class="o">.</span><span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">team_key</span><span class="p">[</span><span class="mi">3</span><span class="p">:]))</span>
+                <span class="n">match</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">tba_match</span><span class="p">[</span><span class="s1">&#39;alliances&#39;</span><span class="p">][</span><span class="n">color</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]))</span>
+
+            <span class="k">for</span> <span class="n">team_number</span> <span class="ow">in</span> <span class="n">match</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">team_number</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">team_matches</span><span class="p">:</span>
+                    <span class="n">team_matches</span><span class="p">[</span><span class="n">team_number</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">team_matches</span><span class="p">[</span><span class="n">team_number</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">match_number</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_match</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Match </span><span class="si">{0:d}</span><span class="s2"> added&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">match_number</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">team_matches</span></div>
+
+<div class="viewcode-block" id="Server.set_teams"><a class="viewcode-back" href="../server.html#server.Server.set_teams">[docs]</a>    <span class="k">def</span> <span class="nf">set_teams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_teams</span><span class="p">,</span> <span class="n">team_matches</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Converts the team information from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+<span class="sd">           to :class:`TeamLogistics`.</span>
+
+<span class="sd">            Converts the team information from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+<span class="sd">            to :class:`TeamLogistics`. Also, sets the match numbers for each team</span>
+<span class="sd">            from the result of :func:`set_matches`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_teams (dict): The team information from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+<span class="sd">            </span>
+<span class="sd">            team_matches (dict): The match numbers for each team</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">team_logistics</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">tba_team</span> <span class="ow">in</span> <span class="n">event_teams</span><span class="p">:</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="n">TeamLogistics</span><span class="p">()</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">team_number</span> <span class="o">=</span> <span class="n">tba_team</span><span class="p">[</span><span class="s1">&#39;team_number&#39;</span><span class="p">]</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">nickname</span> <span class="o">=</span> <span class="n">tba_team</span><span class="p">[</span><span class="s1">&#39;nickname&#39;</span><span class="p">]</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">team_matches</span><span class="p">[</span><span class="n">info</span><span class="o">.</span><span class="n">team_number</span><span class="p">]</span>
+            <span class="n">team_logistics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+            <span class="n">pit</span> <span class="o">=</span> <span class="n">TeamPitData</span><span class="p">()</span>
+            <span class="n">pit</span><span class="o">.</span><span class="n">team_number</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">team_number</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_team_pit_data</span><span class="p">(</span><span class="n">pit</span><span class="p">)</span>
+
+            <span class="n">pick</span> <span class="o">=</span> <span class="n">TeamPickAbility</span><span class="p">()</span>
+            <span class="n">pick</span><span class="o">.</span><span class="n">team_number</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">team_number</span>
+            <span class="n">pick</span><span class="o">.</span><span class="n">nickname</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">nickname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_first_team_pick_ability</span><span class="p">(</span><span class="n">pick</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_second_team_pick_ability</span><span class="p">(</span><span class="n">pick</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_third_team_pick_ability</span><span class="p">(</span><span class="n">pick</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Team </span><span class="si">{0:d}</span><span class="s2"> added&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">team_number</span><span class="p">))</span>
+
+        <span class="n">min_matches</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Each team should always have less than 100 matches</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">team_logistics</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">matches</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_matches</span><span class="p">:</span>
+                <span class="n">min_matches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">team_matches</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">team_logistics</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">min_matches</span><span class="p">:</span>
+                <span class="n">team</span><span class="o">.</span><span class="n">surrogate_match_number</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_team_logistics</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.set_rankings"><a class="viewcode-back" href="../server.html#server.Server.set_rankings">[docs]</a>    <span class="k">def</span> <span class="nf">set_rankings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_rankings</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Convert the ranking information from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+<span class="sd">           to the :class:`TeamRankingData`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">tba_ranking</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">event_rankings</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">continue</span>
+            <span class="n">tba_ranking_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tba_ranking</span><span class="p">)</span>
+            <span class="n">ranking</span> <span class="o">=</span> <span class="n">TeamRankingData</span><span class="p">()</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">team_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tba_ranking_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tba_ranking_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">RPs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">tba_ranking_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="n">win_tie_lose</span> <span class="o">=</span> <span class="n">tba_ranking_list</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">wins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">win_tie_lose</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">ties</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">win_tie_lose</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">loses</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">win_tie_lose</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ranking</span><span class="o">.</span><span class="n">played</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tba_ranking_list</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_current_team_ranking_data</span><span class="p">(</span><span class="n">ranking</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Added ranking for team </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ranking</span><span class="o">.</span><span class="n">team_number</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Server.on_tstart"><a class="viewcode-back" href="../server.html#server.Server.on_tstart">[docs]</a>    <span class="k">def</span> <span class="nf">on_tstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs before the main loop and starts the threads for :class:`BluetoothServer`,</span>
+<span class="sd">           :class:`SocketServer`, and :class:`ScouterAnalysis` based on the config. Also,</span>
+<span class="sd">           caches the firebase data.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># initial run cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_since_last_cache</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;bluetooth&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bluetooth</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;socket&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;scouter_analysis&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scouter_analysis</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Server.on_tloop"><a class="viewcode-back" href="../server.html#server.Server.on_tloop">[docs]</a>    <span class="k">def</span> <span class="nf">on_tloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Runs on each iteration of the main loop and aggregates the data.&#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Iteration </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_between_caches</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_since_last_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_since_last_cache</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">make_team_calculations</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">make_super_calculations</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">make_ranking_calculations</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">make_pick_list_calculations</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Crash&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;crash_reporter&#39;</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Reporting crash&quot;</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">crash_reporter</span><span class="o">.</span><span class="n">report_server_crash</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+                        <span class="c1"># weird exception that doesn&#39;t stop the text</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">pass</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">time_taken</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Iteration Ended&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Time taken: </span><span class="si">{0:f}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_taken</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_between_cycles</span> <span class="o">-</span> <span class="n">time_taken</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_between_cycles</span> <span class="o">-</span> <span class="n">time_taken</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_since_last_cache</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_between_cycles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Server.stop"><a class="viewcode-back" href="../server.html#server.Server.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Stops all threads&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;bluetooth&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bluetooth</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;socket&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;scouter_analysis&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scouter_analysis</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">Looper</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.make_team_calculations"><a class="viewcode-back" href="../server.html#server.Server.make_team_calculations">[docs]</a>    <span class="k">def</span> <span class="nf">make_team_calculations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Make all the calculations from the :class:`TeamMatchData`&#39;&#39;&#39;</span>
+        <span class="c1"># make low level calculations</span>
+        <span class="n">list_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tmd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_match_data</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">tmd</span><span class="o">.</span><span class="n">team_number</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">list_dict</span><span class="p">:</span>
+                <span class="n">list_dict</span><span class="p">[</span><span class="n">tmd</span><span class="o">.</span><span class="n">team_number</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;team_number&#39;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Convert firebase booleans</span>
+                <span class="k">if</span> <span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                    <span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">elif</span> <span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+                    <span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="c1"># strings don&#39;t have low level calculations</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># calculate the points score by this particular team in this match</span>
+                <span class="n">tmd</span><span class="o">.</span><span class="n">auto_points</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">tmd</span><span class="o">.</span><span class="n">teleop_points</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">tmd</span><span class="o">.</span><span class="n">endgame_points</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">tmd</span><span class="o">.</span><span class="n">total_points</span> <span class="o">=</span> <span class="n">tmd</span><span class="o">.</span><span class="n">auto_points</span> <span class="o">+</span> <span class="n">tmd</span><span class="o">.</span><span class="n">teleop_points</span> <span class="o">+</span> <span class="n">tmd</span><span class="o">.</span><span class="n">endgame_points</span>
+
+                <span class="c1"># create lists for low level stats calculations</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">list_dict</span><span class="p">[</span><span class="n">tmd</span><span class="o">.</span><span class="n">team_number</span><span class="p">]:</span>
+                    <span class="n">list_dict</span><span class="p">[</span><span class="n">tmd</span><span class="o">.</span><span class="n">team_number</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">list_dict</span><span class="p">[</span><span class="n">tmd</span><span class="o">.</span><span class="n">team_number</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="c1"># Create LowLevelStats</span>
+        <span class="k">for</span> <span class="n">team_number</span><span class="p">,</span> <span class="n">lists</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">list_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">tcd</span> <span class="o">=</span> <span class="n">TeamCalculatedData</span><span class="p">()</span>
+            <span class="n">tcd</span><span class="o">.</span><span class="n">team_number</span> <span class="o">=</span> <span class="n">team_number</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">lists</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tcd</span><span class="o">.</span><span class="n">__dict__</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tcd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">LowLevelStats</span><span class="p">):</span>
+                    <span class="n">tcd</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">LowLevelStats</span><span class="p">()</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_team_calculated_data</span><span class="p">(</span><span class="n">tcd</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated Low Level Calculations for Team </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team_number</span><span class="p">))</span></div>
+        <span class="c1"># high level calculations</span>
+
+<div class="viewcode-block" id="Server.make_super_calculations"><a class="viewcode-back" href="../server.html#server.Server.make_super_calculations">[docs]</a>    <span class="k">def</span> <span class="nf">make_super_calculations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Makes all the calculations from the :class:`SuperMatchData`&#39;&#39;&#39;</span>
+        <span class="n">lists</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tcd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_team_calculated_data</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tcd</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">&#39;zscore&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">lists</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">6</span><span class="p">:]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># get match rankings from super match data and put in lists for averaging</span>
+        <span class="k">for</span> <span class="n">smd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_super_match_data</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">smd</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s1">&#39;blue&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>
+                <span class="k">elif</span> <span class="s1">&#39;red&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">team_number</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">team_number</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">lists</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">team_number</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">match_rank</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">i</span>
+                        <span class="k">if</span> <span class="n">match_rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                            <span class="n">match_rank</span> <span class="o">=</span> <span class="mi">4</span>
+                        <span class="n">lists</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">team_number</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_rank</span><span class="p">)</span>
+
+        <span class="n">zscore_components</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">:</span>
+            <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;team_numbers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;averages&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;zscore&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">team_number</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="n">average</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">team_number</span><span class="p">]:</span>
+                    <span class="n">average</span> <span class="o">+=</span> <span class="n">value</span>
+                <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;team_number&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">team_number</span><span class="p">)</span>
+                <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;averages&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">average</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">team_number</span><span class="p">]))</span>
+            <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;zscores&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">zscore</span><span class="p">(</span><span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;averages&#39;</span><span class="p">])</span>
+
+            <span class="c1"># Create list for sorting</span>
+            <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;team_number&#39;</span><span class="p">])):</span>
+                <span class="n">team</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">team</span><span class="p">[</span><span class="s1">&#39;team_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;team_number&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">team</span><span class="p">[</span><span class="s1">&#39;zscore&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zscore_components</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;zscores&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># Make the zscore negative for sorting so larger numbers are at the beginning</span>
+            <span class="n">teams</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">teams</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">team</span><span class="p">:</span> <span class="o">-</span><span class="n">team</span><span class="p">[</span><span class="s1">&#39;zscore&#39;</span><span class="p">])</span>
+
+            <span class="c1"># add calculations to firebase</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">team</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">teams</span><span class="p">):</span>
+                <span class="n">firebase_team</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_team_calculated_data</span><span class="p">(</span><span class="n">team</span><span class="p">[</span><span class="s1">&#39;team_number&#39;</span><span class="p">])</span>
+                <span class="n">firebase_team</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s2">&quot;zscore_&quot;</span><span class="o">+</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">team</span><span class="p">[</span><span class="s1">&#39;zscore&#39;</span><span class="p">]</span>
+                <span class="n">firebase_team</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s2">&quot;rank_&quot;</span><span class="o">+</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_team_calculated_data</span><span class="p">(</span><span class="n">firebase_team</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.make_ranking_calculations"><a class="viewcode-back" href="../server.html#server.Server.make_ranking_calculations">[docs]</a>    <span class="k">def</span> <span class="nf">make_ranking_calculations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Pulls the current rankings from `The Blue Alliance &lt;thebluealliance.com&gt;`_</span>
+<span class="sd">           and predicts the final rankings</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Current Rankings</span>
+        <span class="n">event_rankings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tba</span><span class="o">.</span><span class="n">get_event_rankings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_rankings</span><span class="p">(</span><span class="n">event_rankings</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated current rankings on Firebase&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Predicted Rankings</span>
+        <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_teams</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">team_number</span><span class="p">)</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">played</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">match_numbers</span><span class="p">)</span>
+
+            <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">RPs</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">current_ranking</span><span class="o">.</span><span class="n">RPs</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">wins</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">current_ranking</span><span class="o">.</span><span class="n">wins</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">ties</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">current_ranking</span><span class="o">.</span><span class="n">ties</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">loses</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">current_ranking</span><span class="o">.</span><span class="n">loses</span>
+
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">completed_matches</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">match_numbers</span><span class="p">)):</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_match</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">match_numbers</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+                <span class="c1"># If match is a surrogate match ignore it</span>
+                <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">match_number</span> <span class="o">==</span> <span class="n">team</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">surrogate_match_number</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">match</span><span class="o">.</span><span class="n">is_blue</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">team_number</span><span class="p">):</span>
+                    <span class="n">ac</span> <span class="o">=</span> <span class="n">AllianceCalculation</span><span class="p">(</span><span class="n">Alliance</span><span class="p">(</span><span class="o">*</span><span class="n">match</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]))</span>
+                    <span class="n">opp</span> <span class="o">=</span> <span class="n">AllianceCalculation</span><span class="p">(</span><span class="n">Alliance</span><span class="p">(</span><span class="o">*</span><span class="n">match</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ac</span> <span class="o">=</span> <span class="n">AllianceCalculation</span><span class="p">(</span><span class="n">Alliance</span><span class="p">(</span><span class="o">*</span><span class="n">match</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]))</span>
+                    <span class="n">opp</span> <span class="o">=</span> <span class="n">AllianceCalculation</span><span class="p">(</span><span class="n">Alliance</span><span class="p">(</span><span class="o">*</span><span class="n">match</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="k">if</span> <span class="n">ac</span><span class="o">.</span><span class="n">win_probability_over</span><span class="p">(</span><span class="n">opp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+                    <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">wins</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">RPs</span> <span class="o">+=</span> <span class="mi">2</span>
+                <span class="k">elif</span> <span class="n">opp</span><span class="o">.</span><span class="n">win_probabiliy_over</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+                    <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">loses</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">ties</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">RPs</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">team</span><span class="p">)</span>
+        <span class="c1"># Sort for ranking</span>
+        <span class="c1"># TODO: add in tie breaker to sort base on competition</span>
+        <span class="n">teams</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">RPs</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">teams</span><span class="p">:</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span> <span class="o">=</span> <span class="n">rank</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">RPs</span> <span class="o">!=</span> <span class="n">teams</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="o">.</span><span class="n">RPs</span><span class="p">:</span>
+                <span class="n">rank</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_predicted_team_ranking_data</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">predicted_ranking</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated predicted ranking for </span><span class="si">{0:d}</span><span class="s2"> on Firebase&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">team_number</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Server.make_pick_list_calculations"><a class="viewcode-back" href="../server.html#server.Server.make_pick_list_calculations">[docs]</a>    <span class="k">def</span> <span class="nf">make_pick_list_calculations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Make calculations for :class:`TeamPickAbility` based on :class:`TeamMatchData`,</span>
+<span class="sd">        :class:`SuperMatchData`, and :class:`TeamCalculatedData`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_teams</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">tc</span> <span class="o">=</span> <span class="n">TeamCalculation</span><span class="p">(</span><span class="n">team</span><span class="p">)</span>
+
+            <span class="c1"># First Pick</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">pick_ability</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">first_pick_ability</span><span class="p">()</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">robot_picture_filepath</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">pit</span><span class="o">.</span><span class="n">robot_picture_filepath</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">yellow_card</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">yellow_card</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">red_card</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">red_card</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">stopped_moving</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">stopped_moving</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">top_line</span> <span class="o">=</span> <span class="s2">&quot;PA: </span><span class="si">{0:f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">pick_ability</span><span class="p">)</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">second_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="o">.</span><span class="n">third_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_first_team_pick_ability</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">first_pick</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated first pick info for </span><span class="si">{0:d}</span><span class="s2"> on Firebase&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">team_number</span><span class="p">))</span>
+
+            <span class="c1"># Second Pick</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">pick_ability</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">second_pick_ability</span><span class="p">()</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">robot_picture_filepath</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">pit</span><span class="o">.</span><span class="n">robot_picture_filepath</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">yellow_card</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">yellow_card</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">red_card</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">red_card</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">stopped_moving</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">stopped_moving</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">top_line</span> <span class="o">=</span> <span class="s2">&quot;PA: </span><span class="si">{0:f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">pick_ability</span><span class="p">)</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">second_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="o">.</span><span class="n">third_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_second_team_pick_ability</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">second_pick</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated second pick info for </span><span class="si">{0:d}</span><span class="s2"> on Firebase&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">team_number</span><span class="p">))</span>
+
+            <span class="c1"># Third Pick</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">pick_ability</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">third_pick_ability</span><span class="p">()</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">robot_picture_filepath</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">pit</span><span class="o">.</span><span class="n">robot_picture_filepath</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">yellow_card</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">yellow_card</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">red_card</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">red_card</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">stopped_moving</span> <span class="o">=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">stopped_moving</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">top_line</span> <span class="o">=</span> <span class="s2">&quot;PA: </span><span class="si">{0:f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">pick_ability</span><span class="p">)</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">second_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+            <span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="o">.</span><span class="n">third_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_third_team_pick_ability</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">third_pick</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Updated third pick info for </span><span class="si">{0:d}</span><span class="s2"> on Firebase&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">team_number</span><span class="p">))</span></div></div>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Collect command line arguments</span>
+    <span class="n">ap</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;--config&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Config file with settings for the server&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">parse_args</span><span class="p">())</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">])</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="o">**</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Catches control-c and cleanly shuts down the server&#39;&#39;&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Control-C caught. Cleanly shutting down the server.&quot;</span><span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+    <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Looper &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="TheBlueAlliance" href="the_blue_alliance.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-looper">
+<span id="looper"></span><h1>Looper<a class="headerlink" href="#module-looper" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="looper.Looper">
+<em class="property">class </em><code class="descclassname">looper.</code><code class="descname">Looper</code><a class="reference internal" href="_modules/looper.html#Looper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parent class to set up looping threads/processes</p>
+<dl class="method">
+<dt id="looper.Looper.on_pend">
+<code class="descname">on_pend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.on_pend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.on_pend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs once after the process loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.on_ploop">
+<code class="descname">on_ploop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.on_ploop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.on_ploop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs on each loop of the process</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>NotImplementedError: if the derivative class does not implement
+this function and is running a process loop</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.on_pstart">
+<code class="descname">on_pstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.on_pstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.on_pstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs once before the process loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.on_tend">
+<code class="descname">on_tend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.on_tend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.on_tend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs once after the thread loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.on_tloop">
+<code class="descname">on_tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.on_tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.on_tloop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs on each loop of the thread</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>NotImplementedError: if the derivative class does not implement
+this function and is running a thread loop</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.on_tstart">
+<code class="descname">on_tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.on_tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.on_tstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs once before the thread loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.ploop">
+<code class="descname">ploop</code><span class="sig-paren">(</span><em>pipe</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.ploop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.ploop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the process loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.pstart">
+<code class="descname">pstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.pstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.pstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a looping process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.set_loop_time">
+<code class="descname">set_loop_time</code><span class="sig-paren">(</span><em>loop_time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.set_loop_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.set_loop_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the minimum time for a loop</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>loop_time (float): minimum time in seconds for each loop</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the thread or process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.tloop">
+<code class="descname">tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.tloop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the thread loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="looper.Looper.tstart">
+<code class="descname">tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/looper.html#Looper.tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#looper.Looper.tstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a looping thread</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="the_blue_alliance.html" title="previous chapter">TheBlueAlliance</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/looper.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/looper.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Socket Server (Class) &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Socket Connection" href="socket_connection.html" />
+    <link rel="prev" title="Socket Server" href="socket_server.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-socket_server">
+<span id="socket-server-class"></span><h1>Socket Server (Class)<a class="headerlink" href="#module-socket_server" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="socket_server.SocketServer">
+<em class="property">class </em><code class="descclassname">socket_server.</code><code class="descname">SocketServer</code><a class="reference internal" href="_modules/socket_server.html#SocketServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The server for socket connections with the android tablets</p>
+<dl class="method">
+<dt id="socket_server.SocketServer.hotplug_callback">
+<code class="descname">hotplug_callback</code><span class="sig-paren">(</span><em>context</em>, <em>device</em>, <em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.hotplug_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.hotplug_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the plugged in device is a nexus tablet and if so starts
+reverse port forwarding via adb</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.on_ploop">
+<code class="descname">on_ploop</code><span class="sig-paren">(</span><em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.on_ploop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.on_ploop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks for the hotplug event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.on_pstart">
+<code class="descname">on_pstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.on_pstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.on_pstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up the <a class="reference internal" href="#socket_server.SocketServer.hotplug_callback" title="socket_server.SocketServer.hotplug_callback"><code class="xref py py-func docutils literal"><span class="pre">hotplug_callback()</span></code></a> to trigger when a usb device is
+plugged in</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.on_tloop">
+<code class="descname">on_tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.on_tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.on_tloop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listens for a connect from one of the android tablets and spins off
+a thread to handle it</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.on_tstart">
+<code class="descname">on_tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.on_tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.on_tstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks that the thread has started</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.setup_adb_bridge">
+<code class="descname">setup_adb_bridge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.setup_adb_bridge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.setup_adb_bridge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up reverse port forward for attached android devices via the
+android debug bridge (adb)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the thread for accepting socket connections</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="socket_server.SocketServer.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/socket_server.html#SocketServer.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#socket_server.SocketServer.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops each connection thread and the main accepting thread</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="socket_server.html">Socket Server</a><ul>
+      <li>Previous: <a href="socket_server.html" title="previous chapter">Socket Server</a></li>
+      <li>Next: <a href="socket_connection.html" title="next chapter">Socket Connection</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/socket_server_class.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/socket_server_class.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

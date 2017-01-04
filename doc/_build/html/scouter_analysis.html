@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scouter Analysis &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Socket Connection" href="socket_connection.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-scouter_analysis">
+<span id="scouter-analysis"></span><h1>Scouter Analysis<a class="headerlink" href="#module-scouter_analysis" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="scouter_analysis.ScouterAnalysis">
+<em class="property">class </em><code class="descclassname">scouter_analysis.</code><code class="descname">ScouterAnalysis</code><span class="sig-paren">(</span><em>loop_time=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread class for determining scouting error</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>loop_time (<cite>float</cite>): Minumum time for a loop</dd>
+<dt>Kwargs:</dt>
+<dd><p class="first">scouter_accuracy_config (<cite>dict</cite>): contains the error thresholds</p>
+<p>use_email (<cite>bool</cite>): whether to send reports via email</p>
+<p>emails (<cite>list</cite>): list of emails to send reports to</p>
+<p>use_texting (<cite>bool</cite>): whether to send reports via texting</p>
+<p>mobiles (<cite>list</cite>): list of phone numbers to send reports to</p>
+<p class="last">login_file (<cite>str</cite>): location of the file containing the login information (not in the repo)</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.email_report">
+<code class="descname">email_report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.email_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.email_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>send the message via email</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): error message to send</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.export">
+<code class="descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.export"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports the information to csv files (one overall and one for each scouter)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.on_tloop">
+<code class="descname">on_tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.on_tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.on_tloop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error in the data for each alliance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.on_tstart">
+<code class="descname">on_tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.on_tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.on_tstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks the start of the thread</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.report_error">
+<code class="descname">report_error</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.report_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.report_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message if the error is too large</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): error message to send</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the thread for calculating error in the data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the thread and closes email</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scouter_analysis.ScouterAnalysis.text_report">
+<code class="descname">text_report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.text_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.text_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>send the message via text</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): error message to send</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="socket_connection.html" title="previous chapter">Socket Connection</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/scouter_analysis.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/scouter_analysis.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

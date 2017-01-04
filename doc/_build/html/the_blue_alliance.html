@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>TheBlueAlliance &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Message Handler" href="message_handler.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-the_blue_alliance">
+<span id="thebluealliance"></span><h1>TheBlueAlliance<a class="headerlink" href="#module-the_blue_alliance" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="the_blue_alliance.TheBlueAlliance">
+<em class="property">class </em><code class="descclassname">the_blue_alliance.</code><code class="descname">TheBlueAlliance</code><span class="sig-paren">(</span><em>event_id=None</em>, <em>behind_threshold=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/the_blue_alliance.html#TheBlueAlliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#the_blue_alliance.TheBlueAlliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton for collecting information from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>event_id (<cite>str</cite>): the event id used by <a class="reference external" href="thebluealliance.com">The Blue Alliance</a></dd>
+</dl>
+<dl class="method">
+<dt id="the_blue_alliance.TheBlueAlliance.get_event_matches">
+<code class="descname">get_event_matches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/the_blue_alliance.html#TheBlueAlliance.get_event_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#the_blue_alliance.TheBlueAlliance.get_event_matches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all the match information for an event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="the_blue_alliance.TheBlueAlliance.get_event_rankings">
+<code class="descname">get_event_rankings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/the_blue_alliance.html#TheBlueAlliance.get_event_rankings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#the_blue_alliance.TheBlueAlliance.get_event_rankings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all the ranking information for an event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="the_blue_alliance.TheBlueAlliance.get_event_teams">
+<code class="descname">get_event_teams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/the_blue_alliance.html#TheBlueAlliance.get_event_teams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#the_blue_alliance.TheBlueAlliance.get_event_teams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all the team logistic information for an event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="the_blue_alliance.TheBlueAlliance.is_behind">
+<code class="descname">is_behind</code><span class="sig-paren">(</span><em>matches</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/the_blue_alliance.html#TheBlueAlliance.is_behind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#the_blue_alliance.TheBlueAlliance.is_behind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if <a class="reference external" href="thebluealliance.com">The Blue Alliance</a> is behind compared to the scouters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="the_blue_alliance.TheBlueAlliance.make_request">
+<code class="descname">make_request</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/the_blue_alliance.html#TheBlueAlliance.make_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#the_blue_alliance.TheBlueAlliance.make_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send request a url</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>url (<cite>str</cite>): the url where the data is</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="message_handler.html" title="previous chapter">Message Handler</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/the_blue_alliance.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, FRC team 3824.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/the_blue_alliance.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
