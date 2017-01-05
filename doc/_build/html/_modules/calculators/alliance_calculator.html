@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>calculators.alliance_calculator &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for calculators.alliance_calculator</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="kn">as</span> <span class="nn">stats</span>
+
+<span class="kn">from</span> <span class="nn">data_models.alliance</span> <span class="kn">import</span> <span class="n">Alliance</span>
+<span class="kn">from</span> <span class="nn">firebase_com</span> <span class="kn">import</span> <span class="n">FirebaseCom</span>
+<span class="kn">from</span> <span class="nn">calculators.calculator</span> <span class="kn">import</span> <span class="n">Calculator</span>
+
+<div class="viewcode-block" id="AllianceCalculator"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator">[docs]</a><span class="k">class</span> <span class="nc">AllianceCalculator</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Makes calculation about an alliance</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        alliance (list): list of :class:`Team` objects that make up the :class:`alliance`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alliance</span><span class="p">):</span>
+
+        <span class="c1"># Solves cyclical dependency</span>
+        <span class="kn">from</span> <span class="nn">.team_calculation</span> <span class="kn">import</span> <span class="n">TeamCalculator</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span> <span class="o">=</span> <span class="n">alliance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alliance</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TeamCalculator</span><span class="p">(</span><span class="n">team</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span> <span class="o">=</span> <span class="n">FirebaseCom</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AllianceCalculator.predicted_score"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.predicted_score">[docs]</a>    <span class="k">def</span> <span class="nf">predicted_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elimination</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Predicted Score</span>
+
+<span class="sd">        .. math:: predicted\_score = \sum_{T \in A} auto\_ability(T)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">auto_ability</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">p_score</span></div>
+
+<div class="viewcode-block" id="AllianceCalculator.std_predicted_score"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.std_predicted_score">[docs]</a>    <span class="k">def</span> <span class="nf">std_predicted_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elimination</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Standard Deviation of Predicted Score</span>
+
+<span class="sd">        .. math:: std\_predicted\_score = \sqrt{\sum_{T \in A} std\_auto\_ability(T)^2}</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">std_p_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+            <span class="n">std_p_score</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">std_auto_ability</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">std_p_score</span> <span class="o">=</span> <span class="n">std_p_score</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="k">return</span> <span class="n">std_p_score</span></div>
+
+<div class="viewcode-block" id="AllianceCalculator.win_probability_over"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.win_probability_over">[docs]</a>    <span class="k">def</span> <span class="nf">win_probability_over</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Win Probability</span>
+
+<span class="sd">        In order to determine the win probability of alliance A facing alliance O, `Welch&#39;s</span>
+<span class="sd">        t-test &lt;https://en.wikipedia.org/wiki/Welch%27s_t-test&gt;`_. This test is expressed</span>
+<span class="sd">        using the formula</span>
+
+<span class="sd">        .. math:: t = \\frac{ \\bar{X_1} + \\bar{X_2} }{ \sqrt{ \\frac{ s_1^2 }{ N_1 } + \\frac{ s_2^2 }{ N_2 } } }</span>
+
+<span class="sd">        - :math:`\\bar{X_1}` is the mean of the first sample</span>
+<span class="sd">        - :math:`s_1` is the standard deviation of the first sample</span>
+<span class="sd">        - :math:`N_1` is the size of the first sample</span>
+
+<span class="sd">        - :math:`\\bar{X_2}` is the mean of the second sample</span>
+<span class="sd">        - :math:`s_2` is the standard deviation of the second sample</span>
+<span class="sd">        - :math:`N_2` is the size of the second sample</span>
+
+<span class="sd">        This t is then converted to a win probability using the `cumulative distribution</span>
+<span class="sd">        function &lt;https://en.wikipedia.org/wiki/Cumulative_distribution_function&gt;`_ for a</span>
+<span class="sd">        t-distribution T(t|v).</span>
+
+<span class="sd">        In this case :math:`\\bar{X_1}` is the predicted score for alliance A, :math:`s_1` is the standard</span>
+<span class="sd">        deviation of the predicted score for alliance A, and :math:`N_1` is the average number of</span>
+<span class="sd">        completed matches for each of the teams on alliance A.</span>
+
+<span class="sd">        win_chance(A,O) = T(t|v)</span>
+
+<span class="sd">        t is the t-value generated by the Welch&#39;s test and v is the degrees of freedom</span>
+<span class="sd">        approximated by the `Welch-Satterthwaite equation</span>
+<span class="sd">        &lt;https://en.wikipedia.org/wiki/WelchSatterthwaite_equation&gt;`_</span>
+
+<span class="sd">        .. math:: v \\approx \\frac{(\\frac{s_1^2}{N_1} + \\frac{s_2^2}{N_2})^2}{\\frac{s_1^4}{N_1^2 \\cdot v_1} + \\frac{s_2^4}{N_2^2 \\cdot v_2}}</span>
+
+<span class="sd">        where :math:`v_1 = N_1 - 1` (the degrees of freedom for the first variance) and :math:`v_2 = N_2 -1`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">Alliance</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">win_probability_over</span><span class="p">(</span><span class="n">AllianceCalculation</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">std_predicted_score</span><span class="p">()</span>
+            <span class="n">s_2</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">std_predicted_score</span><span class="p">()</span>
+            <span class="n">N_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_size</span><span class="p">()</span>
+            <span class="n">N_2</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">sample_size</span><span class="p">()</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">welchs_test</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predicted_score</span><span class="p">,</span> <span class="n">o</span><span class="o">.</span><span class="n">predicted_score</span><span class="p">(),</span> <span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">,</span> <span class="n">N_1</span><span class="p">,</span> <span class="n">N_2</span><span class="p">)</span>
+
+            <span class="n">v</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">dof</span><span class="p">(</span><span class="n">s_1</span><span class="p">,</span> <span class="n">s_2</span><span class="p">,</span> <span class="n">N_1</span><span class="p">,</span> <span class="n">N_2</span><span class="p">)</span>
+            <span class="n">win_chance</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">win_chance</span></div>
+
+<div class="viewcode-block" id="AllianceCalculator.sample_size"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.sample_size">[docs]</a>    <span class="k">def</span> <span class="nf">sample_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns the average number of completed matches for each of the teams on alliance A&#39;&#39;&#39;</span>
+        <span class="n">average</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+            <span class="n">average</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">num_completed_matches</span><span class="p">()</span>
+        <span class="n">average</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">average</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bluetooth_server.html">Bluetooth Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../socket_server.html">Socket Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../crash_reporter.html">Crash Reporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message_handler.html">Message Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../the_blue_alliance.html">TheBlueAlliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../looper.html">Looper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../calculators.html">Calculators</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, FRC team 3824.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

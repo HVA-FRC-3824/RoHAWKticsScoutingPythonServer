@@ -3,6 +3,7 @@ from .data_model import DataModel
 
 class Team(DataModel):
     def __init__(self):
+        '''All the data for a team (contains several other data models)'''
         self.team_number = -1
 
         self.completed_matches = {}

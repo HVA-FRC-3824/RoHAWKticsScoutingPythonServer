@@ -1,36 +1,40 @@
 from data_models.alliance import Alliance
 from data_models.match import Match
 
-from calculators.alliance_calculation import AllianceCalculation
+from calculators.alliance_calculator import AllianceCalculator
 
 from constants import Constants
 
 
-class TeamCalculation:
+class TeamCalculator:
+    '''Makes all the higher level calculations for a specific team'''
     def __init__(self, team, firebase):
         self.team = team
         self.firebase = firebase
 
     def auto_ability(self):
+        '''Average points scored in autonomous'''
         return 0.0
 
     def std_auto_ability(self):
+        '''Standard deviation of the points scored in autonomous'''
         return 0.0
 
     def num_completed_matches(self):
+        '''Number of matches completed by this team'''
         return len(self.team.completed_matches)
 
     def predicted_ranking_points(self):
-        '''
-            Predicts the number of ranking points at the end of qualifications using the actual
-            ranking points from the completed matches and predicting ranking points acquired
-            from the remaining ones.
+        '''Predicts the number of ranking points at the end of qualifications using the actual
+        ranking points from the completed matches and predicting ranking points acquired
+        from the remaining ones.
 
-            Note:
+        Note:
             Currently set up based on 2 for wins, 1 for ties, and 0 for loses. Additional
             RP will need to be added.
 
-            :return predicted number of ranking points at the end of qualifications
+        Returns:
+            predicted number of ranking points at the end of qualifications
         '''
         actual_RPs = 0
         for tmd in self.team.completed_matches.values():
@@ -52,13 +56,13 @@ class TeamCalculation:
             red_alliance = Alliance(match.teams[3:5])
 
             if match.is_blue(self.team.team_number):
-                ac = AllianceCalculation(blue_alliance, self.firebase)
+                ac = AllianceCalculator(blue_alliance, self.firebase)
 
                 # Only predict wins not ties
                 if ac.win_probability_over(red_alliance):
                     predicted_RPs += 2
             else:
-                ac = AllianceCalculation(red_alliance, self.firebase)
+                ac = AllianceCalculator(red_alliance, self.firebase)
 
                 # Only predict wins not ties
                 if ac.win_probability_over(blue_alliance):
@@ -66,39 +70,35 @@ class TeamCalculation:
         return actual_RPs + predicted_RPs
 
     def predict_first_tie_breaker(self):
-        '''
-            Predict the first tie breaker for rankings. Use the actual value for matches that
-            are completed and predict the value for ones that are not.
+        '''Predict the first tie breaker for rankings. Use the actual value for matches that
+        are completed and predict the value for ones that are not.
         '''
         return 0.0
 
     def predict_second_tie_breaker(self):
-        '''
-            Predict the second tie breaker for rankings. Use the actual value for matches that
-            are completed and predict the values for ones that are not.
+        '''Predict the second tie breaker for rankings. Use the actual value for matches that
+        are completed and predict the values for ones that are not.
         '''
         return 0.0
 
     def first_pick_ability(self):
-        '''
-            Calculate the first pick ability which is the predicted offensive score that the
-            team can contribute combined with our team.
+        '''Calculate the first pick ability which is the predicted offensive score that the
+        team can contribute combined with our team.
 
-            fpa(X) = S_p(A)
+        .. math:: first\_pick\_ability(X) = predicted_score(A)
 
-            - S_p(A) predicted score of alliance A (this team and our team)
+        - predicted_score(A) predicted score of alliance A (this team and our team)
         '''
         fpa = 0.0
         alliance = Alliance(self.team, self.firebase.get_team(Constants.OUR_TEAM_NUMBER))
-        ac = AllianceCalculation(alliance)
+        ac = AllianceCalculator(alliance)
         fpa += ac.predicted_score()
         return fpa
 
     def second_pick_ability(self):
-        '''
-            Calculate the second pick ability
+        '''Calculate the second pick ability
 
-            spa(T) = [1 - dfp(T)] * [aA(T)]
+        .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) * auto\_ability(T)
         '''
         spa = 0.0
         spa += self.auto_ability()
@@ -106,10 +106,14 @@ class TeamCalculation:
         return spa
 
     def third_pick_ability(self):
+        '''Calculate the third pick ability'''
         tpa = 0.0
         return tpa
 
     def dysfunctional_percentage(self):
+        '''Calculates the percentage of matches in which the robot was either
+        not there or stopped moving
+        '''
         dysfunctional_matches = (self.team.calc.dq.total + self.team.calc.no_show.total
                                  + self.team.calc.stopped_moving.total)
         total_matches = len(self.team.info.match_numbers)

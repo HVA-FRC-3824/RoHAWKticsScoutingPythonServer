@@ -8,7 +8,7 @@
     
     <title>socket_server &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -24,17 +24,24 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body role="document">
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -52,9 +59,9 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">usb1</span>
 
-<span class="kn">from</span> <span class="nn">message_handler</span> <span class="k">import</span> <span class="n">MessageHandler</span>
-<span class="kn">from</span> <span class="nn">looper</span> <span class="k">import</span> <span class="n">Looper</span>
-<span class="kn">from</span> <span class="nn">ourlogging</span> <span class="k">import</span> <span class="n">setup_logging</span>
+<span class="kn">from</span> <span class="nn">message_handler</span> <span class="kn">import</span> <span class="n">MessageHandler</span>
+<span class="kn">from</span> <span class="nn">looper</span> <span class="kn">import</span> <span class="n">Looper</span>
+<span class="kn">from</span> <span class="nn">ourlogging</span> <span class="kn">import</span> <span class="n">setup_logging</span>
 <span class="n">setup_logging</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
@@ -87,7 +94,7 @@
         <span class="n">socket_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="p">]</span>
         <span class="n">read_list</span><span class="p">,</span> <span class="n">write_list</span><span class="p">,</span> <span class="n">error_list</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">socket_list</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="ow">in</span> <span class="n">read_list</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">RECEIVING</span><span class="p">:</span>
-            <span class="n">waiting_for_header</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">waiting_for_header</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">header_bytes</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">22</span><span class="p">)</span>
             <span class="n">digest</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">16</span><span class="p">)</span>
             <span class="n">header_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -97,7 +104,7 @@
                     <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="c1"># closing hack</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
                         <span class="k">return</span>
                     <span class="n">header_bytes</span><span class="p">[</span><span class="n">header_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">header_index</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -106,7 +113,7 @@
                         <span class="k">if</span> <span class="n">header_bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">HEADER_MSB</span> <span class="ow">and</span> <span class="n">header_bytes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">HEADER_LSB</span><span class="p">:</span>
                             <span class="n">total_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytearray_to_int</span><span class="p">(</span><span class="n">header_bytes</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
                             <span class="n">digest</span> <span class="o">=</span> <span class="n">header_bytes</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span>
-                            <span class="n">waiting_for_header</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="n">waiting_for_header</span> <span class="o">=</span> <span class="bp">False</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Received message does not have correct header&quot;</span><span class="p">)</span>
                             <span class="k">break</span>
@@ -114,9 +121,9 @@
                     <span class="n">buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">total_size</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">digest_match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_digest</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="n">digest</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received message: </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">decode</span><span class="p">()))</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Received message: {0:s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">decode</span><span class="p">()))</span>
                         <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_handler</span><span class="o">.</span><span class="n">handle_message</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
-                        <span class="k">if</span> <span class="n">reply</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">reply</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
                         <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -135,7 +142,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool. Whether the message was successfully sent</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SCT writing </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SCT writing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">HEADER_MSB</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">HEADER_LSB</span><span class="p">)</span>
@@ -153,22 +160,22 @@
             <span class="n">incoming_digest</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">incoming_digest</span><span class="p">)</span>
             <span class="n">incoming_index</span> <span class="o">=</span> <span class="mi">0</span>
 
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
                 <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bluetooth</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Acknowledgement not received&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="kc">False</span>
+                    <span class="k">return</span> <span class="bp">False</span>
                 <span class="n">incoming_digest</span><span class="p">[</span><span class="n">incoming_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">header</span>
                 <span class="n">incoming_index</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">incoming_index</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">digest_match</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="n">incoming_digest</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="kc">True</span>
+                        <span class="k">return</span> <span class="bp">True</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Written message digest does not match&quot;</span><span class="p">)</span>
-                        <span class="k">return</span> <span class="kc">False</span>
+                        <span class="k">return</span> <span class="bp">False</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;TimeoutExcpetion on write&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span></div>
+            <span class="k">return</span> <span class="bp">False</span></div>
 
 <div class="viewcode-block" id="SocketConnection.bytearray_to_int"><a class="viewcode-back" href="../socket_connection.html#socket_server.SocketConnection.bytearray_to_int">[docs]</a>    <span class="k">def</span> <span class="nf">bytearray_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Converts a `bytearray` to `int`&#39;&#39;&#39;</span>
@@ -208,11 +215,11 @@
 <span class="sd">            bool. Whether the digest matches</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">digest1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digest2</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="bp">False</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">digest1</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">digest1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">digest2</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span></div></div>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
 
 
 <div class="viewcode-block" id="SocketServer"><a class="viewcode-back" href="../socket_server_class.html#socket_server.SocketServer">[docs]</a><span class="k">class</span> <span class="nc">SocketServer</span><span class="p">(</span><span class="n">Looper</span><span class="p">):</span>
@@ -239,7 +246,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">message_handler</span> <span class="o">=</span> <span class="n">MessageHandler</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="bp">True</span>
 
 <div class="viewcode-block" id="SocketServer.setup_adb_bridge"><a class="viewcode-back" href="../socket_server_class.html#socket_server.SocketServer.setup_adb_bridge">[docs]</a>    <span class="k">def</span> <span class="nf">setup_adb_bridge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Sets up reverse port forward for attached android devices via the</span>
@@ -252,20 +259,20 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;adb is not compiled&quot;</span><span class="p">)</span>
 
         <span class="c1"># Grab connected android device serial numbers via adb</span>
-        <span class="n">devices_text</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">adb</span><span class="p">,</span> <span class="s2">&quot;devices&quot;</span><span class="p">],</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">devices_text</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">adb</span><span class="p">,</span> <span class="s2">&quot;devices&quot;</span><span class="p">],</span> <span class="n">universal_newlines</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;(.+)\tdevice&#39;</span><span class="p">)</span>
         <span class="n">devices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">devices_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
             <span class="n">matches</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">matches</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found android device: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">lastindex</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">matches</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found android device: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">lastindex</span><span class="p">)))</span>
                 <span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">lastindex</span><span class="p">))</span>
 
         <span class="c1"># set reverse port forward for each android device</span>
         <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reverse port forwarding </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">adb</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="s2">&quot;reverse&quot;</span><span class="p">,</span> <span class="s2">&quot;tcp:</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">),</span>
-                             <span class="s2">&quot;tcp:</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)])</span></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reverse port forwarding {0:s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">adb</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="s2">&quot;reverse&quot;</span><span class="p">,</span> <span class="s2">&quot;tcp:{0:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">),</span>
+                             <span class="s2">&quot;tcp:{0:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="SocketServer.on_pstart"><a class="viewcode-back" href="../socket_server_class.html#socket_server.SocketServer.on_pstart">[docs]</a>    <span class="k">def</span> <span class="nf">on_pstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Sets up the :func:`hotplug_callback` to trigger when a usb device is</span>
@@ -284,15 +291,15 @@
 <span class="sd">           reverse port forwarding via adb</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="n">usb1</span><span class="o">.</span><span class="n">HOTPLUG_EVENT_DEVICE_ARRIVED</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Devices </span><span class="si">{0:s}</span><span class="s2">:</span><span class="si">{1:s}</span><span class="s2"> plugged in&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getVendorID</span><span class="p">()),</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Devices {0:s}:{1:s} plugged in&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getVendorID</span><span class="p">()),</span>
                                                                 <span class="nb">hex</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getProductID</span><span class="p">())))</span>
             <span class="k">if</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getVendorID</span><span class="p">())</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ANDROID_VENDOR_IDS</span> <span class="ow">and</span>
                <span class="nb">hex</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getProductID</span><span class="p">())</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ANDROID_PRODUCT_IDS</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reverse port forwarding on </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getSerialNumber</span><span class="p">()))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reverse port forwarding on {0:s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">getSerialNumber</span><span class="p">()))</span>
                 <span class="c1"># Delay so adb can find the device</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">adb</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">.</span><span class="n">getSerialNumber</span><span class="p">(),</span> <span class="s2">&quot;reverse&quot;</span><span class="p">,</span>
-                                 <span class="s2">&quot;tcp:</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">),</span> <span class="s2">&quot;tcp:</span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)])</span></div>
+                                 <span class="s2">&quot;tcp:{0:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">),</span> <span class="s2">&quot;tcp:{0:d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="SocketServer.start"><a class="viewcode-back" href="../socket_server_class.html#socket_server.SocketServer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Starts the thread for accepting socket connections&#39;&#39;&#39;</span>
@@ -325,15 +332,21 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
 <ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bluetooth_server.html">Bluetooth Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../socket_server.html">Socket Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crash_reporter.html">Crash Reporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_handler.html">Message Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../the_blue_alliance.html">TheBlueAlliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../looper.html">Looper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calculators.html">Calculators</a></li>
 </ul>
-</div>
+
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -348,17 +361,22 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, FRC team 3824.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, FRC team 3824.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
   </body>
 </html>

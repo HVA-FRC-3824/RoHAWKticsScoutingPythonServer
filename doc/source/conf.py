@@ -34,7 +34,7 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.imgmath',
+    'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages']
@@ -71,6 +71,7 @@ release = u'1.0.1'
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
 language = None
+highlight_language = 'python'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -82,6 +83,7 @@ pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+add_function_parentheses = True
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -89,7 +91,7 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'classic'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -102,6 +104,8 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['../_static']
 
+# Adds the table of contents as a sidebar
+html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'], }
 
 # -- Options for HTMLHelp output ------------------------------------------
 

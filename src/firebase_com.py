@@ -27,9 +27,6 @@ logger = logging.getLogger(__name__)
 (secret, url) = ('TSkriBv7Z81MpfvsUM332f4HmtoAOjSUiN5xRLAb',
                  'https://rohawktics-scouting-2017.firebaseio.com/')
 
-firebase = fb.FirebaseApplication(url)
-
-
 class FirebaseCom:
     EVENT_ID = ""
     shared_state = {}
@@ -45,6 +42,7 @@ class FirebaseCom:
             self.instance = True
             self.plock = PLock()
             self.tlock = TLock()
+            self.firebase = fb.FirebaseApplication(url)
 
     def update_match(self, match):
         # update logistics information about a match (who was in it, score breakdown, etc)

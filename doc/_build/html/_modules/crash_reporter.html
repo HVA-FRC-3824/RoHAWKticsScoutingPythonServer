@@ -8,7 +8,7 @@
     
     <title>crash_reporter &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -24,17 +24,24 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body role="document">
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -45,10 +52,10 @@
 <span></span><span class="kn">import</span> <span class="nn">smtplib</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">PLock</span>
-<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">TLock</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">PLock</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">TLock</span>
 
-<span class="kn">from</span> <span class="nn">googlevoice</span> <span class="k">import</span> <span class="n">Voice</span>
+<span class="kn">from</span> <span class="nn">googlevoice</span> <span class="kn">import</span> <span class="n">Voice</span>
 
 
 <div class="viewcode-block" id="CrashReporter"><a class="viewcode-back" href="../crash_reporter.html#crash_reporter.CrashReporter">[docs]</a><span class="k">class</span> <span class="nc">CrashReporter</span><span class="p">:</span>
@@ -70,13 +77,13 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_state</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;instance&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">use_email</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_email&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">use_texting</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_texting&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">use_email</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_email&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">use_texting</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_texting&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_email</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_texting</span><span class="p">:</span>
                 <span class="n">login_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;logins_file&#39;</span><span class="p">,</span> <span class="s1">&#39;../logins.json&#39;</span><span class="p">)</span>
                 <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">login_file_path</span><span class="p">)):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Login file </span><span class="si">{0:s}</span><span class="s2"> does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">login_file_path</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Login file {0:s} does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">login_file_path</span><span class="p">))</span>
                     <span class="c1"># Real problem... no way to communicate</span>
                     <span class="k">return</span>
                 <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">login_file_path</span><span class="p">)</span>
@@ -104,7 +111,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tlock</span> <span class="o">=</span> <span class="n">TLock</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plock</span> <span class="o">=</span> <span class="n">PLock</span><span class="p">()</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="bp">True</span>
 
 <div class="viewcode-block" id="CrashReporter.report_server_crash"><a class="viewcode-back" href="../crash_reporter.html#crash_reporter.CrashReporter.report_server_crash">[docs]</a>    <span class="k">def</span> <span class="nf">report_server_crash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Send a message if the server crashed</span>
@@ -128,7 +135,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            message (`str`): error message to send</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">header</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;To:</span><span class="si">{0:s}</span><span class="se">\n</span><span class="s2">From:</span><span class="si">{1:s}</span><span class="se">\n</span><span class="s2">Subject: Server Crash!!!</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;To:{0:s}</span><span class="se">\n</span><span class="s2">From:{1:s}</span><span class="se">\n</span><span class="s2">Subject: Server Crash!!!</span><span class="se">\n</span><span class="s2">&quot;</span>
                   <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">emails</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmail_user</span><span class="p">))</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smtp</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gmail_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emails</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
@@ -142,22 +149,28 @@
         <span class="k">for</span> <span class="n">phone_number</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobiles</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">twilio</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">phone_number</span><span class="p">,</span>
                                         <span class="n">from_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">twilio_number</span><span class="p">,</span>
-                                        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;Server Crash!!!</span><span class="se">\n</span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">))</span></div></div>
+                                        <span class="n">body</span><span class="o">=</span><span class="s2">&quot;Server Crash!!!</span><span class="se">\n</span><span class="s2">{0:s}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">))</span></div></div>
 </pre></div>
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
 <ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bluetooth_server.html">Bluetooth Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../socket_server.html">Socket Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crash_reporter.html">Crash Reporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_handler.html">Message Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../the_blue_alliance.html">TheBlueAlliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../looper.html">Looper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calculators.html">Calculators</a></li>
 </ul>
-</div>
+
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -172,17 +185,22 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, FRC team 3824.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, FRC team 3824.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
   </body>
 </html>

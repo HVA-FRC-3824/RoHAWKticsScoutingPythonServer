@@ -4,85 +4,107 @@ from .data_model import DataModel
 
 
 class LowLevelStats(DataModel):
+    '''Data Model that holds low level statistics (average, min, max, total, standard deviation)
+
+    Note:
+        This should not be created directly and instead made using :func:`from_list`
+    '''
     def __init__(self):
-        pass
+        self.max = 0
+        self.min = 0
+        self.average = 0
+        self.std = 0
+        self.total = 0
 
-    def from_list(self, list_):
-        self.max = 0.0
-        self.min = 0.0
-        self.average = 0.0
-        self.std = 0.0
-        self.total = 0.0
+    @staticmethod
+    def from_list(list_):
+        '''Create the :class:`LowLevelStats` from a list of data points
 
+        Args:
+            list_ (`list`): a list of int, float, or bool that is used to aggregate
+            the low level statistics
+        '''
         if len(list_) == 0:
             return
 
         if isinstance(list_[0], bool):
-            self.from_boolean(list_)
+            return LowLevelStats.from_boolean(list_)
         elif isinstance(list_[0], int):
-            self.from_int(list_)
+            return LowLevelStats.from_int(list_)
         elif isinstance(list_[0], float):
-            self.from_float(list_)
+            return LowLevelStats.from_float(list_)
         else:
             raise Exception("Unknown type")
 
-    def from_boolean(self, list_):
-        self.max = 0.0
-        self.min = 1.0
+    @staticmethod
+    def from_boolean(list_):
+        '''Creates a :class:`LowLevelStats` from a list of bools'''
+        l = LowLevelStats()
+        l.max = 0.0
+        l.min = 1.0
 
         for item in list_:
             if item:
-                self.max = 1.0
-                self.total += 1.0
+                l.max = 1.0
+                l.total += 1.0
             else:
-                self.min = 0.0
+                l.min = 0.0
 
-        self.average = self.total / len(list_)
+        l.average = l.total / len(list_)
 
         for item in list_:
             if item:
-                self.std += (1.0 - self.average) ** 2
+                l.std += (1.0 - l.average) ** 2
             else:
-                self.std += self.average ** 2
-        self.std /= len(list_)
-        self.std = math.sqrt(self.std)
+                l.std += l.average ** 2
+        l.std /= len(list_)
+        l.std = math.sqrt(l.std)
+        return l
 
-    def from_int(self, list_):
-        self.max = -float("inf")
-        self.min = float("inf")
+    @staticmethod
+    def from_int(list_):
+        '''Creates a :class:`LowLevelStats` from a list of ints'''
+        l = LowLevelStats()
+        l.max = -float("inf")
+        l.min = float("inf")
 
         for item in list_:
-            if item > self.max:
-                self.max = item
+            if item > l.max:
+                l.max = item
 
-            if item < self.min:
-                self.min = item
+            if item < l.min:
+                l.min = item
 
             self.total += item
 
-        self.average = self.total / len(list_)
+        l.average = l.total / len(list_)
 
         for item in list_:
-            self.std += (item - self.average) ** 2
-        self.std /= len(list_)
-        self.std = math.sqrt(self.std)
+            l.std += (item - l.average) ** 2
+        l.std /= len(list_)
+        l.std = math.sqrt(l.std)
+        return l
 
-    def from_float(self, list_):
-        self.max = sys.floatmin
-        self.min = sys.floatmax
-
-        for item in list_:
-            if item > self.max:
-                self.max = item
-
-            if item < self.min:
-                self.min = item
-
-            self.total += item
-
-        self.average = self.total / len(list_)
+    @staticmethod
+    def from_float(list_):
+        '''Creates a :class:`LowLevelStats` from a list of floats'''
+        l = LowLevelStats()
+        l.max = sys.floatmin
+        l.min = sys.floatmax
 
         for item in list_:
-            self.std += (item - self.average) ** 2
-        self.std /= len(list_)
-        self.std = math.sqrt(self.std)
+            if item > l.max:
+                l.max = item
+
+            if item < l.min:
+                l.min = item
+
+            l.total += item
+
+        l.average = l.total / len(list_)
+
+        for item in list_:
+            l.std += (item - l.average) ** 2
+        l.std /= len(list_)
+        l.std = math.sqrt(l.std)
+        return l

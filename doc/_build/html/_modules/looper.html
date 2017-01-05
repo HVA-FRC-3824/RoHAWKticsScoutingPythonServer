@@ -8,7 +8,7 @@
     
     <title>looper &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
     
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -24,17 +24,24 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body role="document">
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -42,8 +49,8 @@
           <div class="body" role="main">
             
   <h1>Source code for looper</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">PLock</span>
-<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">TLock</span>
+<span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Pipe</span><span class="p">,</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">PLock</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">TLock</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 
@@ -53,7 +60,7 @@
     <span class="n">kDefaultLoopTime</span> <span class="o">=</span> <span class="mf">0.1</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kDefaultLoopTime</span>
 
 <div class="viewcode-block" id="Looper.set_loop_time"><a class="viewcode-back" href="../looper.html#looper.Looper.set_loop_time">[docs]</a>    <span class="k">def</span> <span class="nf">set_loop_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_time</span><span class="p">):</span>
@@ -67,7 +74,7 @@
 <div class="viewcode-block" id="Looper.tstart"><a class="viewcode-back" href="../looper.html#looper.Looper.tstart">[docs]</a>    <span class="k">def</span> <span class="nf">tstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Starts a looping thread</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tlock</span> <span class="o">=</span> <span class="n">TLock</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tloop</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
@@ -83,7 +90,7 @@
 <div class="viewcode-block" id="Looper.tloop"><a class="viewcode-back" href="../looper.html#looper.Looper.tloop">[docs]</a>    <span class="k">def</span> <span class="nf">tloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Runs the thread loop</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_tstart</span><span class="p">()</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -93,13 +100,13 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">-</span> <span class="n">delta_time</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_time</span> <span class="o">-</span> <span class="n">delta_time</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_tend</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Looper.ploop"><a class="viewcode-back" href="../looper.html#looper.Looper.ploop">[docs]</a>    <span class="k">def</span> <span class="nf">ploop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipe</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Runs the process loop</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_pstart</span><span class="p">()</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">pipe</span><span class="o">.</span><span class="n">poll</span><span class="p">():</span>
@@ -153,9 +160,9 @@
 <div class="viewcode-block" id="Looper.stop"><a class="viewcode-back" href="../looper.html#looper.Looper.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Stops the thread or process</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">):</span>
@@ -169,15 +176,21 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
 <ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bluetooth_server.html">Bluetooth Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../socket_server.html">Socket Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crash_reporter.html">Crash Reporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message_handler.html">Message Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../the_blue_alliance.html">TheBlueAlliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../looper.html">Looper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calculators.html">Calculators</a></li>
 </ul>
-</div>
+
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -192,17 +205,22 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, FRC team 3824.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
-      
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, FRC team 3824.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
   </body>
 </html>

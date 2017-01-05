@@ -3,6 +3,7 @@ from .low_level_stats import LowLevelStats
 
 
 class TeamCalculatedData(DataModel):
+    '''All the calculated data for a team'''
     def __init__(self, **kwargs):
         self.team_number = -1
 

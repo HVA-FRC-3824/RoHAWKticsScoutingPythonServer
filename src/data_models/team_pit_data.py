@@ -2,6 +2,7 @@ from .data_model import DataModel
 
 
 class TeamPitData(DataModel):
+    '''Data collected by pit scouts'''
     def __init__(self, **kwargs):
         self.team_number = -1
         self.scout_name = ""

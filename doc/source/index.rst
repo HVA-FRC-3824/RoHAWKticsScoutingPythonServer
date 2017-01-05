@@ -8,7 +8,6 @@ Welcome to RoHAWKtics Scouting Server's documentation!
 
 .. toctree::
    :maxdepth: 6
-   :caption: Table of Contents
    :name: mastertoc
 
    server
@@ -18,5 +17,6 @@ Welcome to RoHAWKtics Scouting Server's documentation!
    crash_reporter
    message_handler
    the_blue_alliance
-   ourlogging
    looper
+   data_models
+   calculators

@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Data Models &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Calculators" href="calculators.html" />
+    <link rel="prev" title="Looper" href="looper.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="calculators.html" title="Calculators"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="looper.html" title="Looper"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="data-models">
+<h1>Data Models<a class="headerlink" href="#data-models" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-data_models.data_model"></span><dl class="class">
+<dt id="data_models.data_model.DataModel">
+<em class="property">class </em><code class="descclassname">data_models.data_model.</code><code class="descname">DataModel</code><a class="reference internal" href="_modules/data_models/data_model.html#DataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.data_model.DataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for the data models that allows them to easily convert to <cite>dict</cite> which
+can be converted to json</p>
+<dl class="method">
+<dt id="data_models.data_model.DataModel.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/data_model.html#DataModel.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.data_model.DataModel.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the object to a <cite>dict</cite></p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd><cite>dict</cite> representation of the object</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-data_models.alliance"></span><dl class="class">
+<dt id="data_models.alliance.Alliance">
+<em class="property">class </em><code class="descclassname">data_models.alliance.</code><code class="descname">Alliance</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/alliance.html#Alliance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.alliance.Alliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data Model for holding information about 3 teams that form an alliance</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>args (<cite>list</cite>): a list of team numbers or <cite>Team</cite> objects</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-data_models.low_level_stats"></span><dl class="class">
+<dt id="data_models.low_level_stats.LowLevelStats">
+<em class="property">class </em><code class="descclassname">data_models.low_level_stats.</code><code class="descname">LowLevelStats</code><a class="reference internal" href="_modules/data_models/low_level_stats.html#LowLevelStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.low_level_stats.LowLevelStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data Model that holds low level statistics (average, min, max, total, standard deviation)</p>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>This should not be created directly and instead made using <a class="reference internal" href="#data_models.low_level_stats.LowLevelStats.from_list" title="data_models.low_level_stats.LowLevelStats.from_list"><code class="xref py py-func docutils literal"><span class="pre">from_list()</span></code></a></dd>
+</dl>
+<dl class="staticmethod">
+<dt id="data_models.low_level_stats.LowLevelStats.from_boolean">
+<em class="property">static </em><code class="descname">from_boolean</code><span class="sig-paren">(</span><em>list_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/low_level_stats.html#LowLevelStats.from_boolean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.low_level_stats.LowLevelStats.from_boolean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <a class="reference internal" href="#data_models.low_level_stats.LowLevelStats" title="data_models.low_level_stats.LowLevelStats"><code class="xref py py-class docutils literal"><span class="pre">LowLevelStats</span></code></a> from a list of bools</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="data_models.low_level_stats.LowLevelStats.from_float">
+<em class="property">static </em><code class="descname">from_float</code><span class="sig-paren">(</span><em>list_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/low_level_stats.html#LowLevelStats.from_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.low_level_stats.LowLevelStats.from_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <a class="reference internal" href="#data_models.low_level_stats.LowLevelStats" title="data_models.low_level_stats.LowLevelStats"><code class="xref py py-class docutils literal"><span class="pre">LowLevelStats</span></code></a> from a list of floats</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="data_models.low_level_stats.LowLevelStats.from_int">
+<em class="property">static </em><code class="descname">from_int</code><span class="sig-paren">(</span><em>list_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/low_level_stats.html#LowLevelStats.from_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.low_level_stats.LowLevelStats.from_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <a class="reference internal" href="#data_models.low_level_stats.LowLevelStats" title="data_models.low_level_stats.LowLevelStats"><code class="xref py py-class docutils literal"><span class="pre">LowLevelStats</span></code></a> from a list of ints</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="data_models.low_level_stats.LowLevelStats.from_list">
+<em class="property">static </em><code class="descname">from_list</code><span class="sig-paren">(</span><em>list_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/low_level_stats.html#LowLevelStats.from_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.low_level_stats.LowLevelStats.from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the <a class="reference internal" href="#data_models.low_level_stats.LowLevelStats" title="data_models.low_level_stats.LowLevelStats"><code class="xref py py-class docutils literal"><span class="pre">LowLevelStats</span></code></a> from a list of data points</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><a href="#id1"><span class="problematic" id="id2">list_</span></a> (<cite>list</cite>): a list of int, float, or bool that is used to aggregate
+the low level statistics</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-data_models.match"></span><dl class="class">
+<dt id="data_models.match.Match">
+<em class="property">class </em><code class="descclassname">data_models.match.</code><code class="descname">Match</code><a class="reference internal" href="_modules/data_models/match.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.match.Match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data model that represents a match</p>
+<dl class="method">
+<dt id="data_models.match.Match.is_blue">
+<code class="descname">is_blue</code><span class="sig-paren">(</span><em>team_number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/match.html#Match.is_blue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.match.Match.is_blue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether the team is on the blue alliance in this match</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data_models.match.Match.is_red">
+<code class="descname">is_red</code><span class="sig-paren">(</span><em>team_number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/match.html#Match.is_red"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.match.Match.is_red" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether the team is on the red alliance in this match</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-data_models.scout_accuracy"></span><dl class="class">
+<dt id="data_models.scout_accuracy.ScoutAccuracy">
+<em class="property">class </em><code class="descclassname">data_models.scout_accuracy.</code><code class="descname">ScoutAccuracy</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/scout_accuracy.html#ScoutAccuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.scout_accuracy.ScoutAccuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data model that contains all the information about the error between this
+particular scouts data and <cite>The Blue Alliance &lt;thebluealliance.com&gt;`_</cite></p>
+<dl class="method">
+<dt id="data_models.scout_accuracy.ScoutAccuracy.total">
+<code class="descname">total</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/scout_accuracy.html#ScoutAccuracy.total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.scout_accuracy.ScoutAccuracy.total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tallies the error from each individual match scouted</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-data_models.scouted_match_accuracy"></span><dl class="class">
+<dt id="data_models.scouted_match_accuracy.ScoutedMatchAccuracy">
+<em class="property">class </em><code class="descclassname">data_models.scouted_match_accuracy.</code><code class="descname">ScoutedMatchAccuracy</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/scouted_match_accuracy.html#ScoutedMatchAccuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.scouted_match_accuracy.ScoutedMatchAccuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data model that contains the information about a scouts data error when
+compared to <a class="reference external" href="thebluealliance.com">The Blue Alliance</a> for a specific match</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.super_match_data"></span><dl class="class">
+<dt id="data_models.super_match_data.SuperMatchData">
+<em class="property">class </em><code class="descclassname">data_models.super_match_data.</code><code class="descname">SuperMatchData</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/super_match_data.html#SuperMatchData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.super_match_data.SuperMatchData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data model that contains the data collect by a Super Scout for a match</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_calculated_data"></span><dl class="class">
+<dt id="data_models.team_calculated_data.TeamCalculatedData">
+<em class="property">class </em><code class="descclassname">data_models.team_calculated_data.</code><code class="descname">TeamCalculatedData</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_calculated_data.html#TeamCalculatedData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_calculated_data.TeamCalculatedData" title="Permalink to this definition">¶</a></dt>
+<dd><p>All the calculated data for a team</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_dt_feedback"></span><dl class="class">
+<dt id="data_models.team_dt_feedback.TeamDTFeedback">
+<em class="property">class </em><code class="descclassname">data_models.team_dt_feedback.</code><code class="descname">TeamDTFeedback</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_dt_feedback.html#TeamDTFeedback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_dt_feedback.TeamDTFeedback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feedback given by the drive team about our alliance partners</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_logistics"></span><dl class="class">
+<dt id="data_models.team_logistics.TeamLogistics">
+<em class="property">class </em><code class="descclassname">data_models.team_logistics.</code><code class="descname">TeamLogistics</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_logistics.html#TeamLogistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_logistics.TeamLogistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logistics about a team collected from <cite>The Blue Alliance &lt;thebluealliance.com&gt;_</cite></p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_match_data"></span><dl class="class">
+<dt id="data_models.team_match_data.TeamMatchData">
+<em class="property">class </em><code class="descclassname">data_models.team_match_data.</code><code class="descname">TeamMatchData</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_match_data.html#TeamMatchData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_match_data.TeamMatchData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data collected by a match scout about a specific robot in a specific match</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_pick_ability"></span><dl class="class">
+<dt id="data_models.team_pick_ability.TeamPickAbility">
+<em class="property">class </em><code class="descclassname">data_models.team_pick_ability.</code><code class="descname">TeamPickAbility</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_pick_ability.html#TeamPickAbility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_pick_ability.TeamPickAbility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data about a team&#8217;s strength as a specific type of pick</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_pit_data"></span><dl class="class">
+<dt id="data_models.team_pit_data.TeamPitData">
+<em class="property">class </em><code class="descclassname">data_models.team_pit_data.</code><code class="descname">TeamPitData</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_pit_data.html#TeamPitData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_pit_data.TeamPitData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data collected by pit scouts</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team_ranking_data"></span><dl class="class">
+<dt id="data_models.team_ranking_data.TeamRankingData">
+<em class="property">class </em><code class="descclassname">data_models.team_ranking_data.</code><code class="descname">TeamRankingData</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_models/team_ranking_data.html#TeamRankingData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_models.team_ranking_data.TeamRankingData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data about a team&#8217;s current or predicted ranking</p>
+</dd></dl>
+
+<span class="target" id="module-data_models.team"></span></div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bluetooth_server.html">Bluetooth Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="socket_server.html">Socket Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crash_reporter.html">Crash Reporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_handler.html">Message Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="the_blue_alliance.html">TheBlueAlliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="looper.html">Looper</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Models</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calculators.html">Calculators</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="looper.html"
+                        title="previous chapter">Looper</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="calculators.html"
+                        title="next chapter">Calculators</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/data_models.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="calculators.html" title="Calculators"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="looper.html" title="Looper"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, FRC team 3824.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

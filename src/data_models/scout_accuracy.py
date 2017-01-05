@@ -2,6 +2,8 @@ from .data_model import DataModel
 
 
 class ScoutAccuracy(DataModel):
+    '''Data model that contains all the information about the error between this
+       particular scouts data and `The Blue Alliance <thebluealliance.com>`_`'''
     def __init__(self, **kwargs):
         self.name = ""
         self.scouted_matches = {}
@@ -14,6 +16,7 @@ class ScoutAccuracy(DataModel):
         self.__dict__.update(**kwargs)
 
     def total(self):
+        '''Tallies the error from each individual match scouted'''
         self.total_error = 0
         self.auto_error = 0
         self.teleop_error = 0

@@ -25,8 +25,8 @@ from data_models.team_pick_ability import TeamPickAbility
 from data_models.team_calculated_data import TeamCalculatedData
 from data_models.low_level_stats import LowLevelStats
 
-from calculators.team_calculation import TeamCalculation
-from calculators.alliance_calculation import AllianceCalculation
+from calculators.team_calculator import TeamCalculator
+from calculators.alliance_calculator import AllianceCalculator
 
 from ourlogging import setup_logging
 
@@ -141,7 +141,7 @@ class Server(Looper):
 
         Args:
             event_teams (dict): The team information from `The Blue Alliance <thebluealliance.com>`_
-            
+
             team_matches (dict): The match numbers for each team
 
         '''
@@ -390,11 +390,11 @@ class Server(Looper):
                     continue
 
                 if match.is_blue(team.team_number):
-                    ac = AllianceCalculation(Alliance(*match.teams[0:2]))
-                    opp = AllianceCalculation(Alliance(*match.teams[3:5]))
+                    ac = AllianceCalculator(Alliance(*match.teams[0:2]))
+                    opp = AllianceCalculator(Alliance(*match.teams[3:5]))
                 else:
-                    ac = AllianceCalculation(Alliance(*match.teams[3:5]))
-                    opp = AllianceCalculation(Alliance(*match.teams[0:2]))
+                    ac = AllianceCalculator(Alliance(*match.teams[3:5]))
+                    opp = AllianceCalculator(Alliance(*match.teams[0:2]))
 
                 if ac.win_probability_over(opp) > 0.5:
                     team.predicted_ranking.wins += 1
@@ -423,7 +423,7 @@ class Server(Looper):
         :class:`SuperMatchData`, and :class:`TeamCalculatedData`
         '''
         for team in self.firebase.get_teams().values():
-            tc = TeamCalculation(team)
+            tc = TeamCalculator(team)
 
             # First Pick
             team.first_pick.pick_ability = tc.first_pick_ability()
