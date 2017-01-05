@@ -4,6 +4,7 @@ from data_models.alliance import Alliance
 from firebase_com import FirebaseCom
 from calculators.calculator import Calculator
 
+
 class AllianceCalculator:
     '''Makes calculation about an alliance
 
@@ -73,12 +74,14 @@ class AllianceCalculator:
         approximated by the `Welch-Satterthwaite equation
         <https://en.wikipedia.org/wiki/WelchSatterthwaite_equation>`_
 
-        .. math:: v \\approx \\frac{(\\frac{s_1^2}{N_1} + \\frac{s_2^2}{N_2})^2}{\\frac{s_1^4}{N_1^2 \\cdot v_1} + \\frac{s_2^4}{N_2^2 \\cdot v_2}}
+        .. math::
+            v \\approx \\frac{(\\frac{s_1^2}{N_1}+\\frac{s_2^2}{N_2})^2}{\\frac{s_1^4}
+            {N_1^2\\cdot v_1}+\\frac{s_2^4}{N_2^2\\cdot v_2}}
 
         where :math:`v_1 = N_1 - 1` (the degrees of freedom for the first variance) and :math:`v_2 = N_2 -1`
         '''
         if isinstance(o, Alliance):
-            return self.win_probability_over(AllianceCalculation(o))
+            return self.win_probability_over(AllianceCalculator(o))
         else:
             s_1 = self.std_predicted_score()
             s_2 = o.std_predicted_score()

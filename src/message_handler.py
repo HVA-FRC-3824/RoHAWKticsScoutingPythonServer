@@ -134,7 +134,7 @@ class MessageHandler:
         else:
             logger.error("message is not a dict or list")
 
-    def handle_sync():
+    def handle_sync(self):
         '''creates a response for a sync request'''
         logger.debug("Received sync request")
         data = {}

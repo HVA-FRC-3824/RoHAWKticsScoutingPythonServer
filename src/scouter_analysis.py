@@ -63,7 +63,6 @@ class ScouterAnalysis(Looper):
                 self.teleop_threshold = self.TELEOP_THRESHOLD_DEFAULT
                 self.endgame_threshold = self.ENDGAME_THRESHOLD_DEFAULT
 
-
             self.use_email = kwargs.get('use_email', True)
             self.use_texting = kwargs.get('use_texting', True)
 

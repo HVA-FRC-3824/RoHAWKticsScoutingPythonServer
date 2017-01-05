@@ -75,7 +75,7 @@ class LowLevelStats(DataModel):
             if item < l.min:
                 l.min = item
 
-            self.total += item
+            l.total += item
 
         l.average = l.total / len(list_)
 

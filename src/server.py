@@ -7,7 +7,7 @@ import sys
 import json
 import threading
 import scipy.stats as stats
-
+from threading import Event
 from looper import Looper
 
 from firebase_com import FirebaseCom
@@ -90,7 +90,6 @@ class Server(Looper):
     def start(self):
         '''Starts the main thread loop'''
         self.event = None
-        self.tlock = TLock()
         self.on_tstart()
         while self.running:
             start_time = time.time()

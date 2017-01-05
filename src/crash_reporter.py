@@ -3,8 +3,11 @@ import json
 import os
 from multiprocessing import Lock as PLock
 from threading import Lock as TLock
-
-from googlevoice import Voice
+from twilio.rest import TwilioRestClient
+import logging
+from ourlogging import setup_logging
+setup_logging(__file__)
+logger = logging.getLogger(__name__)
 
 
 class CrashReporter:

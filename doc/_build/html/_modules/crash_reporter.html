@@ -54,8 +54,11 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">PLock</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span> <span class="k">as</span> <span class="n">TLock</span>
-
-<span class="kn">from</span> <span class="nn">googlevoice</span> <span class="kn">import</span> <span class="n">Voice</span>
+<span class="kn">from</span> <span class="nn">twilio.rest</span> <span class="kn">import</span> <span class="n">TwilioRestClient</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">ourlogging</span> <span class="kn">import</span> <span class="n">setup_logging</span>
+<span class="n">setup_logging</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CrashReporter"><a class="viewcode-back" href="../crash_reporter.html#crash_reporter.CrashReporter">[docs]</a><span class="k">class</span> <span class="nc">CrashReporter</span><span class="p">:</span>

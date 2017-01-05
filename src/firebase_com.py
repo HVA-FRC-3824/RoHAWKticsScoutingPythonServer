@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 (secret, url) = ('TSkriBv7Z81MpfvsUM332f4HmtoAOjSUiN5xRLAb',
                  'https://rohawktics-scouting-2017.firebaseio.com/')
 
+
 class FirebaseCom:
     EVENT_ID = ""
     shared_state = {}
@@ -52,7 +53,7 @@ class FirebaseCom:
         elif isinstance(match, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(match['match_number']), match)
+            success = self.firebase.put(ref, "{0:d}".format(match['match_number']), match)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -78,7 +79,7 @@ class FirebaseCom:
         elif isinstance(tmd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}_{1:d}".format(tmd['match_number'], tmd['team_number']), tmd)
+            success = self.firebase.put(ref, "{0:d}_{1:d}".format(tmd['match_number'], tmd['team_number']), tmd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -115,7 +116,7 @@ class FirebaseCom:
         elif isinstance(tpd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tpd['team_number']), tpd)
+            success = self.firebase.put(ref, "{0:d}".format(tpd['team_number']), tpd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -141,7 +142,7 @@ class FirebaseCom:
         elif isinstance(smd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(smd['match_number']), smd)
+            success = self.firebase.put(ref, "{0:d}".format(smd['match_number']), smd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -176,7 +177,7 @@ class FirebaseCom:
         elif isinstance(tdtf, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tdtf['team_number']), tdtf)
+            success = self.firebase.put(ref, "{0:d}".format(tdtf['team_number']), tdtf)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -202,7 +203,7 @@ class FirebaseCom:
         elif isinstance(tl, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tl['team_number']), tl)
+            success = self.firebase.put(ref, "{0:d}".format(tl['team_number']), tl)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -228,7 +229,7 @@ class FirebaseCom:
         elif isinstance(tcd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tcd['team_number']), tcd)
+            success = self.firebase.put(ref, "{0:d}".format(tcd['team_number']), tcd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -254,7 +255,7 @@ class FirebaseCom:
         elif isinstance(trd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(trd['team_number']), trd)
+            success = self.firebase.put(ref, "{0:d}".format(trd['team_number']), trd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -280,7 +281,7 @@ class FirebaseCom:
         elif isinstance(trd, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(trd['team_number']), trd)
+            success = self.firebase.put(ref, "{0:d}".format(trd['team_number']), trd)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -306,7 +307,7 @@ class FirebaseCom:
         elif isinstance(tpa, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
+            success = self.firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -332,7 +333,7 @@ class FirebaseCom:
         elif isinstance(tpa, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
+            success = self.firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -358,7 +359,7 @@ class FirebaseCom:
         elif isinstance(tpa, dict):
             self.tlock.acquire()
             self.plock.acquire()
-            success = firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
+            success = self.firebase.put(ref, "{0:d}".format(tpa['team_number']), tpa)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -428,7 +429,7 @@ class FirebaseCom:
             self.tlock.acquire()
             self.plock.acquire()
             print(scout['name'])
-            success = firebase.put(ref, scout['name'], scout)
+            success = self.firebase.put(ref, scout['name'], scout)
             self.tlock.release()
             self.plock.release()
             if not success:
@@ -454,12 +455,12 @@ class FirebaseCom:
         return [ScoutAccuracy(**x) for x in scout_dict.values()]
 
     def get_python_object_from_firebase_location(self, location):
-        return utils.make_ascii_from_json(firebase.get(location, None))
+        return utils.make_ascii_from_json(self.firebase.get(location, None))
 
     def cache(self):
         while True:
             try:
-                data = json.dumps(firebase.get("/", None), indent=4)
+                data = json.dumps(self.firebase.get("/", None), indent=4)
                 now = str(datetime.datetime.now())
                 with open("../cached_firebases/" + now + '.json', 'w') as f:
                     f.write(data)
