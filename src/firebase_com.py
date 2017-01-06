@@ -17,6 +17,8 @@ from data_models.team_pick_ability import TeamPickAbility
 from data_models.team_ranking_data import TeamRankingData
 from data_models.team_calculated_data import TeamCalculatedData
 from data_models.scout_accuracy import ScoutAccuracy
+from data_models.strategy import Strategy
+from data_models.match_strategy import MatchStrategy
 
 import logging
 from ourlogging import setup_logging
@@ -569,7 +571,7 @@ class FirebaseCom:
         '''update the data for the strategy'''
         ref = "{0:s}/strategy/individual".format(self.base_ref)
         if isinstance(strategy, Strategy):
-            self.update_strategy(strategy=.to_dict())
+            self.update_strategy(strategy.to_dict())
         elif isinstance(strategy, dict):
             self.tlock.acquire()
             self.plock.acquire()
@@ -605,7 +607,7 @@ class FirebaseCom:
         '''update the data for the match strategy'''
         ref = "{0:s}/strategy/match".format(self.base_ref)
         if isinstance(strategy, MatchStrategy):
-            self.update_match_strategy(strategy=.to_dict())
+            self.update_match_strategy(strategy.to_dict())
         elif isinstance(strategy, dict):
             self.tlock.acquire()
             self.plock.acquire()

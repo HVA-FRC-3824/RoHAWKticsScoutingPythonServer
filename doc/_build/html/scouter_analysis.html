@@ -55,86 +55,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-scouter_analysis">
-<span id="scouter-analysis"></span><h1>Scouter Analysis<a class="headerlink" href="#module-scouter_analysis" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="scouter_analysis.ScouterAnalysis">
-<em class="property">class </em><code class="descclassname">scouter_analysis.</code><code class="descname">ScouterAnalysis</code><span class="sig-paren">(</span><em>loop_time=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thread class for determining scouting error</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>loop_time (<cite>float</cite>): Minumum time for a loop</dd>
-<dt>Kwargs:</dt>
-<dd><p class="first">scouter_accuracy_config (<cite>dict</cite>): contains the error thresholds</p>
-<p>use_email (<cite>bool</cite>): whether to send reports via email</p>
-<p>emails (<cite>list</cite>): list of emails to send reports to</p>
-<p>use_texting (<cite>bool</cite>): whether to send reports via texting</p>
-<p>mobiles (<cite>list</cite>): list of phone numbers to send reports to</p>
-<p class="last">login_file (<cite>str</cite>): location of the file containing the login information (not in the repo)</p>
-</dd>
-</dl>
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.email_report">
-<code class="descname">email_report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.email_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.email_report" title="Permalink to this definition">¶</a></dt>
-<dd><p>send the message via email</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>message (<cite>str</cite>): error message to send</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.export">
-<code class="descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.export"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exports the information to csv files (one overall and one for each scouter)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.on_tloop">
-<code class="descname">on_tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.on_tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.on_tloop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the error in the data for each alliance</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.on_tstart">
-<code class="descname">on_tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.on_tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.on_tstart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marks the start of the thread</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.report_error">
-<code class="descname">report_error</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.report_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.report_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a message if the error is too large</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>message (<cite>str</cite>): error message to send</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start the thread for calculating error in the data</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stops the thread and closes email</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="scouter_analysis.ScouterAnalysis.text_report">
-<code class="descname">text_report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scouter_analysis.html#ScouterAnalysis.text_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scouter_analysis.ScouterAnalysis.text_report" title="Permalink to this definition">¶</a></dt>
-<dd><p>send the message via text</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>message (<cite>str</cite>): error message to send</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="scouter-analysis">
+<h1>Scouter Analysis<a class="headerlink" href="#scouter-analysis" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
