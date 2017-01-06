@@ -15,7 +15,7 @@ setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
 
-class ScouterAnalysis(Looper):
+class ScoutAnalysis(Looper):
     '''Thread class for determining scouting error
 
     Args:

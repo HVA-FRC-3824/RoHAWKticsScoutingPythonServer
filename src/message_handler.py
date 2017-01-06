@@ -140,42 +140,50 @@ class MessageHandler:
         data = {}
 
         data['match'] = []
-        for tmd in self.firebase.get_all_team_match_data():
+        for tmd in self.firebase.get_all_team_match_data().values():
             data['match'].append(tmd.to_dict())
 
         data['pit'] = []
-        for tpd in self.firebase.get_all_team_pit_data():
+        for tpd in self.firebase.get_all_team_pit_data().values():
             data['pit'].append(tpd.to_dict())
 
         data['super'] = []
-        for smd in self.firebase.get_all_super_match_data():
+        for smd in self.firebase.get_all_super_match_data().values():
             data['super'].append(smd.to_dict())
 
         data['calc'] = []
-        for tcd in self.firebase.get_all_team_calculated_data():
+        for tcd in self.firebase.get_all_team_calculated_data().values():
             data['calc'].append(tcd.to_dict())
 
         data['1st'] = []
-        for tpa in self.firebase.get_all_first_pick_abilities():
+        for tpa in self.firebase.get_all_first_pick_abilities().values():
             data['1st'].append(tpa.to_dict())
 
         data['2nd'] = []
-        for tpa in self.firebase.get_all_second_pick_abilities():
+        for tpa in self.firebase.get_all_second_pick_abilities().values():
             data['2nd'].append(tpa.to_dict())
 
         data['3rd'] = []
-        for tpa in self.firebase.get_all_third_pick_abilities():
+        for tpa in self.firebase.get_all_third_pick_abilities().values():
             data['3rd'].append(tpa.to_dict())
 
         data['current'] = []
-        for trd in self.firebase.get_all_current_team_rankings():
+        for trd in self.firebase.get_all_current_team_rankings().values():
             data['current'].append(trd.to_dict())
 
         data['predicted'] = []
-        for trd in self.firebase.get_all_predicted_team_rankings():
+        for trd in self.firebase.get_all_predicted_team_rankings().values():
             data['predicted'].append(trd.to_dict())
 
         data['accuracy'] = []
-        for sa in self.firebase.get_all_scout_accuracy():
+        for sa in self.firebase.get_all_scout_accuracy().values():
             data['accuracy'].append(sa.to_dict())
-        return json.dumps(data)
+
+        data['strategy'] = []
+        for strategy in self.firebase.get_all_strategies().values():
+            data['strategy'].append(strategy.to_dict())
+
+        data['match_strategy'] = []
+        for strategy in self.firebase.get_all_match_strategies().values():
+            data['match_strategy'].append(strategy.to_dict())
+        return "R" + json.dumps(data)
