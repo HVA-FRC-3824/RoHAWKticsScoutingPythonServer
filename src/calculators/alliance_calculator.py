@@ -1,4 +1,5 @@
 import scipy.stats as stats
+import math
 
 from data_models.alliance import Alliance
 from firebase_com import FirebaseCom
@@ -27,9 +28,49 @@ class AllianceCalculator:
 
         .. math:: predicted\_score = \sum_{T \in A} auto\_ability(T)
         '''
-        p_score = 0.0
+        p_score = 0
+        auto_gears = 0
+        teleop_gears = 0
+
         for team in self.teams:
-            p_score += team.auto_ability()
+            p_score += (team.calc.auto_high_goal_made.average +
+                        team.calc.auto_low_goal_made / 3 +
+                        team.calc.teleop_high_goal_made.average / 3 +
+                        team.calc.teleop_low_goal_made.average / 9)
+            # Add climbing points
+            p_score += 50 * team.calc.climb.average
+            auto_gears += team.calc.auto_gears_delivered.average
+            teleop_gears += team.calc.teleop_gears_delivered.average
+
+        # Calculate points from gears
+        if auto_gears >= 3:  # 2 rotors during auto
+            p_score += 120
+            if teleop_gears >= 9:  # 2 rotors during teleop
+                p_score += 80
+            elif teleop_gears >= 3:  # 1 rotor during teleop
+                p_score += 40
+        elif auto_gears >= 1:  # 1 rotor during auto
+            p_score += 60
+            if teleop_gears + auto_gears >= 12:  # 3 rotors during teleop
+                p_score += 120
+            elif teleop_gears + auto_gears >= 6:  # 2 rotors during teleop
+                p_score += 80
+            elif teleop_gears + auto_gears >= 2:  # 1 rotor during teleop
+                p_score += 40
+        else:
+            if teleop_gears >= 12:  # 4 rotors
+                p_score += 160
+            elif teleop_gears >= 6:  # 3 rotors
+                p_score += 120
+            elif teleop_gears >= 2:  # 2 rotors
+                p_score += 80
+            else:  # Reserve Gear
+                p_score += 40
+
+        if elimination:
+            p_score += self.rotor_chance() * 100
+            p_score += self.pressure_chance() * 20
+
         return p_score
 
     def std_predicted_score(self, elimination=False):
@@ -101,3 +142,68 @@ class AllianceCalculator:
             average += team.num_completed_matches()
         average /= len(self.teams)
         return average
+
+    def pressure_chance(self):
+        '''Returns the chance of the pressure reaching 40 kPa
+
+        .. math:
+            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}}
+            \int_{- \inf}^x {e^{\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
+
+        - x - threshold value which in this case is the kPa needed (40 kPa) represented by the
+        teleop low goal value
+        - :math:`\mu` - the mean of the sample which in this case is :math:`\sum_{T \in A}
+        auto\_high\_goal(T) * 9 + auto\_low\_goal(T) * 3 + teleop\_high\_goal(T) * 3 + teleop\_low\_goal(T))`
+        - :math:`sigma` - the standard deviation of the sample which in this case is :math:`\sqrt{
+        \sum_{T \in A} (auto\_high\_goals(T) * 9)^2 + (auto\_low\_goals(T) * 3)^2 +
+        (teleop\_high\_goals(T) * 3)^2 +teleop\_low\_goals(T)^2}`
+
+        Note:
+            The internal unit in the function is the value of the teleop low goal (as that is the
+            lowest value). This allows a combination of teams to make up a point (e.g. team A does
+            4 low goals and team B does 5).
+
+
+        '''
+        x = 40 * 9  # kPa
+        auto_high = 0
+        auto_low = 0
+        teleop_high = 0
+        teleop_low = 0
+        auto_high_squared = 0
+        auto_low_squared = 0
+        teleop_high_squared = 0
+        teleop_low_squared = 0
+        for t in self.teams:
+            auto_high += t.calc.auto_high_goal_made.average * 9
+            auto_high_squared += (t.calc.auto_high_goal_made.average * 9)**2
+            auto_low += t.calc.auto_low_goal_made.average * 3
+            auto_low_squared += (t.calc.auto_low_goal_made.average * 3)**2
+            teleop_high += t.calc.teleop_high_goal_made.average * 3
+            teleop_high_squared += (t.calc.teleop_high_goal_made.average * 3)**2
+            teleop_low += t.calc.teleop_low_goal_made.average
+            teleop_low_squared += (t.calc.teleop_low_goal_made.average)**2
+        mu = auto_high + auto_low + teleop_high + teleop_low
+        sigma = math.sqrt(auto_high_squared + auto_low_squared + teleop_high_squared + teleop_low_squared)
+        return Calculator.probability_density(x, mu, sigma)
+
+    def rotor_chance(self):
+        '''Returns the chance of the 4 rotors being started
+
+        .. math:
+            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}}
+            \int_{- \inf}^x {e^{\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
+
+        - x - threshold value which in this case is the 12 gears needed
+        - :math:`\mu` - the mean of the sample which in this case is :math:`\sum_{T \in A} gears_delivered(T)`
+        - :math:`\sigma` - the standard deviation of the sample which in this case is
+        :math:`\sqrt{\sum_{T \in A}gears_delivered(T)}`
+        '''
+        x = 12  # gears
+        mu = 0
+        sigma = 0
+        for t in self.teams:
+            mu += t.calc.gears_delivered.average
+            sigma += t.calc.gears_delivered.average**2
+        sigma = math.sqrt(sigma)
+        return Calculator.probability_density(x, mu, sigma)
