@@ -26,7 +26,8 @@ class AllianceCalculator:
     def predicted_score(self, elimination=False):
         '''Predicted Score
 
-        .. math:: predicted\_score = \sum_{T \in A} auto\_ability(T)
+        .. math::
+            predicted\_score = \sum_{T \in A} sA(T) +
         '''
         p_score = 0
         auto_gears = 0
@@ -146,17 +147,16 @@ class AllianceCalculator:
     def pressure_chance(self):
         '''Returns the chance of the pressure reaching 40 kPa
 
-        .. math:
-            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}}
-            \int_{- \inf}^x {e^{\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
+        .. math::
+            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
 
-        - x - threshold value which in this case is the kPa needed (40 kPa) represented by the
-        teleop low goal value
-        - :math:`\mu` - the mean of the sample which in this case is :math:`\sum_{T \in A}
-        auto\_high\_goal(T) * 9 + auto\_low\_goal(T) * 3 + teleop\_high\_goal(T) * 3 + teleop\_low\_goal(T))`
-        - :math:`sigma` - the standard deviation of the sample which in this case is :math:`\sqrt{
-        \sum_{T \in A} (auto\_high\_goals(T) * 9)^2 + (auto\_low\_goals(T) * 3)^2 +
-        (teleop\_high\_goals(T) * 3)^2 +teleop\_low\_goals(T)^2}`
+        - x - threshold value which in this case is the kPa needed (40 kPa) represented by the teleop low goal value
+
+        - :math:`\mu` - the mean of the sample which in this case is
+            :math:`\sum_{T \in A} aH(T) * 9 + aL(T) * 3 + tH(T) * 3 + tL(T)`
+
+        - :math:`\sigma` - the standard deviation of the sample which in this case is
+            :math:`\sqrt{\sum_{T \in A} (aH(T) * 9)^2 + (aL(T) * 3)^2 + (tH(T) * 3)^2 +tL(T)^2}`
 
         Note:
             The internal unit in the function is the value of the teleop low goal (as that is the
@@ -190,20 +190,22 @@ class AllianceCalculator:
     def rotor_chance(self):
         '''Returns the chance of the 4 rotors being started
 
-        .. math:
-            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}}
-            \int_{- \inf}^x {e^{\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
+        .. math::
+            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
 
         - x - threshold value which in this case is the 12 gears needed
-        - :math:`\mu` - the mean of the sample which in this case is :math:`\sum_{T \in A} gears_delivered(T)`
+
+        - :math:`\mu` - the mean of the sample which in this case is
+            :math:`\sum_{T \in A} aG(T) + \sum_{T \in A} tG(T)`
+
         - :math:`\sigma` - the standard deviation of the sample which in this case is
-        :math:`\sqrt{\sum_{T \in A}gears_delivered(T)}`
+            :math:`\sqrt{\sum_{T \in A} aG(T)^2 + \sum_{T \in A} tG(T)^2}`
         '''
         x = 12  # gears
         mu = 0
         sigma = 0
         for t in self.teams:
-            mu += t.calc.gears_delivered.average
-            sigma += t.calc.gears_delivered.average**2
+            mu += t.calc.auto_gears_delivered.average + t.calc.teleop_gears_delivered.average
+            sigma += t.calc.gears_delivered.average**2 + t.calc.teleop_gears_delivered.average**2
         sigma = math.sqrt(sigma)
         return Calculator.probability_density(x, mu, sigma)

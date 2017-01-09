@@ -89,19 +89,16 @@ class TeamCalculator:
 
         - predicted_score(A) predicted score of alliance A (this team and our team)
         '''
-        fpa = 0.0
         alliance = Alliance(self.team, self.firebase.get_team(Constants.OUR_TEAM_NUMBER))
         ac = AllianceCalculator(alliance)
-        fpa += ac.predicted_score()
-        return fpa
+        return ac.predicted_score()
 
     def second_pick_ability(self):
         '''Calculate the second pick ability
 
         .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) * auto\_ability(T)
         '''
-        spa = 0.0
-        spa += self.auto_ability()
+        spa = self.auto_ability()
         spa *= self.dysfunctional_percentage()
         return spa
 

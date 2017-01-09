@@ -12,7 +12,7 @@ class TeamRankingData(DataModel):
         self.ties = 0
         self.loses = 0
         self.played = 0
-
-        # Game specific
+        self.first_tie_breaker = 0
+        self.second_tie_breaker = 0
 
         self.__dict__.update(**kwargs)

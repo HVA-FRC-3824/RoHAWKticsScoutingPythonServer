@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scout Analysis &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-scout_analysis">
+<span id="scout-analysis"></span><h1>Scout Analysis<a class="headerlink" href="#module-scout_analysis" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="scout_analysis.ScoutAnalysis">
+<em class="property">class </em><code class="descclassname">scout_analysis.</code><code class="descname">ScoutAnalysis</code><span class="sig-paren">(</span><em>loop_time=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread class for determining scouting error</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>loop_time (<cite>float</cite>): Minumum time for a loop</dd>
+<dt>Kwargs:</dt>
+<dd><p class="first">scouter_accuracy_config (<cite>dict</cite>): contains the error thresholds</p>
+<p>use_email (<cite>bool</cite>): whether to send reports via email</p>
+<p>emails (<cite>list</cite>): list of emails to send reports to</p>
+<p>use_texting (<cite>bool</cite>): whether to send reports via texting</p>
+<p>mobiles (<cite>list</cite>): list of phone numbers to send reports to</p>
+<p class="last">login_file (<cite>str</cite>): location of the file containing the login information (not in the repo)</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.email_report">
+<code class="descname">email_report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.email_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.email_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>send the message via email</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): error message to send</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.export">
+<code class="descname">export</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.export"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports the information to csv files (one overall and one for each scouter)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.on_tloop">
+<code class="descname">on_tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.on_tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.on_tloop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error in the data for each alliance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.on_tstart">
+<code class="descname">on_tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.on_tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.on_tstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks the start of the thread</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.report_error">
+<code class="descname">report_error</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.report_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.report_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message if the error is too large</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): error message to send</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the thread for calculating error in the data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the thread and closes email</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="scout_analysis.ScoutAnalysis.text_report">
+<code class="descname">text_report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scout_analysis.html#ScoutAnalysis.text_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scout_analysis.ScoutAnalysis.text_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>send the message via text</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): error message to send</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bluetooth_server.html">Bluetooth Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="socket_server.html">Socket Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crash_reporter.html">Crash Reporter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="message_handler.html">Message Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="the_blue_alliance.html">TheBlueAlliance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="looper.html">Looper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calculators.html">Calculators</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/scout_analysis.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RoHAWKtics Scouting Server 1.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, FRC team 3824.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

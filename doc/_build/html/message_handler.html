@@ -55,8 +55,91 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="message-handler">
-<h1>Message Handler<a class="headerlink" href="#message-handler" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-message_handler">
+<span id="message-handler"></span><h1>Message Handler<a class="headerlink" href="#module-message_handler" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="message_handler.MessageHandler">
+<em class="property">class </em><code class="descclassname">message_handler.</code><code class="descname">MessageHandler</code><a class="reference internal" href="_modules/message_handler.html#MessageHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Singleton that handles when a message is received either through bluetooth
+or sockets.</p>
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_dt_feedback">
+<code class="descname">handle_dt_feedback</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_dt_feedback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_dt_feedback" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message to one or more <cite>TeamDTFeedback</cite></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_match">
+<code class="descname">handle_match</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message to one or more <cite>TeamMatchData</cite></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_match_strategy">
+<code class="descname">handle_match_strategy</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_match_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_match_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message to one or more <cite>MatchStrategy</cite></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_message">
+<code class="descname">handle_message</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_pit">
+<code class="descname">handle_pit</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_pit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_pit" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message to one or more <cite>TeamPitData</cite></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_strategy">
+<code class="descname">handle_strategy</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message to one or more <cite>Strategy</cite></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_super">
+<code class="descname">handle_super</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_super"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_super" title="Permalink to this definition">¶</a></dt>
+<dd><p>decodes the message to one or more <cite>SuperMatchData</cite></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>message (<cite>str</cite>): the received message</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="message_handler.MessageHandler.handle_sync">
+<code class="descname">handle_sync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/message_handler.html#MessageHandler.handle_sync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#message_handler.MessageHandler.handle_sync" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a response for a sync request</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -70,7 +153,7 @@
 <li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="the_blue_alliance.html">TheBlueAlliance</a></li>

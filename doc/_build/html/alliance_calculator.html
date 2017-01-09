@@ -71,7 +71,55 @@
 <code class="descname">predicted_score</code><span class="sig-paren">(</span><em>elimination=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/calculators/alliance_calculator.html#AllianceCalculator.predicted_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calculators.alliance_calculator.AllianceCalculator.predicted_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicted Score</p>
 <div class="math">
-\[predicted\_score = \sum_{T \in A} auto\_ability(T)\]</div>
+\[predicted\_score = \sum_{T \in A} sA(T) +\]</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="calculators.alliance_calculator.AllianceCalculator.pressure_chance">
+<code class="descname">pressure_chance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/calculators/alliance_calculator.html#AllianceCalculator.pressure_chance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calculators.alliance_calculator.AllianceCalculator.pressure_chance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the chance of the pressure reaching 40 kPa</p>
+<div class="math">
+\[p = F(x | \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt\]</div>
+<ul class="simple">
+<li>x - threshold value which in this case is the kPa needed (40 kPa) represented by the teleop low goal value</li>
+<li><dl class="first docutils">
+<dt><span class="math">\(\mu\)</span> - the mean of the sample which in this case is</dt>
+<dd><span class="math">\(\sum_{T \in A} aH(T) * 9 + aL(T) * 3 + tH(T) * 3 + tL(T)\)</span></dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><span class="math">\(\sigma\)</span> - the standard deviation of the sample which in this case is</dt>
+<dd><span class="math">\(\sqrt{\sum_{T \in A} (aH(T) * 9)^2 + (aL(T) * 3)^2 + (tH(T) * 3)^2 +tL(T)^2}\)</span></dd>
+</dl>
+</li>
+</ul>
+<dl class="docutils">
+<dt>Note:</dt>
+<dd>The internal unit in the function is the value of the teleop low goal (as that is the
+lowest value). This allows a combination of teams to make up a point (e.g. team A does
+4 low goals and team B does 5).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="calculators.alliance_calculator.AllianceCalculator.rotor_chance">
+<code class="descname">rotor_chance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/calculators/alliance_calculator.html#AllianceCalculator.rotor_chance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#calculators.alliance_calculator.AllianceCalculator.rotor_chance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the chance of the 4 rotors being started</p>
+<div class="math">
+\[p = F(x | \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt\]</div>
+<ul class="simple">
+<li>x - threshold value which in this case is the 12 gears needed</li>
+<li><dl class="first docutils">
+<dt><span class="math">\(\mu\)</span> - the mean of the sample which in this case is</dt>
+<dd><span class="math">\(\sum_{T \in A} aG(T) + \sum_{T \in A} tG(T)\)</span></dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><span class="math">\(\sigma\)</span> - the standard deviation of the sample which in this case is</dt>
+<dd><span class="math">\(\sqrt{\sum_{T \in A} aG(T)^2 + \sum_{T \in A} tG(T)^2}\)</span></dd>
+</dl>
+</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
@@ -135,7 +183,7 @@ approximated by the <a class="reference external" href="https://en.wikipedia.org
 <li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_handler.html">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="the_blue_alliance.html">TheBlueAlliance</a></li>

@@ -63,6 +63,15 @@
     <span class="sd">&#39;&#39;&#39;Singleton that handles when a message is received either through bluetooth</span>
 <span class="sd">       or sockets.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">MATCH_HEADER</span> <span class="o">=</span> <span class="s1">&#39;M&#39;</span>
+    <span class="n">SUPER_HEADER</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
+    <span class="n">FEEDBACK_HEADER</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
+    <span class="n">PIT_HEADER</span> <span class="o">=</span> <span class="s1">&#39;P&#39;</span>
+    <span class="n">SYNC_HEADER</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+    <span class="n">STRATEGY_HEADER</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
+    <span class="n">MATCH_STRATEGY_HEADER</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+
     <span class="c1"># Singleton</span>
     <span class="n">shared_state</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -83,16 +92,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tlock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MATCH_HEADER</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_match</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUPER_HEADER</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_super</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">FEEDBACK_HEADER</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_dt_feedback</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">PIT_HEADER</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_pit</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYNC_HEADER</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_sync</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">STRATEGY_HEADER</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_strategy</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MATCH_STRATEGY_HEADER</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_match_strategy</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tlock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">response</span></div>
@@ -185,51 +198,103 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;message is not a dict or list&quot;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="MessageHandler.handle_strategy"><a class="viewcode-back" href="../message_handler.html#message_handler.MessageHandler.handle_strategy">[docs]</a>    <span class="k">def</span> <span class="nf">handle_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;decodes the message to one or more `Strategy`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (`str`): the received message</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received Strategy Data&quot;</span><span class="p">)</span>
+        <span class="n">strategies</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategies</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_strategy</span><span class="p">(</span><span class="n">strategies</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error with updating strategy&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategies</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">strategies</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error with updating strategies&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;message is not a dict or list&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MessageHandler.handle_match_strategy"><a class="viewcode-back" href="../message_handler.html#message_handler.MessageHandler.handle_match_strategy">[docs]</a>    <span class="k">def</span> <span class="nf">handle_match_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;decodes the message to one or more `MatchStrategy`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (`str`): the received message</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received Match Strategy Data&quot;</span><span class="p">)</span>
+        <span class="n">strategies</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategies</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_match_strategy</span><span class="p">(</span><span class="n">strategies</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error with updating match strategies&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strategies</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="n">strategies</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">update_match_strategy</span><span class="p">(</span><span class="n">strategy</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error with updating match stratgies&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;message is not a dict or list&quot;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="MessageHandler.handle_sync"><a class="viewcode-back" href="../message_handler.html#message_handler.MessageHandler.handle_sync">[docs]</a>    <span class="k">def</span> <span class="nf">handle_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;creates a response for a sync request&#39;&#39;&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Received sync request&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;match&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">tmd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_match_data</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tmd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_match_data</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;match&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmd</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">tpd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_pit_data</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tpd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_pit_data</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pit&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tpd</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;super&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">smd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_super_match_data</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">smd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_super_match_data</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;super&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">smd</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;calc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">tcd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_calculated_data</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tcd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_team_calculated_data</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;calc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tcd</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;1st&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">tpa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_first_pick_abilities</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tpa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_first_pick_abilities</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;1st&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tpa</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;2nd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">tpa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_second_pick_abilities</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tpa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_second_pick_abilities</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;2nd&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tpa</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;3rd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">tpa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_third_pick_abilities</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tpa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_third_pick_abilities</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;3rd&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tpa</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;current&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">trd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_current_team_rankings</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">trd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_current_team_rankings</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;current&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trd</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;predicted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">trd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_predicted_team_rankings</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">trd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_predicted_team_rankings</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;predicted&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trd</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">sa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_scout_accuracy</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">sa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_scout_accuracy</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_strategies</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;match_strategy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">strategy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_all_match_strategies</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;match_strategy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strategy</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s2">&quot;R&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -242,7 +307,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../server.html">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../message_handler.html">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../the_blue_alliance.html">TheBlueAlliance</a></li>

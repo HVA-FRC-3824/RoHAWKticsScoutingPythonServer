@@ -55,103 +55,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-server">
-<span id="server"></span><h1>Server<a class="headerlink" href="#module-server" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="server.Server">
-<em class="property">class </em><code class="descclassname">server.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main server class that interprets the config file and starts various threads</p>
-<dl class="method">
-<dt id="server.Server.make_pick_list_calculations">
-<code class="descname">make_pick_list_calculations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.make_pick_list_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.make_pick_list_calculations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make calculations for <code class="xref py py-class docutils literal"><span class="pre">TeamPickAbility</span></code> based on <code class="xref py py-class docutils literal"><span class="pre">TeamMatchData</span></code>,
-<code class="xref py py-class docutils literal"><span class="pre">SuperMatchData</span></code>, and <code class="xref py py-class docutils literal"><span class="pre">TeamCalculatedData</span></code></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.make_ranking_calculations">
-<code class="descname">make_ranking_calculations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.make_ranking_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.make_ranking_calculations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pulls the current rankings from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a>
-and predicts the final rankings</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.make_super_calculations">
-<code class="descname">make_super_calculations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.make_super_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.make_super_calculations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes all the calculations from the <code class="xref py py-class docutils literal"><span class="pre">SuperMatchData</span></code></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.make_team_calculations">
-<code class="descname">make_team_calculations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.make_team_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.make_team_calculations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make all the calculations from the <code class="xref py py-class docutils literal"><span class="pre">TeamMatchData</span></code></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.on_tloop">
-<code class="descname">on_tloop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.on_tloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.on_tloop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs on each iteration of the main loop and aggregates the data.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.on_tstart">
-<code class="descname">on_tstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.on_tstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.on_tstart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs before the main loop and starts the threads for <code class="xref py py-class docutils literal"><span class="pre">BluetoothServer</span></code>,
-<code class="xref py py-class docutils literal"><span class="pre">SocketServer</span></code>, and <code class="xref py py-class docutils literal"><span class="pre">ScouterAnalysis</span></code> based on the config. Also,
-caches the firebase data.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.set_matches">
-<code class="descname">set_matches</code><span class="sig-paren">(</span><em>event_matches</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.set_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.set_matches" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the match information pulled from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a> into <code class="xref py py-class docutils literal"><span class="pre">Match</span></code></p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>event_matches (dict): The match information pulled from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a></dd>
-<dt>Returns:</dt>
-<dd>A <cite>dict</cite> contain all the match numbers for each team</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.set_rankings">
-<code class="descname">set_rankings</code><span class="sig-paren">(</span><em>event_rankings</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.set_rankings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.set_rankings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert the ranking information from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a>
-to the <code class="xref py py-class docutils literal"><span class="pre">TeamRankingData</span></code></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.set_teams">
-<code class="descname">set_teams</code><span class="sig-paren">(</span><em>event_teams</em>, <em>team_matches</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.set_teams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.set_teams" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Converts the team information from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a></dt>
-<dd><p class="first">to <code class="xref py py-class docutils literal"><span class="pre">TeamLogistics</span></code>.</p>
-<blockquote class="last">
-<div>Converts the team information from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a>
-to <code class="xref py py-class docutils literal"><span class="pre">TeamLogistics</span></code>. Also, sets the match numbers for each team
-from the result of <a class="reference internal" href="#server.Server.set_matches" title="server.Server.set_matches"><code class="xref py py-func docutils literal"><span class="pre">set_matches()</span></code></a></div></blockquote>
-</dd>
-<dt>Args:</dt>
-<dd><p class="first">event_teams (dict): The team information from <a class="reference external" href="thebluealliance.com">The Blue Alliance</a></p>
-<p class="last">team_matches (dict): The match numbers for each team</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the main thread loop</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="server.Server.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server.html#Server.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.Server.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stops all threads</p>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="server">
+<h1>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -165,7 +70,7 @@ from the result of <a class="reference internal" href="#server.Server.set_matche
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_handler.html">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="the_blue_alliance.html">TheBlueAlliance</a></li>

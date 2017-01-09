@@ -13,7 +13,7 @@ Welcome to RoHAWKtics Scouting Server's documentation!
    server
    bluetooth_server
    socket_server
-   scouter_analysis
+   scout_analysis
    crash_reporter
    message_handler
    the_blue_alliance

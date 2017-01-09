@@ -9,12 +9,13 @@ import threading
 import scipy.stats as stats
 from threading import Event
 from looper import Looper
+from functools import cmp_to_key
 
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
 from crash_reporter import CrashReporter
 from socket_server import SocketServer
-from scouter_analysis import ScouterAnalysis
+from scout_analysis import ScoutAnalysis
 
 from data_models.match import Match
 from data_models.alliance import Alliance
@@ -71,7 +72,7 @@ class Server(Looper):
             self.socket = SocketServer()
 
         if kwargs.get('scouter_analysis', False):
-            self.scouter_analysis = ScouterAnalysis(self.time_between_cycles, **kwargs)
+            self.scout_analysis = ScoutAnalysis(self.time_between_cycles, **kwargs)
 
         if kwargs.get('setup', False):
             logger.info("Setting up database...")
@@ -214,8 +215,8 @@ class Server(Looper):
         if hasattr(self, 'socket'):
             self.socket.start()
 
-        if hasattr(self, 'scouter_analysis'):
-            self.scouter_analysis.start()
+        if hasattr(self, 'scout_analysis'):
+            self.scout_analysis.start()
 
     def on_tloop(self):
         '''Runs on each iteration of the main loop and aggregates the data.'''
@@ -259,8 +260,8 @@ class Server(Looper):
             self.bluetooth.stop()
         if hasattr(self, 'socket'):
             self.socket.stop()
-        if hasattr(self, 'scouter_analysis'):
-            self.scouter_analysis.stop()
+        if hasattr(self, 'scout_analysis'):
+            self.scout_analysis.stop()
         Looper.stop(self)
 
     def make_team_calculations(self):
@@ -373,13 +374,14 @@ class Server(Looper):
         # Predicted Rankings
         teams = []
         for team in self.firebase.get_teams():
-            print(team.team_number)
             team.predicted_ranking.played = len(team.info.match_numbers)
 
             team.predicted_ranking.RPs = team.current_ranking.RPs
             team.predicted_ranking.wins = team.current_ranking.wins
             team.predicted_ranking.ties = team.current_ranking.ties
             team.predicted_ranking.loses = team.current_ranking.loses
+            team.predicted_ranking.first_tie_breaker = team.current_ranking.first_tie_breaker
+            team.predicted_ranking.second_tie_breaker = team.current_ranking.second_tie_breaker
 
             for index in range(len(team.completed_matches), len(team.info.match_numbers)):
                 match = self.firebase.get_match(team.info.match_numbers[index])
@@ -403,17 +405,33 @@ class Server(Looper):
                 else:
                     team.predicted_ranking.ties += 1
                     team.predicted_ranking.RPs += 1
+
+                team.predicted_ranking.first_tie_breaker += ac.predicted_score()
+                teams.predicted_ranking.second_tie_breaker += ac.predicted_auto_score()
             teams.append(team)
+
         # Sort for ranking
-        # TODO: add in tie breaker to sort base on competition
-        teams.sort(key=lambda x: x.predicted_ranking.RPs, reverse=True)
-        rank = 1
-        index = 0
-        for team in teams:
-            team.predicted_ranking = rank
-            index += 1
-            if index > 0 and team.predicted_ranking.RPs != teams[index - 1].predicted_ranking.RPs:
-                rank = index + 1
+        def ranking_cmp(team1, team2):
+            if team1.predicted_ranking.RPs > team2.predicted_ranking.RPs:
+                return 1
+            elif team1.predicted_ranking.RPs < team2.predicted_ranking.RPs:
+                return -1
+            else:  # tie
+                if team1.predicted_ranking.first_tie_breaker > team2.predicted_ranking.first_tie_breaker:
+                    return 1
+                elif team1.predicted_ranking.first_tie_breaker < team2.predicted_ranking.first_tie_breaker:
+                    return -1
+                else:
+                    if team1.predicted_ranking.second_tie_breaker > team2.predicted_ranking.second_tie_breaker:
+                        return 1
+                    elif team1.predicted_ranking.second_tie_breaker < team2.predicted_ranking.second_tie_breaker:
+                        return -1
+                    else:
+                        return 0  # Really we should never get here
+
+        teams.sort(key=cmp_to_key(ranking_cmp), reverse=True)
+        for rank, team in enumerate(teams):
+            team.predicted_ranking = rank + 1
             self.firebase.update_predicted_team_ranking_data(team.predicted_ranking)
             logger.info("Updated predicted ranking for {0:d} on Firebase".format(team.team_number))
 

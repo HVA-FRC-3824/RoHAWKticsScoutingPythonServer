@@ -162,6 +162,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crash_reporter.html#crash_reporter.CrashReporter.email_report">email_report() (crash_reporter.CrashReporter method)</a>
+
+      <ul>
+        <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.email_report">(scout_analysis.ScoutAnalysis method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.export">export() (scout_analysis.ScoutAnalysis method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -203,6 +211,24 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_dt_feedback">handle_dt_feedback() (message_handler.MessageHandler method)</a>
+</li>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_match">handle_match() (message_handler.MessageHandler method)</a>
+</li>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_match_strategy">handle_match_strategy() (message_handler.MessageHandler method)</a>
+</li>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_message">handle_message() (message_handler.MessageHandler method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_pit">handle_pit() (message_handler.MessageHandler method)</a>
+</li>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_strategy">handle_strategy() (message_handler.MessageHandler method)</a>
+</li>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_super">handle_super() (message_handler.MessageHandler method)</a>
+</li>
+      <li><a href="message_handler.html#message_handler.MessageHandler.handle_sync">handle_sync() (message_handler.MessageHandler method)</a>
+</li>
       <li><a href="socket_server_class.html#socket_server.SocketServer.hotplug_callback">hotplug_callback() (socket_server.SocketServer method)</a>
 </li>
   </ul></td>
@@ -241,19 +267,15 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#server.Server.make_pick_list_calculations">make_pick_list_calculations() (server.Server method)</a>
-</li>
-      <li><a href="server.html#server.Server.make_ranking_calculations">make_ranking_calculations() (server.Server method)</a>
-</li>
       <li><a href="the_blue_alliance.html#the_blue_alliance.TheBlueAlliance.make_request">make_request() (the_blue_alliance.TheBlueAlliance method)</a>
+</li>
+      <li><a href="data_models.html#data_models.match.Match">Match (class in data_models.match)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="server.html#server.Server.make_super_calculations">make_super_calculations() (server.Server method)</a>
+      <li><a href="message_handler.html#module-message_handler">message_handler (module)</a>
 </li>
-      <li><a href="server.html#server.Server.make_team_calculations">make_team_calculations() (server.Server method)</a>
-</li>
-      <li><a href="data_models.html#data_models.match.Match">Match (class in data_models.match)</a>
+      <li><a href="message_handler.html#message_handler.MessageHandler">MessageHandler (class in message_handler)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -290,7 +312,7 @@
       <li><a href="looper.html#looper.Looper.on_tloop">on_tloop() (looper.Looper method)</a>
 
       <ul>
-        <li><a href="server.html#server.Server.on_tloop">(server.Server method)</a>
+        <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.on_tloop">(scout_analysis.ScoutAnalysis method)</a>
 </li>
         <li><a href="socket_connection.html#socket_server.SocketConnection.on_tloop">(socket_server.SocketConnection method)</a>
 </li>
@@ -300,7 +322,7 @@
       <li><a href="looper.html#looper.Looper.on_tstart">on_tstart() (looper.Looper method)</a>
 
       <ul>
-        <li><a href="server.html#server.Server.on_tstart">(server.Server method)</a>
+        <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.on_tstart">(scout_analysis.ScoutAnalysis method)</a>
 </li>
         <li><a href="socket_server_class.html#socket_server.SocketServer.on_tstart">(socket_server.SocketServer method)</a>
 </li>
@@ -317,11 +339,13 @@
 </li>
       <li><a href="team_calculator.html#calculators.team_calculator.TeamCalculator.predict_second_tie_breaker">predict_second_tie_breaker() (calculators.team_calculator.TeamCalculator method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="team_calculator.html#calculators.team_calculator.TeamCalculator.predicted_ranking_points">predicted_ranking_points() (calculators.team_calculator.TeamCalculator method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.predicted_score">predicted_score() (calculators.alliance_calculator.AllianceCalculator method)</a>
+</li>
+      <li><a href="alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.pressure_chance">pressure_chance() (calculators.alliance_calculator.AllianceCalculator method)</a>
 </li>
       <li><a href="calculator_class.html#calculators.calculator.Calculator.probability_density">probability_density() (calculators.calculator.Calculator static method)</a>
 </li>
@@ -333,7 +357,13 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.report_error">report_error() (scout_analysis.ScoutAnalysis method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crash_reporter.html#crash_reporter.CrashReporter.report_server_crash">report_server_crash() (crash_reporter.CrashReporter method)</a>
+</li>
+      <li><a href="alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.rotor_chance">rotor_chance() (calculators.alliance_calculator.AllianceCalculator method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -343,35 +373,29 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.sample_size">sample_size() (calculators.alliance_calculator.AllianceCalculator method)</a>
 </li>
+      <li><a href="scout_analysis.html#module-scout_analysis">scout_analysis (module)</a>
+</li>
       <li><a href="data_models.html#data_models.scout_accuracy.ScoutAccuracy">ScoutAccuracy (class in data_models.scout_accuracy)</a>
+</li>
+      <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis">ScoutAnalysis (class in scout_analysis)</a>
 </li>
       <li><a href="data_models.html#data_models.scouted_match_accuracy.ScoutedMatchAccuracy">ScoutedMatchAccuracy (class in data_models.scouted_match_accuracy)</a>
 </li>
       <li><a href="team_calculator.html#calculators.team_calculator.TeamCalculator.second_pick_ability">second_pick_ability() (calculators.team_calculator.TeamCalculator method)</a>
 </li>
-      <li><a href="server.html#server.Server">Server (class in server)</a>
-</li>
-      <li><a href="server.html#module-server">server (module)</a>
-</li>
       <li><a href="looper.html#looper.Looper.set_loop_time">set_loop_time() (looper.Looper method)</a>
-</li>
-      <li><a href="server.html#server.Server.set_matches">set_matches() (server.Server method)</a>
-</li>
-      <li><a href="server.html#server.Server.set_rankings">set_rankings() (server.Server method)</a>
-</li>
-      <li><a href="server.html#server.Server.set_teams">set_teams() (server.Server method)</a>
 </li>
       <li><a href="socket_server_class.html#socket_server.SocketServer.setup_adb_bridge">setup_adb_bridge() (socket_server.SocketServer method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="socket_connection.html#module-socket_server">socket_server (module)</a>, <a href="socket_server_class.html#module-socket_server">[1]</a>
 </li>
       <li><a href="socket_connection.html#socket_server.SocketConnection">SocketConnection (class in socket_server)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="socket_server_class.html#socket_server.SocketServer">SocketServer (class in socket_server)</a>
 </li>
-      <li><a href="server.html#server.Server.start">start() (server.Server method)</a>
+      <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.start">start() (scout_analysis.ScoutAnalysis method)</a>
 
       <ul>
         <li><a href="socket_connection.html#socket_server.SocketConnection.start">(socket_server.SocketConnection method)</a>
@@ -386,7 +410,7 @@
       <li><a href="looper.html#looper.Looper.stop">stop() (looper.Looper method)</a>
 
       <ul>
-        <li><a href="server.html#server.Server.stop">(server.Server method)</a>
+        <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.stop">(scout_analysis.ScoutAnalysis method)</a>
 </li>
         <li><a href="socket_server_class.html#socket_server.SocketServer.stop">(socket_server.SocketServer method)</a>
 </li>
@@ -418,7 +442,11 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="crash_reporter.html#crash_reporter.CrashReporter.text_report">text_report() (crash_reporter.CrashReporter method)</a>
+
+      <ul>
+        <li><a href="scout_analysis.html#scout_analysis.ScoutAnalysis.text_report">(scout_analysis.ScoutAnalysis method)</a>
 </li>
+      </ul></li>
       <li><a href="the_blue_alliance.html#module-the_blue_alliance">the_blue_alliance (module)</a>
 </li>
       <li><a href="the_blue_alliance.html#the_blue_alliance.TheBlueAlliance">TheBlueAlliance (class in the_blue_alliance)</a>
@@ -462,7 +490,7 @@
 <li class="toctree-l1"><a class="reference internal" href="server.html">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="message_handler.html">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="the_blue_alliance.html">TheBlueAlliance</a></li>

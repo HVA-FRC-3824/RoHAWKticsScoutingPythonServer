@@ -12,6 +12,15 @@ class MessageHandler:
     '''Singleton that handles when a message is received either through bluetooth
        or sockets.
     '''
+
+    MATCH_HEADER = 'M'
+    SUPER_HEADER = 'S'
+    FEEDBACK_HEADER = 'F'
+    PIT_HEADER = 'P'
+    SYNC_HEADER = 'R'
+    STRATEGY_HEADER = 'T'
+    MATCH_STRATEGY_HEADER = 'A'
+
     # Singleton
     shared_state = {}
 
@@ -32,16 +41,20 @@ class MessageHandler:
         self.tlock.acquire()
         self.plock.acquire()
         response = None
-        if message[0] == 'M':
+        if message[0] == self.MATCH_HEADER:
             self.handle_match(message[1:])
-        elif message[0] == 'S':
+        elif message[0] == self.SUPER_HEADER:
             self.handle_super(message[1:])
-        elif message[0] == 'F':
+        elif message[0] == self.FEEDBACK_HEADER:
             self.handle_dt_feedback(message[1:])
-        elif message[0] == 'P':
+        elif message[0] == self.PIT_HEADER:
             self.handle_pit(message[1:])
-        elif message[0] == 'R':
+        elif message[0] == self.SYNC_HEADER:
             response = self.handle_sync()
+        elif message[0] == self.STRATEGY_HEADER:
+            self.handle_strategy(message[1:])
+        elif message[0] == self.MATCH_STRATEGY_HEADER:
+            self.handle_match_strategy(message[1:])
         self.tlock.release()
         self.plock.release()
         return response
@@ -131,6 +144,50 @@ class MessageHandler:
                     self.firebase.update_team_pit_data(tpd)
                 except:
                     logger.error("Error with updating tpd")
+        else:
+            logger.error("message is not a dict or list")
+
+    def handle_strategy(self, message):
+        '''decodes the message to one or more `Strategy`
+
+        Args:
+            message (`str`): the received message
+        '''
+        logger.debug("Received Strategy Data")
+        strategies = json.loads(message)
+        if isinstance(strategies, dict):
+            try:
+                self.firebase.update_strategy(strategies)
+            except:
+                logger.error("Error with updating strategy")
+        elif isinstance(strategies, list):
+            for strategy in strategies:
+                try:
+                    self.firebase.update_strategy(strategy)
+                except:
+                    logger.error("Error with updating strategies")
+        else:
+            logger.error("message is not a dict or list")
+
+    def handle_match_strategy(self, message):
+        '''decodes the message to one or more `MatchStrategy`
+
+        Args:
+            message (`str`): the received message
+        '''
+        logger.debug("Received Match Strategy Data")
+        strategies = json.loads(message)
+        if isinstance(strategies, dict):
+            try:
+                self.firebase.update_match_strategy(strategies)
+            except:
+                logger.error("Error with updating match strategies")
+        elif isinstance(strategies, list):
+            for strategy in strategies:
+                try:
+                    self.firebase.update_match_strategy(strategy)
+                except:
+                    logger.error("Error with updating match stratgies")
         else:
             logger.error("message is not a dict or list")
 

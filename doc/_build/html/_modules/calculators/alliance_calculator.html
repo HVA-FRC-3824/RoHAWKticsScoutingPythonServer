@@ -50,6 +50,7 @@
             
   <h1>Source code for calculators.alliance_calculator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="kn">as</span> <span class="nn">stats</span>
+<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">from</span> <span class="nn">data_models.alliance</span> <span class="kn">import</span> <span class="n">Alliance</span>
 <span class="kn">from</span> <span class="nn">firebase_com</span> <span class="kn">import</span> <span class="n">FirebaseCom</span>
@@ -76,11 +77,52 @@
 <div class="viewcode-block" id="AllianceCalculator.predicted_score"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.predicted_score">[docs]</a>    <span class="k">def</span> <span class="nf">predicted_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elimination</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Predicted Score</span>
 
-<span class="sd">        .. math:: predicted\_score = \sum_{T \in A} auto\_ability(T)</span>
+<span class="sd">        .. math::</span>
+<span class="sd">            predicted\_score = \sum_{T \in A} sA(T) +</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">p_score</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">p_score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">auto_gears</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">teleop_gears</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
-            <span class="n">p_score</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">auto_ability</span><span class="p">()</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_high_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">+</span>
+                        <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_low_goal_made</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">+</span>
+                        <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_high_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">+</span>
+                        <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_low_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">/</span> <span class="mi">9</span><span class="p">)</span>
+            <span class="c1"># Add climbing points</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">climb</span><span class="o">.</span><span class="n">average</span>
+            <span class="n">auto_gears</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_gears_delivered</span><span class="o">.</span><span class="n">average</span>
+            <span class="n">teleop_gears</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_gears_delivered</span><span class="o">.</span><span class="n">average</span>
+
+        <span class="c1"># Calculate points from gears</span>
+        <span class="k">if</span> <span class="n">auto_gears</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 2 rotors during auto</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">120</span>
+            <span class="k">if</span> <span class="n">teleop_gears</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">:</span>  <span class="c1"># 2 rotors during teleop</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">80</span>
+            <span class="k">elif</span> <span class="n">teleop_gears</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># 1 rotor during teleop</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">40</span>
+        <span class="k">elif</span> <span class="n">auto_gears</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># 1 rotor during auto</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">60</span>
+            <span class="k">if</span> <span class="n">teleop_gears</span> <span class="o">+</span> <span class="n">auto_gears</span> <span class="o">&gt;=</span> <span class="mi">12</span><span class="p">:</span>  <span class="c1"># 3 rotors during teleop</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">120</span>
+            <span class="k">elif</span> <span class="n">teleop_gears</span> <span class="o">+</span> <span class="n">auto_gears</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>  <span class="c1"># 2 rotors during teleop</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">80</span>
+            <span class="k">elif</span> <span class="n">teleop_gears</span> <span class="o">+</span> <span class="n">auto_gears</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 1 rotor during teleop</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">40</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">teleop_gears</span> <span class="o">&gt;=</span> <span class="mi">12</span><span class="p">:</span>  <span class="c1"># 4 rotors</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">160</span>
+            <span class="k">elif</span> <span class="n">teleop_gears</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>  <span class="c1"># 3 rotors</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">120</span>
+            <span class="k">elif</span> <span class="n">teleop_gears</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 2 rotors</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">80</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Reserve Gear</span>
+                <span class="n">p_score</span> <span class="o">+=</span> <span class="mi">40</span>
+
+        <span class="k">if</span> <span class="n">elimination</span><span class="p">:</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotor_chance</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="n">p_score</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pressure_chance</span><span class="p">()</span> <span class="o">*</span> <span class="mi">20</span>
+
         <span class="k">return</span> <span class="n">p_score</span></div>
 
 <div class="viewcode-block" id="AllianceCalculator.std_predicted_score"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.std_predicted_score">[docs]</a>    <span class="k">def</span> <span class="nf">std_predicted_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elimination</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
@@ -151,7 +193,73 @@
         <span class="k">for</span> <span class="n">team</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
             <span class="n">average</span> <span class="o">+=</span> <span class="n">team</span><span class="o">.</span><span class="n">num_completed_matches</span><span class="p">()</span>
         <span class="n">average</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">average</span></div></div>
+        <span class="k">return</span> <span class="n">average</span></div>
+
+<div class="viewcode-block" id="AllianceCalculator.pressure_chance"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.pressure_chance">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_chance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns the chance of the pressure reaching 40 kPa</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt</span>
+
+<span class="sd">        - x - threshold value which in this case is the kPa needed (40 kPa) represented by the teleop low goal value</span>
+
+<span class="sd">        - :math:`\mu` - the mean of the sample which in this case is</span>
+<span class="sd">            :math:`\sum_{T \in A} aH(T) * 9 + aL(T) * 3 + tH(T) * 3 + tL(T)`</span>
+
+<span class="sd">        - :math:`\sigma` - the standard deviation of the sample which in this case is</span>
+<span class="sd">            :math:`\sqrt{\sum_{T \in A} (aH(T) * 9)^2 + (aL(T) * 3)^2 + (tH(T) * 3)^2 +tL(T)^2}`</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The internal unit in the function is the value of the teleop low goal (as that is the</span>
+<span class="sd">            lowest value). This allows a combination of teams to make up a point (e.g. team A does</span>
+<span class="sd">            4 low goals and team B does 5).</span>
+
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">40</span> <span class="o">*</span> <span class="mi">9</span>  <span class="c1"># kPa</span>
+        <span class="n">auto_high</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">auto_low</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">teleop_high</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">teleop_low</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">auto_high_squared</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">auto_low_squared</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">teleop_high_squared</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">teleop_low_squared</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+            <span class="n">auto_high</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_high_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">*</span> <span class="mi">9</span>
+            <span class="n">auto_high_squared</span> <span class="o">+=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_high_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">*</span> <span class="mi">9</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">auto_low</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_low_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">*</span> <span class="mi">3</span>
+            <span class="n">auto_low_squared</span> <span class="o">+=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_low_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">teleop_high</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_high_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">*</span> <span class="mi">3</span>
+            <span class="n">teleop_high_squared</span> <span class="o">+=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_high_goal_made</span><span class="o">.</span><span class="n">average</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">teleop_low</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_low_goal_made</span><span class="o">.</span><span class="n">average</span>
+            <span class="n">teleop_low_squared</span> <span class="o">+=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_low_goal_made</span><span class="o">.</span><span class="n">average</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">auto_high</span> <span class="o">+</span> <span class="n">auto_low</span> <span class="o">+</span> <span class="n">teleop_high</span> <span class="o">+</span> <span class="n">teleop_low</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">auto_high_squared</span> <span class="o">+</span> <span class="n">auto_low_squared</span> <span class="o">+</span> <span class="n">teleop_high_squared</span> <span class="o">+</span> <span class="n">teleop_low_squared</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">probability_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AllianceCalculator.rotor_chance"><a class="viewcode-back" href="../../alliance_calculator.html#calculators.alliance_calculator.AllianceCalculator.rotor_chance">[docs]</a>    <span class="k">def</span> <span class="nf">rotor_chance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns the chance of the 4 rotors being started</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt</span>
+
+<span class="sd">        - x - threshold value which in this case is the 12 gears needed</span>
+
+<span class="sd">        - :math:`\mu` - the mean of the sample which in this case is</span>
+<span class="sd">            :math:`\sum_{T \in A} aG(T) + \sum_{T \in A} tG(T)`</span>
+
+<span class="sd">        - :math:`\sigma` - the standard deviation of the sample which in this case is</span>
+<span class="sd">            :math:`\sqrt{\sum_{T \in A} aG(T)^2 + \sum_{T \in A} tG(T)^2}`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">12</span>  <span class="c1"># gears</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">auto_gears_delivered</span><span class="o">.</span><span class="n">average</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_gears_delivered</span><span class="o">.</span><span class="n">average</span>
+            <span class="n">sigma</span> <span class="o">+=</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">gears_delivered</span><span class="o">.</span><span class="n">average</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">teleop_gears_delivered</span><span class="o">.</span><span class="n">average</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">probability_density</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -164,7 +272,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../server.html">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_handler.html">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../the_blue_alliance.html">TheBlueAlliance</a></li>

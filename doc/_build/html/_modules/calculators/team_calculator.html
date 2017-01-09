@@ -140,19 +140,16 @@
 
 <span class="sd">        - predicted_score(A) predicted score of alliance A (this team and our team)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">fpa</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">alliance</span> <span class="o">=</span> <span class="n">Alliance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">team</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">firebase</span><span class="o">.</span><span class="n">get_team</span><span class="p">(</span><span class="n">Constants</span><span class="o">.</span><span class="n">OUR_TEAM_NUMBER</span><span class="p">))</span>
         <span class="n">ac</span> <span class="o">=</span> <span class="n">AllianceCalculator</span><span class="p">(</span><span class="n">alliance</span><span class="p">)</span>
-        <span class="n">fpa</span> <span class="o">+=</span> <span class="n">ac</span><span class="o">.</span><span class="n">predicted_score</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">fpa</span></div>
+        <span class="k">return</span> <span class="n">ac</span><span class="o">.</span><span class="n">predicted_score</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TeamCalculator.second_pick_ability"><a class="viewcode-back" href="../../team_calculator.html#calculators.team_calculator.TeamCalculator.second_pick_ability">[docs]</a>    <span class="k">def</span> <span class="nf">second_pick_ability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Calculate the second pick ability</span>
 
 <span class="sd">        .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) * auto\_ability(T)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">spa</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">spa</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_ability</span><span class="p">()</span>
+        <span class="n">spa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_ability</span><span class="p">()</span>
         <span class="n">spa</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dysfunctional_percentage</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">spa</span></div>
 
@@ -181,7 +178,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../server.html">Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../bluetooth_server.html">Bluetooth Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../socket_server.html">Socket Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../scouter_analysis.html">Scouter Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scout_analysis.html">Scout Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../crash_reporter.html">Crash Reporter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../message_handler.html">Message Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../the_blue_alliance.html">TheBlueAlliance</a></li>

@@ -51,7 +51,7 @@ class ScoutAnalysis(Looper):
             self.last_match = -1
             self.loop_time = loop_time
 
-            config = kwargs.get('scouter_accuracy_config', None)
+            config = kwargs.get('scout_accuracy_config', None)
             if(config is not None):
                 self.total_threshold = config.get('total_threshold', self.TOTAL_THRESHOLD_DEFAULT)
                 self.auto_threshold = config.get('auto_threshold', self.AUTO_THRESHOLD_DEFAULT)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>scouter_analysis &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
+    <title>scout_analysis &#8212; RoHAWKtics Scouting Server 1.0.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -48,7 +48,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for scouter_analysis</h1><div class="highlight"><pre>
+  <h1>Source code for scout_analysis</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">looper</span> <span class="kn">import</span> <span class="n">Looper</span>
 <span class="kn">from</span> <span class="nn">the_blue_alliance</span> <span class="kn">import</span> <span class="n">TheBlueAlliance</span>
 <span class="kn">from</span> <span class="nn">firebase_com</span> <span class="kn">import</span> <span class="n">FirebaseCom</span>
@@ -66,7 +66,7 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ScouterAnalysis"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis">[docs]</a><span class="k">class</span> <span class="nc">ScouterAnalysis</span><span class="p">(</span><span class="n">Looper</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis">[docs]</a><span class="k">class</span> <span class="nc">ScoutAnalysis</span><span class="p">(</span><span class="n">Looper</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Thread class for determining scouting error</span>
 
 <span class="sd">    Args:</span>
@@ -142,21 +142,21 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="bp">True</span>
 
-<div class="viewcode-block" id="ScouterAnalysis.start"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.start"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Start the thread for calculating error in the data&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tstart</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.stop"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.stop"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Stops the thread and closes email&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_email</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">smtp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">Looper</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.on_tstart"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.on_tstart">[docs]</a>    <span class="k">def</span> <span class="nf">on_tstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.on_tstart"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.on_tstart">[docs]</a>    <span class="k">def</span> <span class="nf">on_tstart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Marks the start of the thread&#39;&#39;&#39;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Scout Analysis thread starting&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.on_tloop"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.on_tloop">[docs]</a>    <span class="k">def</span> <span class="nf">on_tloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.on_tloop"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.on_tloop">[docs]</a>    <span class="k">def</span> <span class="nf">on_tloop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Calculates the error in the data for each alliance&#39;&#39;&#39;</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tba</span><span class="o">.</span><span class="n">get_event_matches</span><span class="p">()</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="s1">&#39;match_number&#39;</span><span class="p">]))</span>
@@ -261,7 +261,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exporting scouter analysis&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.export"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.export"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Exports the information to csv files (one overall and one for each scouter)&#39;&#39;&#39;</span>
         <span class="n">fieldnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;scout_name&#39;</span><span class="p">,</span> <span class="s1">&#39;total_error&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_error&#39;</span><span class="p">,</span> <span class="s1">&#39;teleop_error&#39;</span><span class="p">,</span> <span class="s1">&#39;endgame_error&#39;</span><span class="p">]</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../scouting_accuracies/overall.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">overall</span><span class="p">:</span>
@@ -275,7 +275,7 @@
                 <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">scout</span><span class="o">.</span><span class="n">scouted_matches</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">scout_writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.report_error"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.report_error">[docs]</a>    <span class="k">def</span> <span class="nf">report_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.report_error"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.report_error">[docs]</a>    <span class="k">def</span> <span class="nf">report_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Send a message if the error is too large</span>
 
 <span class="sd">        Args:</span>
@@ -286,7 +286,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_texting</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">text_report</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.email_report"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.email_report">[docs]</a>    <span class="k">def</span> <span class="nf">email_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.email_report"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.email_report">[docs]</a>    <span class="k">def</span> <span class="nf">email_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;send the message via email</span>
 
 <span class="sd">        Args:</span>
@@ -297,7 +297,7 @@
         <span class="n">msg</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smtp</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gmail_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emails</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ScouterAnalysis.text_report"><a class="viewcode-back" href="../scouter_analysis.html#scouter_analysis.ScouterAnalysis.text_report">[docs]</a>    <span class="k">def</span> <span class="nf">text_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<div class="viewcode-block" id="ScoutAnalysis.text_report"><a class="viewcode-back" href="../scout_analysis.html#scout_analysis.ScoutAnalysis.text_report">[docs]</a>    <span class="k">def</span> <span class="nf">text_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;send the message via text</span>
 
 <span class="sd">        Args:</span>

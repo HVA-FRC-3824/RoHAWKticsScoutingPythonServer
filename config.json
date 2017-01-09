@@ -8,8 +8,8 @@
     "time_between_caches": 3600,
     "report_crash": true,
     "aggregate": false,
-    "scouter_analysis": true,
-    "scouter_analysis_config": {
+    "scout_analysis": true,
+    "scout_analysis_config": {
 		"total_threshold": 10,
 	    "auto_threshold": 10,
 	    "teleop_threshold": 10,
