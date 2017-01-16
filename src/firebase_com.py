@@ -2,6 +2,7 @@ import json
 import datetime
 from firebase import firebase as fb
 import utils
+import os
 
 from threading import Lock as TLock
 from multiprocessing import Lock as PLock
@@ -649,7 +650,8 @@ class FirebaseCom:
             try:
                 data = json.dumps(self.firebase.get("/", None), indent=4)
                 now = str(datetime.datetime.now())
-                with open("../cached_firebases/" + now + '.json', 'w') as f:
+                cache_dir = os.path.dirname(os.path.abspath(__file__)) + "/../"
+                with open("{0:s}/cached_firebases/{1:s}.json".format(cache_dir, now), 'w') as f:
                     f.write(data)
                     f.close()
                     break

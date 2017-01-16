@@ -42,7 +42,9 @@ def setup_logging(fn):
     root.setLevel(logging.DEBUG)
 
     # create file handler which logs even debug messages
-    logfn = '../log/%s.log' % os.path.split(fn)[-1].split('.')[0]
+    log_dir = os.path.dirname(os.path.abspath(__file__)) + "/../"
+    logfn = ('{0:s}log/{1:s}.log'
+             .format(log_dir, os.path.split(fn)[-1].split('.')[0]))
     fh_ = GroupWriteRotatingFileHandler(logfn, maxBytes=1024 * 1024 * 5, backupCount=10)
     fh_.setLevel(logging.DEBUG)
     # Normally our Python scripts steady-state at 3.8%. With memory log buffering, this will increase.

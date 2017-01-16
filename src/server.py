@@ -91,6 +91,7 @@ class Server(Looper):
     def start(self):
         '''Starts the main thread loop'''
         self.event = None
+        self.running = True
         self.on_tstart()
         while self.running:
             start_time = time.time()

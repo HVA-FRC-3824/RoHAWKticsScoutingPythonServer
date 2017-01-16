@@ -213,16 +213,18 @@ class ScoutAnalysis(Looper):
     def export(self):
         '''Exports the information to csv files (one overall and one for each scouter)'''
         fieldnames = ['scout_name', 'total_error', 'auto_error', 'teleop_error', 'endgame_error']
-        with open('../scouting_accuracies/overall.csv', 'w') as overall:
+        export_dir = os.path.dirname(os.path.abspath(__file__)) + "/../"
+        with open('{0:s}/scouting_accuracies/overall.csv'.format(export_dir), 'w') as overall:
             overall_writer = csv.writer(overall, fieldnames=fieldnames)
             fieldnames = ['match_number', 'alliance_color', 'alliance_number', 'total_error',
                           'auto_error', 'teleop_error', 'endgame_error']
             for scout in self.firebase.get_all_scout_accuracy():
                 overall_writer.writerow(scout.to_dict())
-                with open('../scouting_accuracies/{0:s}.csv'.format(scout.scout_name), 'w') as scout_file:
+                with open('{0:s}/scouting_accuracies/{1:s}.csv'
+                          .format(export_dir, scout.scout_name), 'w') as scout_file:
                     scout_writer = csv.writer(scout_file, fieldnames=fieldnames)
-                for match in scout.scouted_matches.items():
-                    scout_writer.writerow(match.to_dict())
+                    for match in scout.scouted_matches.items():
+                        scout_writer.writerow(match.to_dict())
 
     def report_error(self, message):
         '''Send a message if the error is too large
@@ -252,6 +254,7 @@ class ScoutAnalysis(Looper):
         Args:
             message (`str`): error message to send
         '''
+        message = "Check email for details"
         for phone_number in self.mobiles:
             self.twilio.messages.create(to=phone_number,
                                         from_=self.twilio_number,

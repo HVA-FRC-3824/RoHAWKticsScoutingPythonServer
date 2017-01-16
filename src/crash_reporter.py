@@ -98,6 +98,7 @@ class CrashReporter:
         Args:
             message (`str`): error message to send
         '''
+        message = "Check email for details"
         for phone_number in self.mobiles:
             self.twilio.messages.create(to=phone_number,
                                         from_=self.twilio_number,
