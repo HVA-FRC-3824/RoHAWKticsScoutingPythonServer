@@ -6,10 +6,14 @@ class Match(DataModel):
     BLUE = 0
     RED = 1
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.match_number = -1
         self.teams = []
+        self._teams_type = int
         self.scores = []
+        self._scores_type = int
+
+        self.set(**kwargs)
 
     def is_blue(self, team_number):
         '''Returns whether the team is on the blue alliance in this match'''

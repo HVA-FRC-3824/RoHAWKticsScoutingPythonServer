@@ -14,4 +14,10 @@ class ScoutedMatchAccuracy(DataModel):
         self.teleop_error = -1
         self.endgame_error = -1
 
-        self.__dict__.update(**kwargs)
+        # Post Correction
+        self.total_error_pc = -1
+        self.auto_error_pc = -1
+        self.teleop_error_pc = -1
+        self.endgame_error_pc = -1
+
+        self.set(**kwargs)

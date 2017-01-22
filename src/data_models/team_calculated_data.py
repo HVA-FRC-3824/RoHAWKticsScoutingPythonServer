@@ -7,16 +7,43 @@ class TeamCalculatedData(DataModel):
     def __init__(self, **kwargs):
         self.team_number = -1
 
-        self.total_points = LowLevelStats()
-
         # Autonomous
-        self.auto_points = LowLevelStats()
+        self.auto_baseline = LowLevelStats()
+        self.auto_total_gears_placed = LowLevelStats()
+        self.auto_near_gears_placed = LowLevelStats()
+        self.auto_center_gears_placed = LowLevelStats()
+        self.auto_far_gears_placed = LowLevelStats()
+        self.auto_total_gears_dropped = LowLevelStats()
+        self.auto_near_gears_dropped = LowLevelStats()
+        self.auto_center_gears_dropped = LowLevelStats()
+        self.auto_far_gears_dropped = LowLevelStats()
+        self.auto_high_goal_made = LowLevelStats()
+        self.auto_high_goal_missed = LowLevelStats()
+        self.auto_low_goal_made = LowLevelStats()
+        self.auto_low_goal_missed = LowLevelStats()
+        self.auto_hoppers = LowLevelStats()
 
         # Teleop
-        self.teleop_points = LowLevelStats()
+        self.teleop_near_gears_placed = LowLevelStats()
+        self.teleop_center_gears_placed = LowLevelStats()
+        self.teleop_far_gears_placed = LowLevelStats()
+        self.teleop_total_gears_dropped = LowLevelStats()
+        self.teleop_near_gears_dropped = LowLevelStats()
+        self.teleop_center_gears_dropped = LowLevelStats()
+        self.teleop_far_gears_dropped = LowLevelStats()
+        self.teleop_high_goal_made = LowLevelStats()
+        self.teleop_high_goal_missed = LowLevelStats()
+        self.teleop_low_goal_made = LowLevelStats()
+        self.teleop_low_goal_missed = LowLevelStats()
+        self.teleop_hoppers = LowLevelStats()
+        self.teleop_picked_up_gears = LowLevelStats()
 
         # Endgame
-        self.endgame_points = LowLevelStats()
+        self.endgame_climb_successful = LowLevelStats()
+        self.endgame_climb_did_not_finish_in_time = LowLevelStats()
+        self.endgame_climb_robot_fell = LowLevelStats()
+        self.endgame_climb_no_attempt = LowLevelStats()
+        self.endgame_climb_time = LowLevelStats()
 
         # Post Match
         self.no_show = LowLevelStats()
@@ -42,4 +69,4 @@ class TeamCalculatedData(DataModel):
         self.zscore_defense = 0.0
         self.rank_defense = -1
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

@@ -15,4 +15,4 @@ class TeamRankingData(DataModel):
         self.first_tie_breaker = 0
         self.second_tie_breaker = 0
 
-        self.__dict__.update(**kwargs)
+        self.set(**kwargs)

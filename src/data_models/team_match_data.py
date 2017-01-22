@@ -1,4 +1,6 @@
 from .data_model import DataModel
+from .gear import Gear
+from .shots import Shots
 
 
 class TeamMatchData(DataModel):
@@ -10,16 +12,34 @@ class TeamMatchData(DataModel):
         self.allaince_number = -1
         self.scout_name = ""
 
-        self.total_points = -1
-
         # Autonomous
-        self.auto_points = -1
+        self.auto_start_position = ""
+        self.auto_baseline = False
+        self.auto_gears = []
+        self._auto_gears_type = Gear()
+        self.auto_high_goal_made = -1
+        self.auto_high_goal_missed = -1
+        self.auto_high_goal_correction = -1
+        self.auto_low_goal_made = -1
+        self.auto_low_goal_missed = -1
+        self.auto_low_goal_correction = -1
+        self.auto_hoppers = -1
 
         # Teleop
-        self.teleop_points = -1
+        self.teleop_gears = []
+        self._teleop_gears_type = Gear()
+        self.teleop_high_goal_made = -1
+        self.teleop_high_goal_missed = -1
+        self.teleop_high_goal_correction = -1
+        self.teleop_low_goal_made = -1
+        self.teleop_low_goal_missed = -1
+        self.teleop_low_goal_correction = -1
+        self.teleop_hoppers = -1
+        self.teleop_picked_up_gears = -1
 
         # Endgame
-        self.endgame_points = -1
+        self.endgame_climb = ""
+        self.endgame_climb_time = ""
 
         # Post Match
         self.no_show = False
@@ -33,4 +53,4 @@ class TeamMatchData(DataModel):
         self.yellow_card = False
         self.red_card = False
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

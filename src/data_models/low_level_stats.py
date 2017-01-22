@@ -9,12 +9,14 @@ class LowLevelStats(DataModel):
     Note:
         This should not be created directly and instead made using :func:`from_list`
     '''
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.max = 0
         self.min = 0
         self.average = 0
         self.std = 0
         self.total = 0
+
+        self.set(**kwargs)
 
     @staticmethod
     def from_list(list_):

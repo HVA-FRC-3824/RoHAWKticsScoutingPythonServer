@@ -3,14 +3,15 @@ from data_models.match import Match
 
 from calculators.alliance_calculator import AllianceCalculator
 
+from firebase_com import FirebaseCom
 from constants import Constants
 
 
 class TeamCalculator:
     '''Makes all the higher level calculations for a specific team'''
-    def __init__(self, team, firebase):
+    def __init__(self, team):
         self.team = team
-        self.firebase = firebase
+        self.firebase = FirebaseCom()
 
     def auto_ability(self):
         '''Average points scored in autonomous'''

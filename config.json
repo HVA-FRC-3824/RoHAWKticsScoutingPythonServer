@@ -5,6 +5,7 @@
     "setup": false,
     "log_level": "debug",
     "time_between_cycles": 600,
+		"cache_firebase": false,
     "time_between_caches": 3600,
     "report_crash": true,
     "aggregate": false,

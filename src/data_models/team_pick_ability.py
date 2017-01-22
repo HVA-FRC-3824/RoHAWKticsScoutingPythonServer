@@ -23,4 +23,4 @@ class TeamPickAbility(DataModel):
         self.picked = False
         self.dnp = False
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

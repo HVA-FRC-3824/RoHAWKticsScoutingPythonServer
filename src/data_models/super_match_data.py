@@ -21,4 +21,4 @@ class SuperMatchData(DataModel):
 
         self.notes = ""
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

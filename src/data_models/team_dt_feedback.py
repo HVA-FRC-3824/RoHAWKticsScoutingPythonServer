@@ -7,4 +7,4 @@ class TeamDTFeedback(DataModel):
         self.team_number = -1
         self.feedback = {}
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

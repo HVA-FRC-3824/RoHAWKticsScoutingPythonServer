@@ -10,8 +10,8 @@ setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
 
-class CrashReporter:
-    '''Singleton that sends error messages via email and text upon a crash
+class Messenger:
+    '''Singleton that sends messages via email and text upon a crash
 
     Kwargs:
         use_email (`bool`): whether to send reports via email
@@ -65,7 +65,7 @@ class CrashReporter:
 
             self.instance = True
 
-    def report_server_crash(self, message):
+    def send_message(self, subject, message):
         '''Send a message if the server crashed
 
         Args:
@@ -74,32 +74,31 @@ class CrashReporter:
         self.tlock.acquire()
         self.plock.acquire()
         if self.use_email:
-            self.email_report(message)
+            self.email_report(subject, message)
 
         if self.use_texting:
-            self.text_report(message)
+            self.text_report(subject)
         self.tlock.release()
         self.plock.release()
 
-    def email_report(self, message):
+    def email_report(self, subject, message):
         '''send the message via email
 
         Args:
             message (`str`): error message to send
         '''
-        header = ("To:{0:s}\nFrom:{1:s}\nSubject: Server Crash!!!\n"
-                  .format(', '.join(self.emails), self.gmail_user))
+        header = ("To:{0:s}\nFrom:{1:s}\nSubject: {2:s}\n"
+                  .format(', '.join(self.emails), self.gmail_user, subject))
         msg = header + '\n' + message
         self.smtp.sendmail(self.gmail_user, self.emails, msg)
 
-    def text_report(self, message):
+    def text_report(self, subject):
         '''send the message via text
 
         Args:
             message (`str`): error message to send
         '''
-        message = "Check email for details"
         for phone_number in self.mobiles:
             self.twilio.messages.create(to=phone_number,
                                         from_=self.twilio_number,
-                                        body="Server Crash!!!\n{0:s}".format(message))
+                                        body="{0:s}\nCheck email for details".format(subject))

@@ -15,3 +15,15 @@ class DataModel:
             if isinstance(value, DataModel):
                 d[key] = value.to_dict()
         return d
+
+    def set(self, d):
+        '''Sets the values from the `dict` d'''
+        for key, value in iter(d.items()):
+            if isinstance(value, dict):
+                self.__dict__[key] = self._dict__[key].__class__(**value)
+            elif isinstance(value, list):
+                _class = self.__dict__["_"+key+"_type"].__class__
+                for v in value:
+                    self.__dict__[key].append(_class(**value))
+            else:
+                self.__dict__[key] = value

@@ -11,6 +11,7 @@ from threading import Event
 from looper import Looper
 from functools import cmp_to_key
 
+from aggregator import Aggregator
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
 from crash_reporter import CrashReporter
@@ -56,8 +57,11 @@ class Server(Looper):
 
         self.aggregate = kwargs.get('aggregate', False)
 
-        if kwargs.get('crash_reporter', False):
-            self.crash_reporter = CrashReporter(**kwargs)
+        if kwargs.get('messenger', False):
+            self.messenger = Messenger(**kwargs)
+
+        self.crash_reporter = kwargs.get('crash_reporter', False)
+        self.cache_firebase = kwargs.get('cache_firebase', False)
 
         self.time_between_cycles = kwargs.get('time_between_cycles', self.DEFAULT_TIME_BETWEEN_CYCLES)
         self.time_between_caches = kwargs.get('time_between_caches', self.DEFAULT_TIME_BETWEEN_CACHES)
@@ -72,10 +76,19 @@ class Server(Looper):
             self.socket = SocketServer()
 
         if kwargs.get('scouter_analysis', False):
-            self.scout_analysis = ScoutAnalysis(self.time_between_cycles, **kwargs)
+            self.scout_analysis = ScoutAnalysis(**kwargs)
 
         if kwargs.get('setup', False):
             logger.info("Setting up database...")
+
+            if self.tba.event_down():
+                while True:
+                    response = input("Event is down exit? (y/n)").lower()
+                    if response in ['y', 'yes']:
+                        sys.exit()
+                    elif response in ['n', 'no']:
+                        return
+
             event_matches = self.tba.get_event_matches()
             team_matches = self.set_matches(event_matches)
             logger.info("Added matches to Firebase")
@@ -87,6 +100,12 @@ class Server(Looper):
             event_rankings = self.tba.get_event_rankings()
             self.set_rankings(event_rankings)
             logger.info("Added rankings to Firebase")
+        else:
+            with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/event_extras.json") as f:
+                json_dict = json.loads(f.read())
+                Constants().team_numbers = json_dict['team_number']
+                Constants().number_of_matches = json_dict['number_of_matches']
+                Constants().scout_names = json_dict['scout_names']
 
     def start(self):
         '''Starts the main thread loop'''
@@ -110,15 +129,18 @@ class Server(Looper):
             event_matches (dict): The match information pulled from `The Blue Alliance <thebluealliance.com>`_
 
         Returns:
-                A `dict` contain all the match numbers for each team
+                A `dict` containing all the match numbers for each team
         '''
         team_matches = {}
+        number_of_matches = 0
         for tba_match in event_matches:
             if tba_match['comp_level'] != "qm":
                 continue
 
             match = Match()
             match.match_number = tba_match['match_number']
+            if match.match_number > number_of_matches:
+                number_of_matches = match.match_number
             for color in ['blue', 'red']:
                 for team_key in tba_match['alliances'][color]['teams']:
                     match.teams.append(int(team_key[3:]))
@@ -130,6 +152,11 @@ class Server(Looper):
                 team_matches[team_number].append(match.match_number)
             self.firebase.update_match(match)
             logger.info("Match {0:d} added".format(match.match_number))
+        with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/event_extras.json", "w") as f:
+            json_dict = json.loads(f.read())
+            json_dict['number_of_matches'] = number_of_matches
+            f.write(json.loads(json_dict))
+        Constants().number_of_matches = number_of_matches
         return team_matches
 
     def set_teams(self, event_teams, team_matches):
@@ -147,8 +174,12 @@ class Server(Looper):
 
         '''
         team_logistics = []
+        team_numbers = []
 
         for tba_team in event_teams:
+
+            team_numbers.append(tba_team['team_number'])
+
             info = TeamLogistics()
             info.team_number = tba_team['team_number']
             info.nickname = tba_team['nickname']
@@ -176,6 +207,11 @@ class Server(Looper):
             if len(team.matches) > min_matches:
                 team.surrogate_match_number = team.matches[3]
             self.firebase.update_team_logistics(info)
+        with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/event_extras.json", "w") as f:
+            json_dict = json.loads(f.read())
+            json_dict['team_numbers'] = team_numbers
+            f.write(json.loads(json_dict))
+        Constants().team_numbers = team_number
 
     def set_rankings(self, event_rankings):
         '''Convert the ranking information from `The Blue Alliance <thebluealliance.com>`_
@@ -207,8 +243,9 @@ class Server(Looper):
         self.iteration = 1
 
         # initial run cache
-        self.firebase.cache()
-        self.time_since_last_cache = 0
+        if self.cache_firebase:
+            self.firebase.cache()
+            self.time_since_last_cache = 0
 
         if hasattr(self, 'bluetooth'):
             self.bluetooth.start()
@@ -216,34 +253,65 @@ class Server(Looper):
         if hasattr(self, 'socket'):
             self.socket.start()
 
-        if hasattr(self, 'scout_analysis'):
-            self.scout_analysis.start()
-
     def on_tloop(self):
         '''Runs on each iteration of the main loop and aggregates the data.'''
         logger.info("Iteration {0:d}".format(self.iteration))
-        if self.time_between_caches < self.time_since_last_cache:
+        if self.cache_firebase and self.time_between_caches < self.time_since_last_cache:
             self.firebase.cache()
             self.time_since_last_cache = 0
 
         start_time = time.time()
-        if self.aggregate:
+        if hasattr(self, 'scout_analysis'):
             try:
-                self.make_team_calculations()
-                self.make_super_calculations()
-                self.make_ranking_calculations()
-                self.make_pick_list_calculations()
+                self.scout_analysis.analyze_scouts()
             except:
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
-                    if hasattr(self, 'crash_reporter'):
+                    if self.crash_reporter):
                         logger.error("Reporting crash")
                         try:
-                            self.crash_reporter.report_server_crash(traceback.format_exc())
+                            self.messenger.send_message("Server Crash!!!", traceback.format_exc())
                         # weird exception that doesn't stop the text
                         except:
                             pass
+
+        if self.aggregate:
+            try:
+                Aggregator.make_team_calculations(self.firebase)
+                Aggregator.make_super_calculations(self.firebase)
+                Aggregator.make_pick_list_calculations(self.firebase)
+            except:
+                if self.running:
+                    logger.error("Crash")
+                    logger.error(traceback.format_exc())
+                    if self.crash_reporter):
+                        logger.error("Reporting crash")
+                        try:
+                            self.messenger.send_message("Server Crash!!!", traceback.format_exc())
+                        # weird exception that doesn't stop the text
+                        except:
+                            pass
+
+            if self.tba.event_down:
+                if self.running:
+                    logger.error("The Blue Alliance is down (possibly just for this event)")
+                    self.messenger.send_message("The Blue Alliance is down (possibly just for this event)", "")
+            else:
+                try:
+                    Aggregator.make_ranking_calculations(self.firebase, self.tba)
+                except:
+                    if self.running:
+                        logger.error("Crash")
+                        logger.error(traceback.format_exc())
+                        if self.crash_reporter:
+                            logger.error("Reporting crash")
+                            try:
+                                self.messenger.send_message("Server Crash!!!", traceback.format_exc())
+                            # weird exception that doesn't stop the text
+                            except:
+                                pass
+
         end_time = time.time()
         time_taken = end_time - start_time
         logger.info("Iteration Ended")
@@ -261,224 +329,7 @@ class Server(Looper):
             self.bluetooth.stop()
         if hasattr(self, 'socket'):
             self.socket.stop()
-        if hasattr(self, 'scout_analysis'):
-            self.scout_analysis.stop()
         Looper.stop(self)
-
-    def make_team_calculations(self):
-        '''Make all the calculations from the :class:`TeamMatchData`'''
-        # make low level calculations
-        list_dict = {}
-        for tmd in self.firebase.get_all_team_match_data().values():
-            if tmd.team_number not in list_dict:
-                list_dict[tmd.team_number] = {}
-            for key in tmd.__dict__.keys():
-                if key == 'team_number':
-                    continue
-
-                # Convert firebase booleans
-                if tmd.__dict__[key] == 'true':
-                    tmd.__dict__[key] = True
-                elif tmd.__dict__[key] == 'false':
-                    tmd.__dict__[key] = False
-
-                # strings don't have low level calculations
-                if isinstance(tmd.__dict__[key], str):
-                    continue
-
-                # calculate the points score by this particular team in this match
-                tmd.auto_points = 0
-                tmd.teleop_points = 0
-                tmd.endgame_points = 0
-                tmd.total_points = tmd.auto_points + tmd.teleop_points + tmd.endgame_points
-
-                # create lists for low level stats calculations
-                if key is not list_dict[tmd.team_number]:
-                    list_dict[tmd.team_number][key] = []
-                list_dict[tmd.team_number][key].append(tmd.__dict__[key])
-        # Create LowLevelStats
-        for team_number, lists in iter(list_dict.items()):
-            tcd = TeamCalculatedData()
-            tcd.team_number = team_number
-            for key, l in iter(lists.items()):
-                if key in tcd.__dict__ and isinstance(tcd.__dict__[key], LowLevelStats):
-                    tcd.__dict__[key] = LowLevelStats().from_list(l)
-            self.firebase.update_team_calculated_data(tcd)
-            logger.info("Updated Low Level Calculations for Team {0:d}".format(team_number))
-        # high level calculations
-
-    def make_super_calculations(self):
-        '''Makes all the calculations from the :class:`SuperMatchData`'''
-        lists = {}
-        tcd = self.firebase.get_team_calculated_data(-1)
-        for key in tcd.__dict__.keys():
-            if 'zscore' in key:
-                lists[key[6:]] = {}
-
-        # get match rankings from super match data and put in lists for averaging
-        for smd in self.firebase.get_all_super_match_data():
-            for key, value in smd.__dict__.items():
-                if 'blue' in key:
-                    key = key[5:]
-                elif 'red' in key:
-                    key = key[4:]
-
-                if key in lists:
-                    for i, team_number in enumerate(value):
-                        if team_number not in lists[key]:
-                            lists[key][team_number] = []
-                        match_rank = 3 - i
-                        if match_rank == 3:
-                            match_rank = 4
-                        lists[key][team_number].append(match_rank)
-
-        zscore_components = {}
-        for key in lists:
-            zscore_components[key] = {}
-            zscore_components[key]['team_numbers'] = []
-            zscore_components[key]['averages'] = []
-            zscore_components[key]['zscore'] = []
-            zscore_components[key]['rank'] = []
-            for team_number in lists[key]:
-                average = 0.0
-                for value in lists[key][team_number]:
-                    average += value
-                zscore_components[key]['team_number'].append(team_number)
-                zscore_components[key]['averages'].append(average / len(list[key][team_number]))
-            zscore_components[key]['zscores'] = stats.zscore(zscore_components[key]['averages'])
-
-            # Create list for sorting
-            teams = []
-            for i in range(len(zscore_components[key]['team_number'])):
-                team = {}
-                team['team_number'] = zscore_components[key]['team_number'][i]
-                team['zscore'] = zscore_components[key]['zscores'][i]
-            # Make the zscore negative for sorting so larger numbers are at the beginning
-            teams = sorted(teams, key=lambda team: -team['zscore'])
-
-            # add calculations to firebase
-            for i, team in enumerate(teams):
-                firebase_team = self.firebase.get_team_calculated_data(team['team_number'])
-                firebase_team.__dict__["zscore_"+key] = team['zscore']
-                firebase_team.__dict__["rank_"+key] = i + 1
-                self.firebase.update_team_calculated_data(firebase_team)
-
-    def make_ranking_calculations(self):
-        '''Pulls the current rankings from `The Blue Alliance <thebluealliance.com>`_
-           and predicts the final rankings
-        '''
-        # Current Rankings
-        event_rankings = self.tba.get_event_rankings()
-        self.set_rankings(event_rankings)
-        logger.info("Updated current rankings on Firebase")
-
-        # Predicted Rankings
-        teams = []
-        for team in self.firebase.get_teams():
-            team.predicted_ranking.played = len(team.info.match_numbers)
-
-            team.predicted_ranking.RPs = team.current_ranking.RPs
-            team.predicted_ranking.wins = team.current_ranking.wins
-            team.predicted_ranking.ties = team.current_ranking.ties
-            team.predicted_ranking.loses = team.current_ranking.loses
-            team.predicted_ranking.first_tie_breaker = team.current_ranking.first_tie_breaker
-            team.predicted_ranking.second_tie_breaker = team.current_ranking.second_tie_breaker
-
-            for index in range(len(team.completed_matches), len(team.info.match_numbers)):
-                match = self.firebase.get_match(team.info.match_numbers[index])
-
-                # If match is a surrogate match ignore it
-                if match.match_number == team.info.surrogate_match_number:
-                    continue
-
-                if match.is_blue(team.team_number):
-                    ac = AllianceCalculator(Alliance(*match.teams[0:2]))
-                    opp = AllianceCalculator(Alliance(*match.teams[3:5]))
-                else:
-                    ac = AllianceCalculator(Alliance(*match.teams[3:5]))
-                    opp = AllianceCalculator(Alliance(*match.teams[0:2]))
-
-                if ac.win_probability_over(opp) > 0.5:
-                    team.predicted_ranking.wins += 1
-                    team.predicted_ranking.RPs += 2
-                elif opp.win_probabiliy_over(ac) > 0.5:
-                    team.predicted_ranking.loses += 1
-                else:
-                    team.predicted_ranking.ties += 1
-                    team.predicted_ranking.RPs += 1
-
-                team.predicted_ranking.first_tie_breaker += ac.predicted_score()
-                teams.predicted_ranking.second_tie_breaker += ac.predicted_auto_score()
-            teams.append(team)
-
-        # Sort for ranking
-        def ranking_cmp(team1, team2):
-            if team1.predicted_ranking.RPs > team2.predicted_ranking.RPs:
-                return 1
-            elif team1.predicted_ranking.RPs < team2.predicted_ranking.RPs:
-                return -1
-            else:  # tie
-                if team1.predicted_ranking.first_tie_breaker > team2.predicted_ranking.first_tie_breaker:
-                    return 1
-                elif team1.predicted_ranking.first_tie_breaker < team2.predicted_ranking.first_tie_breaker:
-                    return -1
-                else:
-                    if team1.predicted_ranking.second_tie_breaker > team2.predicted_ranking.second_tie_breaker:
-                        return 1
-                    elif team1.predicted_ranking.second_tie_breaker < team2.predicted_ranking.second_tie_breaker:
-                        return -1
-                    else:
-                        return 0  # Really we should never get here
-
-        teams.sort(key=cmp_to_key(ranking_cmp), reverse=True)
-        for rank, team in enumerate(teams):
-            team.predicted_ranking = rank + 1
-            self.firebase.update_predicted_team_ranking_data(team.predicted_ranking)
-            logger.info("Updated predicted ranking for {0:d} on Firebase".format(team.team_number))
-
-    def make_pick_list_calculations(self):
-        '''Make calculations for :class:`TeamPickAbility` based on :class:`TeamMatchData`,
-        :class:`SuperMatchData`, and :class:`TeamCalculatedData`
-        '''
-        for team in self.firebase.get_teams().values():
-            tc = TeamCalculator(team)
-
-            # First Pick
-            team.first_pick.pick_ability = tc.first_pick_ability()
-            team.robot_picture_filepath = team.pit.robot_picture_filepath
-            team.first_pick.yellow_card = team.calc.yellow_card.total > 0
-            team.first_pick.red_card = team.calc.red_card.total > 0
-            team.stopped_moving = team.calc.stopped_moving.total > 1
-            team.first_pick.top_line = "PA: {0:f}".format(team.first_pick.pick_ability)
-            team.first_pick.second_line = "".format()
-            team.first_pick.third_line = "".format()
-            self.firebase.update_first_team_pick_ability(team.first_pick)
-            logger.info("Updated first pick info for {0:d} on Firebase".format(team.team_number))
-
-            # Second Pick
-            team.second_pick.pick_ability = tc.second_pick_ability()
-            team.robot_picture_filepath = team.pit.robot_picture_filepath
-            team.second_pick.yellow_card = team.calc.yellow_card.total > 0
-            team.second_pick.red_card = team.calc.red_card.total > 0
-            team.stopped_moving = team.calc.stopped_moving.total > 1
-            team.second_pick.top_line = "PA: {0:f}".format(team.second_pick.pick_ability)
-            team.second_pick.second_line = "".format()
-            team.second_pick.third_line = "".format()
-            self.firebase.update_second_team_pick_ability(team.second_pick)
-            logger.info("Updated second pick info for {0:d} on Firebase".format(team.team_number))
-
-            # Third Pick
-            team.third_pick.pick_ability = tc.third_pick_ability()
-            team.robot_picture_filepath = team.pit.robot_picture_filepath
-            team.third_pick.yellow_card = team.calc.yellow_card.total > 0
-            team.third_pick.red_card = team.calc.red_card.total > 0
-            team.stopped_moving = team.calc.stopped_moving.total > 1
-            team.third_pick.top_line = "PA: {0:f}".format(team.third_pick.pick_ability)
-            team.third_pick.second_line = "".format()
-            team.third_pick.third_line = "".format()
-            self.firebase.update_third_team_pick_ability(team.third_pick)
-            logger.info("Updated third pick info for {0:d} on Firebase".format(team.team_number))
-
 
 if __name__ == "__main__":
     # Collect command line arguments

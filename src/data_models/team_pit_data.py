@@ -20,4 +20,4 @@ class TeamPitData(DataModel):
 
         self.notes = ""
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

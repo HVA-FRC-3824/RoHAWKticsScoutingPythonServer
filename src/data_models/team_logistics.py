@@ -9,4 +9,4 @@ class TeamLogistics(DataModel):
         self.matches = []
         self.surrogate_match_number = -1
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)

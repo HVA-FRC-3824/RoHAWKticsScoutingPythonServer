@@ -10,4 +10,4 @@ class Strategy(DataModel):
         self.path_json = ""
         self.updated = -1
 
-        self.__dict__.update(kwargs)
+        self.set(**kwargs)
