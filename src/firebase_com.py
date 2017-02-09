@@ -464,24 +464,26 @@ class FirebaseCom:
         if isinstance(strategy, Strategy):
             self.update_strategy(strategy.to_dict())
         elif isinstance(strategy, dict):
-            self.put_in_firebase("strategy", strategy['name'], strategy)
-            response = self.get_from_firebase("strategy_names")
+            self.put_in_firebase("strategy/drawings", strategy['name'], strategy)
+
+            # Append to the list of strategy names to be used in get all strategies
+            response = self.get_from_firebase("strategy/drawing_names")
             if response is None:
                 d = {}
                 d['list'] = []
                 d['list'].append(strategy['name'])
-                self.put_in_firebase("", "strategy_names", d)
+                self.put_in_firebase("strategy", "drawing_names", d)
             else:
                 if strategy['name'] not in response['list']:
                     response['list'].append(strategy['name'])
-                    self.put_in_firebase("", "strategy_names", response)
+                    self.put_in_firebase("strategy", "drawing_names", response)
         else:
             logger.error("strategy variable is not a Strategy or dict")
             raise Exception("strategy variable is not a Strategy or dict")
 
     def get_strategy(self, strategy_name):
         '''get all data for a strategy'''
-        response = self.get_from_firebase("strategy/{0:s}".format(strategy_name))
+        response = self.get_from_firebase("strategy/drawings/{0:s}".format(strategy_name))
         if response is None:
             return None
         return Strategy(**response)
@@ -489,10 +491,48 @@ class FirebaseCom:
     def get_all_strategies(self):
         '''get all individual strategies'''
         d = {}
-        for strategy_name in self.get_from_firebase("strategy_names")['list']:
+        for strategy_name in self.get_from_firebase("strategy/drawing_names/list"):
             response = self.get_strategy(strategy_name)
             if response is not None:
                 d[strategy_name] = Strategy(**response)
+        return d
+
+    def update_strategy_suggestion(self, strategy_suggestion):
+        '''update the data for scout accuracy'''
+        if isinstance(strategy_suggestion, StrategySuggestion):
+            self.update_strategy_suggestion(strategy_suggestion.to_dict())
+        elif isinstance(strategy_suggestion, dict):
+            success = self.put_in_firebase("strategy/suggestions", strategy_suggestion['key'], strategy_suggestion)
+
+            # Append to the list of strategy suggestions keys to be used in get all strategy suggestions
+            response = self.get_from_firebase("strategy/suggestion_keys")
+            if response is None:
+                d = {}
+                d['list'] = []
+                d['list'].append(strategy_suggestion['key'])
+                self.put_in_firebase("strategy", "suggestion_keys", d)
+            else:
+                if strategy_suggestion['key'] not in response['list']:
+                    response['list'].append(strategy_suggestion['key'])
+                    self.put_in_firebase("strategy", "suggestion_keys", response)
+        else:
+            logger.error("strategy_suggestion variable is not a StrategySuggestion or dict")
+            raise Exception("strategy_suggestion variable is not a StrategySuggestion or dict")
+
+    def get_strategy_suggestion(self, strategy_suggestion_key):
+        '''get all data for a strategy suggestion'''
+        response = self.get_from_firebase("strategy/suggestions/{0:s}".format(strategy_suggestion_key))
+        if response is None:
+            return None
+        return StrategySuggestion(**response)
+
+    def get_all_strategy_suggestions(self):
+        '''get all individual strategy suggestions'''
+        d = {}
+        for strategy_suggestion_key in self.get_from_firebase("strategy/suggestion_keys/list"):
+            response = self.get_strategy_suggestion(strategy_suggestion_key)
+            if response is not None:
+                d[strategy_suggestion_key] = StrategySuggestion(**response)
         return d
 
     def get_from_firebase(self, location):

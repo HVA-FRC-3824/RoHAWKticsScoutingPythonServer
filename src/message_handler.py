@@ -19,7 +19,7 @@ class MessageHandler:
     PIT_HEADER = 'P'
     SYNC_HEADER = 'R'
     STRATEGY_HEADER = 'T'
-    MATCH_STRATEGY_HEADER = 'A'
+    STRATEGY_SUGGESTION_HEADER = 'U'
 
     # Singleton
     shared_state = {}
@@ -53,8 +53,8 @@ class MessageHandler:
             response = self.handle_sync()
         elif message[0] == self.STRATEGY_HEADER:
             self.handle_strategy(message[1:])
-        elif message[0] == self.MATCH_STRATEGY_HEADER:
-            self.handle_match_strategy(message[1:])
+        elif message[0] == self.STRATEGY_SUGGESTION_HEADER:
+            self.handle_strategy_suggestion(message[1:])
         self.tlock.release()
         self.plock.release()
         return response
@@ -169,7 +169,7 @@ class MessageHandler:
         else:
             logger.error("message is not a dict or list")
 
-    def handle_match_strategy(self, message):
+    def handle_strategy_suggestions(self, message):
         '''decodes the message to one or more `MatchStrategy`
 
         Args:
@@ -179,15 +179,15 @@ class MessageHandler:
         strategies = json.loads(message)
         if isinstance(strategies, dict):
             try:
-                self.firebase.update_match_strategy(strategies)
+                self.firebase.update_strategy_suggestion(strategies)
             except:
-                logger.error("Error with updating match strategies")
+                logger.error("Error with updating strategy suggestions")
         elif isinstance(strategies, list):
             for strategy in strategies:
                 try:
-                    self.firebase.update_match_strategy(strategy)
+                    self.firebase.update_strategy_suggestion(strategy)
                 except:
-                    logger.error("Error with updating match stratgies")
+                    logger.error("Error with updating strategy suggestions")
         else:
             logger.error("message is not a dict or list")
 
@@ -240,7 +240,7 @@ class MessageHandler:
         for strategy in self.firebase.get_all_strategies().values():
             data['strategy'].append(strategy.to_dict())
 
-        data['match_strategy'] = []
-        for strategy in self.firebase.get_all_match_strategies().values():
-            data['match_strategy'].append(strategy.to_dict())
+        data['strategy_suggestion'] = []
+        for strategy in self.firebase.get_all_strategy_suggestions().values():
+            data['strategy_suggestion'].append(strategy.to_dict())
         return "R" + json.dumps(data)

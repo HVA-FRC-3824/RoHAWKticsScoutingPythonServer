@@ -13,14 +13,6 @@ class TeamCalculator:
         self.team = team
         self.firebase = FirebaseCom()
 
-    def auto_ability(self):
-        '''Average points scored in autonomous'''
-        return 0.0
-
-    def std_auto_ability(self):
-        '''Standard deviation of the points scored in autonomous'''
-        return 0.0
-
     def num_completed_matches(self):
         '''Number of matches completed by this team'''
         return len(self.team.completed_matches)
@@ -70,18 +62,6 @@ class TeamCalculator:
                     predicted_RPs += 2
         return actual_RPs + predicted_RPs
 
-    def predict_first_tie_breaker(self):
-        '''Predict the first tie breaker for rankings. Use the actual value for matches that
-        are completed and predict the value for ones that are not.
-        '''
-        return 0.0
-
-    def predict_second_tie_breaker(self):
-        '''Predict the second tie breaker for rankings. Use the actual value for matches that
-        are completed and predict the values for ones that are not.
-        '''
-        return 0.0
-
     def first_pick_ability(self):
         '''Calculate the first pick ability which is the predicted offensive score that the
         team can contribute combined with our team.
@@ -97,10 +77,26 @@ class TeamCalculator:
     def second_pick_ability(self):
         '''Calculate the second pick ability
 
-        .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) * auto\_ability(T)
+        .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) * (baseline_percentage(T) * 5 + climb_percentage(T) * 50)
         '''
-        spa = self.auto_ability()
-        spa *= self.dysfunctional_percentage()
+        functional_percentage = (1 - self.dysfunctional_percentage())
+        average_baseline_points = self.team.calc.auto_baseline.average() * 5
+        average_climb_points = self.team.calc.endgame_climb_successful.average * 50
+        auto_gear_contribution = self.team.calc.auto_total_gears_placed.average * 60
+        if auto_gear_contribution > 40:
+            teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 260 / 11
+        else:
+            teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 220 / 12
+        gear_contribution = auto_gear_contribution + teleop_gear_contribution
+
+        # multipliers will be correctly determined later
+        defense_contribution = self.team.calc.zscore_control * 4
+        speed_contribution = self.team.calc.zscore_speed * 2
+        control_contribution = self.team.calc.zscore_control * 4
+
+        spa =  functional_percentage * (average_baseline_points + gear_contribution +
+                                        defense_contribution + speed_contribution +
+                                        control_contribution + average_climb_points)
         return spa
 
     def third_pick_ability(self):
