@@ -112,11 +112,10 @@ class ScoutAnalysis:
                     continue
 
                 # Data Correction
-                # TODO: get actual TBA keys
-                tba_auto_high_balls = tba_match['score_breakdown'][color]['autoHighGoalBalls']
-                tba_auto_low_balls = tba_match['score_breakdown'][color]['autoLowGoalBalls']
-                tba_teleop_high_balls = tba_match['score_breakdown'][color]['teleopHighGoalBalls']
-                tba_teleop_low_balls = tba_match['score_breakdown'][color]['teleopLowGoalBalls']
+                tba_auto_high_balls = tba_match['score_breakdown'][color]['autoFuelHigh']
+                tba_auto_low_balls = tba_match['score_breakdown'][color]['autoFuelLow']
+                tba_teleop_high_balls = tba_match['score_breakdown'][color]['teleopFuelHigh']
+                tba_teleop_low_balls = tba_match['score_breakdown'][color]['teleopFuelLow']
                 actual_auto_high_balls = 0
                 actual_auto_low_balls = 0
                 actual_teleop_high_balls = 0
@@ -152,7 +151,7 @@ class ScoutAnalysis:
                                      scout_scores['auto'])
                 sma.teleop_error = abs(tba_match['score_breakdown'][color]['teleopPoints'] -
                                        scout_scores['teleop'])
-                sma.endgame_error = abs(tba_match['score_breakdown'][color]['endgamePoints'] -
+                sma.endgame_error = abs(tba_match['score_breakdown'][color]['teleopTakeoffPoints'] -
                                         scout_scores['endgame'])
 
                 error_message = ""
