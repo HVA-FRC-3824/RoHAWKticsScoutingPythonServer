@@ -3,32 +3,26 @@ import time
 import logging
 import traceback
 import signal
+import os
 import sys
 import json
 import threading
-import scipy.stats as stats
 from threading import Event
 from looper import Looper
-from functools import cmp_to_key
 
 from aggregator import Aggregator
 from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
-from crash_reporter import CrashReporter
 from socket_server import SocketServer
 from scout_analysis import ScoutAnalysis
+from constant import Constants
+from messenger import Messenger
 
 from data_models.match import Match
-from data_models.alliance import Alliance
 from data_models.team_logistics import TeamLogistics
 from data_models.team_pit_data import TeamPitData
 from data_models.team_ranking_data import TeamRankingData
 from data_models.team_pick_ability import TeamPickAbility
-from data_models.team_calculated_data import TeamCalculatedData
-from data_models.low_level_stats import LowLevelStats
-
-from calculators.team_calculator import TeamCalculator
-from calculators.alliance_calculator import AllianceCalculator
 
 from ourlogging import setup_logging
 
@@ -90,20 +84,21 @@ class Server(Looper):
                         return
 
             event_matches = self.tba.get_event_matches()
-            team_matches = self.set_matches(event_matches)
+            team_matches = Aggregator.set_matches(self.firebase, event_matches)
             logger.info("Added matches to Firebase")
 
             event_teams = self.tba.get_event_teams()
-            self.set_teams(event_teams, team_matches)
+            Aggregator.set_teams(self.firebase, event_teams, team_matches)
             logger.info("Added teams to Firebase")
 
             event_rankings = self.tba.get_event_rankings()
-            self.set_rankings(event_rankings)
+            Aggregator.set_rankings(self.firebase, event_rankings)
             logger.info("Added rankings to Firebase")
         else:
-            with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/event_extras.json") as f:
+            with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
+                      self.event_id + "/event_extras.json") as f:
                 json_dict = json.loads(f.read())
-                Constants().team_numbers = json_dict['team_number']
+                Constants().team_numbers = json_dict['team_numbers']
                 Constants().number_of_matches = json_dict['number_of_matches']
                 Constants().scout_names = json_dict['scout_names']
 
@@ -121,119 +116,6 @@ class Server(Looper):
                 self.event = Event()
                 self.event.wait(timeout=self.loop_time - delta_time)
                 self.event = None
-
-    def set_matches(self, event_matches):
-        '''Converts the match information pulled from `The Blue Alliance <thebluealliance.com>`_ into :class:`Match`
-
-        Args:
-            event_matches (dict): The match information pulled from `The Blue Alliance <thebluealliance.com>`_
-
-        Returns:
-                A `dict` containing all the match numbers for each team
-        '''
-        team_matches = {}
-        number_of_matches = 0
-        for tba_match in event_matches:
-            if tba_match['comp_level'] != "qm":
-                continue
-
-            match = Match()
-            match.match_number = tba_match['match_number']
-            if match.match_number > number_of_matches:
-                number_of_matches = match.match_number
-            for color in ['blue', 'red']:
-                for team_key in tba_match['alliances'][color]['teams']:
-                    match.teams.append(int(team_key[3:]))
-                match.scores.append(int(tba_match['alliances'][color]['score']))
-
-            for team_number in match.teams:
-                if team_number not in team_matches:
-                    team_matches[team_number] = []
-                team_matches[team_number].append(match.match_number)
-            self.firebase.update_match(match)
-            logger.info("Match {0:d} added".format(match.match_number))
-        with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/event_extras.json", "w") as f:
-            json_dict = json.loads(f.read())
-            json_dict['number_of_matches'] = number_of_matches
-            f.write(json.loads(json_dict))
-        Constants().number_of_matches = number_of_matches
-        return team_matches
-
-    def set_teams(self, event_teams, team_matches):
-        '''Converts the team information from `The Blue Alliance <thebluealliance.com>`_
-           to :class:`TeamLogistics`.
-
-            Converts the team information from `The Blue Alliance <thebluealliance.com>`_
-            to :class:`TeamLogistics`. Also, sets the match numbers for each team
-            from the result of :func:`set_matches`
-
-        Args:
-            event_teams (dict): The team information from `The Blue Alliance <thebluealliance.com>`_
-
-            team_matches (dict): The match numbers for each team
-
-        '''
-        team_logistics = []
-        team_numbers = []
-
-        for tba_team in event_teams:
-
-            team_numbers.append(tba_team['team_number'])
-
-            info = TeamLogistics()
-            info.team_number = tba_team['team_number']
-            info.nickname = tba_team['nickname']
-            info.matches = team_matches[info.team_number]
-            team_logistics.append(info)
-
-            pit = TeamPitData()
-            pit.team_number = info.team_number
-            self.firebase.update_team_pit_data(pit)
-
-            pick = TeamPickAbility()
-            pick.team_number = info.team_number
-            pick.nickname = info.nickname
-            self.firebase.update_first_team_pick_ability(pick)
-            self.firebase.update_second_team_pick_ability(pick)
-            self.firebase.update_third_team_pick_ability(pick)
-            logger.info("Team {0:d} added".format(info.team_number))
-
-        min_matches = 100  # Each team should always have less than 100 matches
-        for team in team_logistics:
-            if len(team.matches) < min_matches:
-                min_matches = len(team_matches)
-
-        for team in team_logistics:
-            if len(team.matches) > min_matches:
-                team.surrogate_match_number = team.matches[3]
-            self.firebase.update_team_logistics(info)
-        with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/event_extras.json", "w") as f:
-            json_dict = json.loads(f.read())
-            json_dict['team_numbers'] = team_numbers
-            f.write(json.loads(json_dict))
-        Constants().team_numbers = team_number
-
-    def set_rankings(self, event_rankings):
-        '''Convert the ranking information from `The Blue Alliance <thebluealliance.com>`_
-           to the :class:`TeamRankingData`
-        '''
-        first = True
-        for tba_ranking in list(event_rankings):
-            if first:
-                first = False
-                continue
-            tba_ranking_list = list(tba_ranking)
-            ranking = TeamRankingData()
-            ranking.team_number = int(tba_ranking_list[1])
-            ranking.rank = int(tba_ranking_list[0])
-            ranking.RPs = int(float(tba_ranking_list[2]))
-            win_tie_lose = tba_ranking_list[7].split('-')
-            ranking.wins = int(win_tie_lose[0])
-            ranking.ties = int(win_tie_lose[2])
-            ranking.loses = int(win_tie_lose[1])
-            ranking.played = int(tba_ranking_list[8])
-            self.firebase.update_current_team_ranking_data(ranking)
-            logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
     def on_tstart(self):
         '''Runs before the main loop and starts the threads for :class:`BluetoothServer`,
@@ -268,7 +150,7 @@ class Server(Looper):
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
-                    if self.crash_reporter):
+                    if self.crash_reporter:
                         logger.error("Reporting crash")
                         try:
                             self.messenger.send_message("Server Crash!!!", traceback.format_exc())
@@ -285,7 +167,7 @@ class Server(Looper):
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
-                    if self.crash_reporter):
+                    if self.crash_reporter:
                         logger.error("Reporting crash")
                         try:
                             self.messenger.send_message("Server Crash!!!", traceback.format_exc())

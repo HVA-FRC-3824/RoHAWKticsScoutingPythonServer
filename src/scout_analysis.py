@@ -1,11 +1,9 @@
 from the_blue_alliance import TheBlueAlliance
 from firebase_com import FirebaseCom
 from data_models.scouted_match_accuracy import ScoutedMatchAccuracy
+from messenger import Messenger
 
-from twilio.rest import TwilioRestClient
-import smtplib
 import csv
-import json
 import logging
 import os
 
@@ -113,7 +111,7 @@ class ScoutAnalysis:
                 if incomplete:
                     continue
 
-                ##### Data Correction
+                # Data Correction
                 # TODO: get actual TBA keys
                 tba_auto_high_balls = tba_match['score_breakdown'][color]['autoHighGoalBalls']
                 tba_auto_low_balls = tba_match['score_breakdown'][color]['autoLowGoalBalls']
@@ -132,10 +130,14 @@ class ScoutAnalysis:
 
                 # corrections are proportionally given based on the scouted ratios
                 for ft in firebase_teams:
-                    ft.auto_high_goal_correction.made = (tba_auto_high_balls - actual_auto_high_balls) * ft.auto_high_goal.made / actual_auto_high_balls
-                    ft.auto_low_goal_correction.made = (tba_auto_low_balls - actual_auto_low_balls) * ft.auto_low_goal.made / actual_auto_low_balls
-                    ft.teleop_high_goal_correction.made = (tba_teleop_high_balls - actual_teleop_high_balls) * ft.teleop_high_goal.made / actual_teleop_high_balls
-                    ft.teleop_low_goal_correction.made = (tba_teleop_high_balls - actual_teleop_high_balls) * ft.teleop_high_goal.made / actual_teleop_high_balls
+                    ft.auto_high_goal_correction.made = ((tba_auto_high_balls - actual_auto_high_balls) *
+                                                         ft.auto_high_goal.made / actual_auto_high_balls)
+                    ft.auto_low_goal_correction.made = ((tba_auto_low_balls - actual_auto_low_balls) *
+                                                        ft.auto_low_goal.made / actual_auto_low_balls)
+                    ft.teleop_high_goal_correction.made = ((tba_teleop_high_balls - actual_teleop_high_balls) *
+                                                           ft.teleop_high_goal.made / actual_teleop_high_balls)
+                    ft.teleop_low_goal_correction.made = ((tba_teleop_low_balls - actual_teleop_low_balls) *
+                                                          ft.teleop_low_goal.made / actual_teleop_low_balls)
                     self.firebase.update_team_match_data(ft)
                 scout_scores.update(self.calc_points(firebase_teams))
 
@@ -151,7 +153,7 @@ class ScoutAnalysis:
                 sma.teleop_error = abs(tba_match['score_breakdown'][color]['teleopPoints'] -
                                        scout_scores['teleop'])
                 sma.endgame_error = abs(tba_match['score_breakdown'][color]['endgamePoints'] -
-                                         scout_scores['endgame'])
+                                        scout_scores['endgame'])
 
                 error_message = ""
 
@@ -215,7 +217,7 @@ class ScoutAnalysis:
                     teleop_gears += 1
             points['auto'] += t.auto_high_goal.made + t.auto_low_goal.made / 3
             points['teleop'] += t.teleop_high_goal.made / 3 + t.teleop_low_goal.made / 9
-            point['endgame'] += 50 if t.endgame_climb == "successful" else 0
+            points['endgame'] += 50 if t.endgame_climb == "successful" else 0
         rotors = 0
         if auto_gears == 3:
             points['auto'] += 120
@@ -228,7 +230,7 @@ class ScoutAnalysis:
             points['teleop'] += (4 - rotors) * 40
         elif auto_gears + teleop_gears > 6:
             points['teleop'] += (3 - rotors) * 40
-        elif auto_high_goal + teleop_gears > 2:
+        elif auto_gears + teleop_gears > 2:
             points['teleop'] += (2 - rotors) * 40
         else:
             points['teleop'] += (1 - rotors) * 40
@@ -236,8 +238,6 @@ class ScoutAnalysis:
         points['auto'] = int(points['auto'])
         points['teleop'] = int(points['teleop'])
         return points
-
-
 
     def export(self):
         '''Exports the information to csv files (one overall and one for each scouter)'''

@@ -77,7 +77,8 @@ class TeamCalculator:
     def second_pick_ability(self):
         '''Calculate the second pick ability
 
-        .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) * (baseline_percentage(T) * 5 + climb_percentage(T) * 50)
+        .. math:: second\_pick\_ability(T) = (1 - dysfunctional\_percentage(T)) *
+            (baseline_percentage(T) * 5 + climb_percentage(T) * 50)
         '''
         functional_percentage = (1 - self.dysfunctional_percentage())
         average_baseline_points = self.team.calc.auto_baseline.average() * 5
@@ -94,9 +95,9 @@ class TeamCalculator:
         speed_contribution = self.team.calc.zscore_speed * 2
         control_contribution = self.team.calc.zscore_control * 4
 
-        spa =  functional_percentage * (average_baseline_points + gear_contribution +
-                                        defense_contribution + speed_contribution +
-                                        control_contribution + average_climb_points)
+        spa = functional_percentage * (average_baseline_points + gear_contribution +
+                                       defense_contribution + speed_contribution +
+                                       control_contribution + average_climb_points)
         return spa
 
     def third_pick_ability(self):

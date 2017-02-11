@@ -2,6 +2,7 @@ import requests
 import utils
 import logging
 import os
+import json
 from ourlogging import setup_logging
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -24,7 +25,7 @@ class TheBlueAlliance:
         self.__dict__ = self.shared_state
         if event_id is not None:
             self.event_id = event_id
-            self.base_filepath = os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/"
+            self.base_filepath = os.path.dirname(os.path.abspath(__file__)) + "/../cached/" + self.event_id + "/"
 
         if behind_threshold is not None:
             self.behind_threshold = behind_threshold
@@ -81,7 +82,6 @@ class TheBlueAlliance:
         data = self.make_request(url, filepath)
         return data
 
-
     def get_event_rankings(self):
         '''Gets all the ranking information for an event'''
         logger.info("Downloading rankings from The Blue Alliance for {0:s}".format(self.event_id))
@@ -107,5 +107,6 @@ class TheBlueAlliance:
     def event_down(self):
         '''Checks if `The Blue Alliance <thebluealliance.com>`_ datafeed for this event is down'''
         url = "{0:s}/status".format(self.base_url)
-        data = utils.make_ascii_from_json(requests.get(self.base_url + url, headers={self.header_key: self.header_value}).json))
+        data = utils.make_ascii_from_json(requests.get(self.base_url + url,
+                                                       headers={self.header_key: self.header_value}).json())
         return self.event_id in data['down_events'] or data['is_datafeed_down']

@@ -148,7 +148,8 @@ class AllianceCalculator:
         '''Returns the chance of the pressure reaching 40 kPa
 
         .. math::
-            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
+            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}}
+            \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
 
         - x - threshold value which in this case is the kPa needed (40 kPa) represented by the teleop low goal value
 
@@ -191,7 +192,8 @@ class AllianceCalculator:
         '''Returns the chance of the 4 rotors being started
 
         .. math::
-            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}} \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
+            p = F(x | \mu, \sigma) = \\frac{1}{\sigma \sqrt{2 \pi}}
+            \int_{- \infty}^x {e^{\\frac{-(t-\mu)^2}{2 \sigma^2}}} \, dt
 
         - x - threshold value which in this case is the 12 gears needed
 

@@ -1,5 +1,6 @@
 from .data_model import DataModel
 
+
 class StrategySuggestion(DataModel):
     def __init__(self, **kwargs):
 

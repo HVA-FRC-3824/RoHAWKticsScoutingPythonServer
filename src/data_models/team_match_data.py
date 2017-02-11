@@ -1,6 +1,5 @@
 from .data_model import DataModel
 from .gear import Gear
-from .shots import Shots
 
 
 class TeamMatchData(DataModel):

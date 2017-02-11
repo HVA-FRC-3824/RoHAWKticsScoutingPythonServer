@@ -1,12 +1,13 @@
 import json
 import datetime
 from firebase import firebase as fb
-import utils
 import os
 import time
 
 from threading import Lock as TLock
 from multiprocessing import Lock as PLock
+
+from constants import Constants
 
 from data_models.match import Match
 from data_models.team import Team
@@ -20,6 +21,7 @@ from data_models.team_ranking_data import TeamRankingData
 from data_models.team_calculated_data import TeamCalculatedData
 from data_models.scout_accuracy import ScoutAccuracy
 from data_models.strategy import Strategy
+from data_models.strategy_suggestion import StrategySuggestion
 
 import logging
 from ourlogging import setup_logging
@@ -43,7 +45,7 @@ class FirebaseCom:
             self.teams = []
             self.event_id = self.EVENT_ID = event_id
             self.base_ref = "/{0:s}/".format(self.event_id)
-            self.base_filepath = os.path.dirname(os.path.abspath(__file__)) + "/../cached/"+ self.event_id + "/"
+            self.base_filepath = os.path.dirname(os.path.abspath(__file__)) + "/../cached/" + self.event_id + "/"
             self.setup_folders()
         if not hasattr(self, "instance"):
             self.instance = True
@@ -85,13 +87,12 @@ class FirebaseCom:
 
     def update_team_match_data(self, tmd):
         '''update the match data for a specific team that was in that match'''
-        ref = "{0:s}/partial_match".format(self.base_ref)
         if isinstance(tmd, TeamMatchData):
             self.update_team_match_data(tmd.to_dict())
         elif isinstance(tmd, dict):
             self.put_in_firebase("partial_match/",
                                  "{0:d}_{1:d}".format(tmd['match_number'],
-                                 tmd['team_number']), tmd)
+                                                      tmd['team_number']), tmd)
         else:
             logger.error("tmd variable not a TeamMatchData object or dict")
             raise TypeError("tmd variable not a TeamMatchData object or dict")
@@ -140,7 +141,6 @@ class FirebaseCom:
 
     def update_super_match_data(self, smd):
         '''update the super scout data for a specific match'''
-        ref = "{0:s}/".format(self.base_ref)
         if isinstance(smd, SuperMatchData):
             self.update_super_match_data(smd.to_dict())
         elif isinstance(smd, dict):
@@ -210,7 +210,7 @@ class FirebaseCom:
         if isinstance(tl, TeamLogistics):
             self.update_team_logistics(tl.to_dict())
         elif isinstance(tl, dict):
-            self.put_in_firebase("info/", tl['team_number'], tl);
+            self.put_in_firebase("info/", tl['team_number'], tl)
         else:
             logger.e("tl variable is not a TeamLogistics object or dict")
             raise TypeError("tl variable is not a TeamLogistics object or dict")
@@ -236,7 +236,7 @@ class FirebaseCom:
         if isinstance(tcd, TeamCalculatedData):
             self.update_team_calculated_data(tcd.to_dict())
         elif isinstance(tcd, dict):
-            success = self.put_in_firebase("calculated", "{0:d}".format(tcd['team_number']), tcd)
+            self.put_in_firebase("calculated", "{0:d}".format(tcd['team_number']), tcd)
         else:
             logger.error("tcd variable is not a TeamCalculatedData object or dict")
             raise TypeError("tcd variable is not a TeamCalculatedData object or dict")
@@ -337,7 +337,6 @@ class FirebaseCom:
 
     def update_team_second_pick_ability(self, tpa):
         '''update the second pick ability data for a specific team'''
-        ref = "{0:s}/second_pick".format(self.base_ref)
         if isinstance(tpa, TeamPickAbility):
             self.update_second_team_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
@@ -364,7 +363,6 @@ class FirebaseCom:
 
     def update_team_third_pick_ability(self, tpa):
         '''update the third pick ability data for a specific team'''
-        ref = "{0:s}/third_pick".format(self.base_ref)
         if isinstance(tpa, TeamPickAbility):
             self.update_third_team_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
@@ -438,7 +436,7 @@ class FirebaseCom:
         if isinstance(scout, ScoutAccuracy):
             self.update_scout_accuracy(scout.to_dict())
         elif isinstance(scout, dict):
-            success = self.firebase.put_in_firebase("scout_accuracy/", scout['name'], scout)
+            self.firebase.put_in_firebase("scout_accuracy/", scout['name'], scout)
         else:
             logger.error("scout_analysis variable is not a ScoutAccuracy or dict")
             raise Exception("scout_analysis variable is not a ScoutAccuracy or dict")
@@ -502,7 +500,7 @@ class FirebaseCom:
         if isinstance(strategy_suggestion, StrategySuggestion):
             self.update_strategy_suggestion(strategy_suggestion.to_dict())
         elif isinstance(strategy_suggestion, dict):
-            success = self.put_in_firebase("strategy/suggestions", strategy_suggestion['key'], strategy_suggestion)
+            self.put_in_firebase("strategy/suggestions", strategy_suggestion['key'], strategy_suggestion)
 
             # Append to the list of strategy suggestions keys to be used in get all strategy suggestions
             response = self.get_from_firebase("strategy/suggestion_keys")
@@ -539,7 +537,7 @@ class FirebaseCom:
         '''Grabs the specified location from firebase if new data if not then
            grabs from file
         '''
-        if os.path.isfile(self.base_filepath + filepath):
+        if os.path.isfile(self.base_filepath + location):
             with open(self.base_filepath + location + ".json", "w") as f:
                 json_dict = json.loads(open(self.base_filepath + location + ".json").read())
 
@@ -568,7 +566,7 @@ class FirebaseCom:
         self.plock.acquire()
         # last_modified is a long in milliseconds (due to android)
         d.last_modified = int(time.time() * 1000)
-        self.firebase.put(self.base_ref + location + key, key, d)
+        success = self.firebase.put(self.base_ref + location + key, key, d)
         self.tlock.release()
         self.plock.release()
         if not success:
