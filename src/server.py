@@ -98,6 +98,7 @@ class Server(Looper):
             event_rankings = self.tba.get_event_rankings()
             Aggregator.set_rankings(self.firebase, event_rankings)
             logger.info("Added rankings to Firebase")
+            sys.exit()
         else:
             with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
                       self.event_id + "/event_extras.json") as f:

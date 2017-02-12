@@ -1,0 +1,28 @@
+{
+	"event_key" : "2016cars",
+    "socket": true,
+    "bluetooth": false,
+    "setup": true,
+    "log_level": "debug",
+    "time_between_cycles": 600,
+	"cache_firebase": false,
+    "time_between_caches": -1,
+    "report_crash": false,
+    "aggregate": false,
+    "scout_analysis": false,
+    "scout_analysis_config": {
+		"total_threshold": -1,
+	    "auto_threshold": -1,
+	    "teleop_threshold": -1,
+	    "endgame_threshold": -1
+	},
+	"logins_file": "../logins.json",
+	"use_email": false,
+	"emails": [
+		"akmessing1@yahoo.com"
+	],
+	"use_texting": false,
+	"mobiles": [
+		"8659631368"
+	]
+}
