@@ -32,8 +32,7 @@ class TheBlueAlliance:
 
         if not hasattr(self, 'instance'):
             self.base_url = "http://www.thebluealliance.com/api/v2/"
-            self.header_key = "X-TBA-App-Id"
-            self.header_value = "frc3824:scouting-system:v1"
+            self.headers = {"X-TBA-App-Id": "frc3824:scouting-system:v2"}
 
             if not hasattr(self, 'behind_threshold'):
                 self.behind_threshold = 3
@@ -50,13 +49,12 @@ class TheBlueAlliance:
         Args:
             url (`str`): the url where the data is
         '''
-
+        json_dict = {}
         if os.path.isfile(self.base_filepath + filepath):
             with open(self.base_filepath + filepath) as f:
                 json_dict = json.loads(f.read())
-            response = requests.get(self.base_url + url,
-                                    headers={self.header_key: self.header_value,
-                                             "If-Modified-Since": json_dict['last_modified']})
+            self.headers["If-Modified-Since"] = json_dict['last_modified']
+            response = requests.get(self.base_url + url, headers=self.headers)
             if json_dict['last_modified'] < response.headers['Last-Modified']:
                 json_dict['last_modified'] = response.headers['Last-Modified']
                 json_dict['data'] = utils.make_ascii_from_json(response.json())
@@ -67,7 +65,8 @@ class TheBlueAlliance:
                 return json_dict['data']
 
         else:
-            json_dict = {}
+            del self.headers["If-Modified-Since"]
+            response = requests.get(self.base_url + url, headers=self.headers)
             json_dict['last_modified'] = response.headers['Last-Modified']
             json_dict['data'] = utils.make_ascii_from_json(response.json())
             with open(self.base_filepath + filepath, 'w') as f:

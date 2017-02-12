@@ -6,7 +6,7 @@ import signal
 import os
 import sys
 import json
-import urllib2
+from urllib.request import urlopen
 from threading import Event
 from looper import Looper
 
@@ -155,7 +155,7 @@ class Server(Looper):
 
         if self.tba.event_down():
             try:
-                urllib2.urlopen('http://216.58.192.142', timeout=1)
+                urlopen('http://216.58.192.142', timeout=1)
                 self.led_manager.tba_down()
                 logger.warning("The Blue Alliance is down (possibly just for this event)")
                 self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")
@@ -202,7 +202,7 @@ class Server(Looper):
             if self.tba.event_down():
                 try:
 
-                    urllib2.urlopen('http://216.58.192.142', timeout=1)
+                    urlopen('http://216.58.192.142', timeout=1)
                     self.led_manager.tba_down()
                     logger.warning("The Blue Alliance is down (possibly just for this event)")
                     self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")

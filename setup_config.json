@@ -1,6 +1,6 @@
 {
-	"event_key" : "2016cars",
-    "socket": true,
+	"event_key" : "2016tnkn",
+    "socket": false,
     "bluetooth": false,
     "setup": true,
     "log_level": "debug",
