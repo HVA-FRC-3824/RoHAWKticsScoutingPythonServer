@@ -1,5 +1,9 @@
 CachedFirebases/
 
+# make sure that this file is never put in the repo
+login.json
+login_decrypted.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
