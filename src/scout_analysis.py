@@ -83,32 +83,15 @@ class ScoutAnalysis:
 
             # Each alliance gets graded separately
             for color in ['blue', 'red']:
-                team_numbers = []
-                for team_key in tba_match['alliances'][color]['teams']:
-                    team_numbers.append(int(team_key[3:]))
+                team_numbers = [int(team_key[3:]) for team_key in tba_match['alliances'][color]['teams']]
 
-                scout_scores = {}
-                scout_scores['scout'] = []
-                scout_scores['total'] = 0
-                scout_scores['auto'] = 0
-                scout_scores['teleop'] = 0
-                scout_scores['endgame'] = 0
-                incomplete = False
-                firebase_teams = []
-                for team_number in team_numbers:
-                    firebase_team = self.firebase.get_team_match_data(team_number=team_number,
-                                                                      match_number=match_number)
-                    # don't grade is not all the data is in or if points have not been calculated
-                    if(firebase_team.scout_name == "" or firebase_team.total_points == -1):
-                        logger.info("Match {0:d} {1:s} incomplete".format(match_number, color))
-                        incomplete = True
-                        break
+                tmds = [self.firebase.get_team_match_data(team_number=team_number, match_number=match_number)
+                        for team_number in team_numbers]
 
-                    scout_scores['scout'].append(firebase_team.scout_name)
-                    firebase_teams.append(firebase_team)
+                # Get score without correction
+                scout_scores = self.calc_points(tmds, False)
 
-                # If incomplete move on to the next alliance
-                if incomplete:
+                if scout_scores is None:
                     continue
 
                 # Data Correction
@@ -116,29 +99,32 @@ class ScoutAnalysis:
                 tba_auto_low_balls = tba_match['score_breakdown'][color]['autoFuelLow']
                 tba_teleop_high_balls = tba_match['score_breakdown'][color]['teleopFuelHigh']
                 tba_teleop_low_balls = tba_match['score_breakdown'][color]['teleopFuelLow']
-                actual_auto_high_balls = 0
-                actual_auto_low_balls = 0
-                actual_teleop_high_balls = 0
-                actual_teleop_low_balls = 0
 
-                for ft in firebase_teams:
-                    actual_auto_high_balls += ft.auto_high_goal.made
-                    actual_auto_low_balls += ft.auto_low_goal.made
-                    actual_teleop_high_balls += ft.teleop_high_goal.made
-                    actual_teleop_low_balls += ft.teleop_low_goal.low_goal_made
+                scouted_auto_high_balls = 0
+                scouted_auto_low_balls = 0
+                scouted_teleop_high_balls = 0
+                scouted_teleop_low_balls = 0
+
+                for tmd in tmds:
+                    scouted_auto_high_balls += tmd.auto_high_goal.made
+                    scouted_auto_low_balls += tmd.auto_low_goal.made
+                    scouted_teleop_high_balls += tmd.teleop_high_goal.made
+                    scouted_teleop_low_balls += tmd.teleop_low_goal.low_goal_made
 
                 # corrections are proportionally given based on the scouted ratios
-                for ft in firebase_teams:
-                    ft.auto_high_goal_correction.made = ((tba_auto_high_balls - actual_auto_high_balls) *
-                                                         ft.auto_high_goal.made / actual_auto_high_balls)
-                    ft.auto_low_goal_correction.made = ((tba_auto_low_balls - actual_auto_low_balls) *
-                                                        ft.auto_low_goal.made / actual_auto_low_balls)
-                    ft.teleop_high_goal_correction.made = ((tba_teleop_high_balls - actual_teleop_high_balls) *
-                                                           ft.teleop_high_goal.made / actual_teleop_high_balls)
-                    ft.teleop_low_goal_correction.made = ((tba_teleop_low_balls - actual_teleop_low_balls) *
-                                                          ft.teleop_low_goal.made / actual_teleop_low_balls)
-                    self.firebase.update_team_match_data(ft)
-                scout_scores.update(self.calc_points(firebase_teams))
+                for tmd in tmds:
+                    tmd.auto_high_goal_correction.made = ((tba_auto_high_balls - scouted_auto_high_balls) *
+                                                          tmd.auto_high_goal.made / scouted_auto_high_balls)
+                    tmd.auto_low_goal_correction.made = ((tba_auto_low_balls - scouted_auto_low_balls) *
+                                                         tmd.auto_low_goal.made / scouted_auto_low_balls)
+                    tmd.teleop_high_goal_correction.made = ((tba_teleop_high_balls - scouted_teleop_high_balls) *
+                                                            tmd.teleop_high_goal.made / scouted_teleop_high_balls)
+                    tmd.teleop_low_goal_correction.made = ((tba_teleop_low_balls - scouted_teleop_low_balls) *
+                                                           tmd.teleop_low_goal.made / scouted_teleop_low_balls)
+                    self.firebase.update_team_match_data(tmd)
+
+                # update scores with correction
+                scout_scores.update(self.calc_points(tmds, True))
 
                 #####################
 
@@ -199,15 +185,19 @@ class ScoutAnalysis:
         logger.info("Exporting scouter analysis")
         self.export()
 
-    def calc_points(self, teams):
+    def calc_points(self, teams, with_correction):
         points = {}
         points['auto'] = 0
         points['teleop'] = 0
         points['endgame'] = 0
         points['total'] = 0
+        points['scout'] = []
         auto_gears = 0
         teleop_gears = 0
         for t in teams:
+            if t is None:
+                return None
+            points['scout'].append(t.scout_name)
             for gear in t.auto_gears:
                 if gear.placed:
                     auto_gears += 1
@@ -216,6 +206,9 @@ class ScoutAnalysis:
                     teleop_gears += 1
             points['auto'] += t.auto_high_goal.made + t.auto_low_goal.made / 3
             points['teleop'] += t.teleop_high_goal.made / 3 + t.teleop_low_goal.made / 9
+            if with_correction:
+                points['auto'] += t.auto_high_goal_correction.made + t.auto_low_goal_correction.made / 3
+                points['teleop'] += t.teleop_high_goal_correction.made / 3 + t.teleop_low_goal_correction.made / 9
             points['endgame'] += 50 if t.endgame_climb == "successful" else 0
         rotors = 0
         if auto_gears == 3:
