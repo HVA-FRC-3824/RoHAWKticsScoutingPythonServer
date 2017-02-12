@@ -6,6 +6,7 @@ import signal
 import os
 import sys
 import json
+import urllib2
 from threading import Event
 from looper import Looper
 
@@ -16,6 +17,7 @@ from socket_server import SocketServer
 from scout_analysis import ScoutAnalysis
 from constant import Constants
 from messenger import Messenger
+from led_manager import LedManager
 
 from ourlogging import setup_logging
 
@@ -40,6 +42,10 @@ class Server(Looper):
             logger.critical("No event key")
             sys.exit()
         logger.info("Event Key: {0:s}".format(self.event_key))
+
+        self.leds = LedManager()
+        self.leds.starting_up()
+
         self.firebase = FirebaseCom(self.event_key)
         self.tba = TheBlueAlliance(self.event_key)
 
@@ -103,6 +109,7 @@ class Server(Looper):
 
     def start(self):
         '''Starts the main thread loop'''
+        self.led_manager.start_up_complete()
         self.event = None
         self.running = True
         self.on_tstart()
@@ -145,10 +152,21 @@ class Server(Looper):
             self.firebase.cache()
             self.time_since_last_cache = 0
 
-        if hasattr(self, 'scout_analysis') and not self.tba.event_down():
+        if self.tba.event_down():
+            try:
+                urllib2.urlopen('http://216.58.192.142', timeout=1)
+                self.led_manager.tba_down()
+                logger.warning("The Blue Alliance is down (possibly just for this event)")
+                self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")
+            except:
+                self.led_manager.internet_connection_down()
+                logger.warning("Internet connection is down")
+        elif hasattr(self, 'scout_analysis'):
+            self.led_manager.internet_connected()
             try:
                 self.scout_analysis.analyze_scouts()
             except:
+                self.led_manager.error()
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
@@ -167,6 +185,7 @@ class Server(Looper):
                 Aggregator.make_super_calculations(self.firebase)
                 Aggregator.make_pick_list_calculations(self.firebase)
             except:
+                self.led_manager.error()
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
@@ -180,13 +199,20 @@ class Server(Looper):
                             pass
 
             if self.tba.event_down():
-                if self.running:
-                    logger.error("The Blue Alliance is down (possibly just for this event)")
-                    self.messenger.send_message("The Blue Alliance is down (possibly just for this event)", "")
+                try:
+
+                    urllib2.urlopen('http://216.58.192.142', timeout=1)
+                    self.led_manager.tba_down()
+                    logger.warning("The Blue Alliance is down (possibly just for this event)")
+                    self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")
+                except:
+                    self.led_manager.internet_connection_down()
+                    logger.warning("Internet connection is down")
             else:
                 try:
                     Aggregator.make_ranking_calculations(self.firebase, self.tba)
                 except:
+                    self.led_manager.error()
                     if self.running:
                         logger.error("Crash")
                         logger.error(traceback.format_exc())
@@ -206,6 +232,7 @@ class Server(Looper):
             self.bluetooth.stop()
         if hasattr(self, 'socket'):
             self.socket.stop()
+        self.led_manager.stop()
         Looper.stop(self)
 
 if __name__ == "__main__":
