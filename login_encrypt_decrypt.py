@@ -58,7 +58,7 @@ if __name__ == "__main__":
             output_filname = filename.replace('_decrypted', '')
         else:
             filename_split = filename.split('.')
-            output_filename = filename_split[:-1].join('.') + "_encrypted.json"
+            output_filename = '.'.join(filename_split[:-1]) + "_encrypted.json"
         encrypt(filename, output_filename, password)
     elif args['decrypt'] is not None:
         password = input("Password:\n")
@@ -67,7 +67,7 @@ if __name__ == "__main__":
             output_filename = filename.replace('_encrypted', '')
         else:
             filename_split = filename.split('.')
-            output_filename = filename_split[:-1].join('.') + "_decrypted.json"
+            output_filename = '.'.join(filename_split[:-1]) + "_decrypted.json"
         decrypt(filename, output_filename, password)
     else:
         print("No option selected between encrypt or decrypt...")

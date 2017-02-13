@@ -4,6 +4,8 @@ from .data_model import DataModel
 class TeamRankingData(DataModel):
     '''Data about a team's current or predicted ranking'''
     def __init__(self, **kwargs):
+        DataModel.__init__(self)
+
         self.team_number = -1
 
         self.rank = 0

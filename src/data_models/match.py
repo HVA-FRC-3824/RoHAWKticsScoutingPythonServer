@@ -7,6 +7,8 @@ class Match(DataModel):
     RED = 1
 
     def __init__(self, **kwargs):
+        DataModel.__init__(self)
+
         self.match_number = -1
         self.teams = []
         self._teams_type = int

@@ -3,6 +3,8 @@ import utils
 import logging
 import os
 import json
+import datetime
+import time
 from ourlogging import setup_logging
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -26,6 +28,7 @@ class TheBlueAlliance:
         if event_id is not None:
             self.event_id = event_id
             self.base_filepath = os.path.dirname(os.path.abspath(__file__)) + "/../cached/" + self.event_id + "/"
+            os.makedirs(self.base_filepath, 0o777, True)
 
         if behind_threshold is not None:
             self.behind_threshold = behind_threshold
@@ -39,10 +42,6 @@ class TheBlueAlliance:
 
             self.instance = True
 
-    def setup_folders(self):
-        for ext in ["teams", "matches", "rankings"]:
-            os.mkdirs(self.base_filepath + ext)
-
     def make_request(self, url, filepath):
         '''Send request a url
 
@@ -50,50 +49,87 @@ class TheBlueAlliance:
             url (`str`): the url where the data is
         '''
         json_dict = {}
+        request_url = "{0:s}event/{1:s}/{2:s}".format(self.base_url, self.event_id, url)
+        print(request_url)
+
+        # check if cached file exists
         if os.path.isfile(self.base_filepath + filepath):
             with open(self.base_filepath + filepath) as f:
                 json_dict = json.loads(f.read())
-            self.headers["If-Modified-Since"] = json_dict['last_modified']
-            response = requests.get(self.base_url + url, headers=self.headers)
-            if json_dict['last_modified'] < response.headers['Last-Modified']:
-                json_dict['last_modified'] = response.headers['Last-Modified']
-                json_dict['data'] = utils.make_ascii_from_json(response.json())
-                with open(self.base_filepath + filepath, 'w') as f:
-                    f.write(json.dumps(json_dict))
+
+            # if cache has last modified then set the 'If-Modified-Since' header
+            if 'last_modified' in json_dict:
+                self.headers["If-Modified-Since"] = json_dict['last_modified']
+            elif 'last_modified' in json_dict:
+                del json_dict['last_modified']
+
+            # get request to website
+            response = requests.get(request_url, headers=self.headers)
+
+            # 304 means no modifications
+            if response.status_code == 304:
                 return json_dict['data']
-            else:
+            # 200 is ok, others mean that cached version should be used as there was an error
+            elif response.status_code != 200:
                 return json_dict['data']
 
+            # header has a 'Last-Modified' field which is used for caching
+            if 'Last-Modified' in response.headers:
+                last_modified = time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple())
+                if json_dict['last_modified'] < last_modified:
+                    json_dict['last_modified'] = last_modified
+                    json_dict['data'] = json.loads(response.text)
+                    json_dict['data']['last_modified'] = last_modified
+                    with open(self.base_filepath + filepath, 'w') as f:
+                        f.write(json.dumps(json_dict, sort_keys=True, indent=4))
+                    return json_dict['data']
+
+                # No modifications, so use cached version
+                else:
+                    return json_dict['data']
+            # No 'Last-Modified' field so use data pulled from tba
+            else:
+                logger.warning("No Last-Modified header")
+                json_dict['data'] = json.loads(response.text)
+                with open(self.base_filepath + filepath, 'w') as f:
+                    f.write(json.dumps(json_dict, sort_keys=True, indent=4))
+                return json_dict['data']
+        # no cache file
         else:
-            del self.headers["If-Modified-Since"]
-            response = requests.get(self.base_url + url, headers=self.headers)
-            json_dict['last_modified'] = response.headers['Last-Modified']
-            json_dict['data'] = utils.make_ascii_from_json(response.json())
+            if "If-Modified-Since" in self.headers:
+                del self.headers["If-Modified-Since"]
+            response = requests.get(request_url, headers=self.headers)
+            # There should be a last modified header
+            if 'Last-Modified' in response.headers:
+                json_dict['last_modified'] = time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple())
+            else:
+                logger.warning("No Last-Modified header")
+            json_dict['data'] = json.loads(response.text)
             with open(self.base_filepath + filepath, 'w') as f:
-                f.write(json.dumps(json_dict))
+                f.write(json.dumps(json_dict, sort_keys=True, indent=4))
             return json_dict['data']
 
     def get_event_teams(self):
         '''Gets all the team logistic information for an event'''
         logger.info("Downloading teams from The Blue Alliance for {0:s}".format(self.event_id))
-        url = ("event/{0:s}/teams").format(self.event_id)
-        filepath = "{0:s}/teams.json".format(self.event_id)
+        url = "teams"
+        filepath = "teams.json"
         data = self.make_request(url, filepath)
         return data
 
     def get_event_rankings(self):
         '''Gets all the ranking information for an event'''
         logger.info("Downloading rankings from The Blue Alliance for {0:s}".format(self.event_id))
-        url = ("event/{0:s}/rankings").format(self.basic_url, self.event_id)
-        filepath = "{0:s}/rankings.json".format(self.event_id)
+        url = "rankings"
+        filepath = "rankings.json"
         data = self.make_request(url, filepath)
         return data
 
     def get_event_matches(self):
         '''Gets all the match information for an event'''
         logger.info("Downloading matches from The Blue Alliance for {0:s}".format(self.event_id))
-        url = ("event/{0:s}/matches").format(self.basic_url, self.event_id)
-        filepath = "{0:s}/matches.json".format(self.event_id)
+        url = "matches"
+        filepath = "matches.json"
         data = self.make_request(url, filepath)
         return data
 
@@ -105,7 +141,11 @@ class TheBlueAlliance:
 
     def event_down(self):
         '''Checks if `The Blue Alliance <thebluealliance.com>`_ datafeed for this event is down'''
-        url = "{0:s}/status".format(self.base_url)
-        data = utils.make_ascii_from_json(requests.get(self.base_url + url,
-                                                       headers={self.header_key: self.header_value}).json())
+        url = "status"
+        if "If-Modified-Since" in self.headers:
+            del self.headers['If-Modified-Since']
+        response = requests.get(self.base_url + url, headers=self.headers)
+        if response.status_code != 200:
+            return True
+        data = utils.make_ascii_from_json(response.json())
         return self.event_id in data['down_events'] or data['is_datafeed_down']

@@ -47,6 +47,7 @@ class FirebaseCom:
             self.base_ref = "/{0:s}/".format(self.event_id)
             self.base_filepath = os.path.dirname(os.path.abspath(__file__)) + "/../cached/" + self.event_id + "/"
             self.setup_folders()
+
         if not hasattr(self, "instance"):
             self.instance = True
             self.plock = PLock()
@@ -57,7 +58,7 @@ class FirebaseCom:
         for ext in ["schedule", "partial_match", "pit", "super_match", "feedback",
                     "rankings/predicted", "rankings/current", "info", "calculated",
                     "first_pick", "second_pick", "third_pick", "scout_accuracy", "strategy"]:
-            os.mkdirs(self.base_filepath + ext)
+            os.makedirs(self.base_filepath + ext, 0o777, True)
 
     def update_match(self, match):
         '''update logistics information about a match (who was in it, score breakdown, etc)'''
@@ -312,9 +313,9 @@ class FirebaseCom:
     def update_team_first_pick_ability(self, tpa):
         '''update the first pick ability data for a specific team'''
         if isinstance(tpa, TeamPickAbility):
-            self.update_first_team_pick_ability(tpa.to_dict())
+            self.update_team_first_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
-            self.firebase.put("first_pick", "{0:d}".format(tpa['team_number']), tpa)
+            self.put_in_firebase("first_pick", "{0:d}".format(tpa['team_number']), tpa)
         else:
             logger.e("1st tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("1st tpa variable is not a TeamPickAbility object or dict")
@@ -338,9 +339,9 @@ class FirebaseCom:
     def update_team_second_pick_ability(self, tpa):
         '''update the second pick ability data for a specific team'''
         if isinstance(tpa, TeamPickAbility):
-            self.update_second_team_pick_ability(tpa.to_dict())
+            self.update_team_second_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
-            self.firebase.put("second_pick", "{0:d}".format(tpa['team_number']), tpa)
+            self.put_in_firebase("second_pick", "{0:d}".format(tpa['team_number']), tpa)
         else:
             logger.e("2nd tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("2nd tpa variabel is not a TeamPickAbility object or dict")
@@ -364,9 +365,9 @@ class FirebaseCom:
     def update_team_third_pick_ability(self, tpa):
         '''update the third pick ability data for a specific team'''
         if isinstance(tpa, TeamPickAbility):
-            self.update_third_team_pick_ability(tpa.to_dict())
+            self.update_team_third_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
-            self.firebase.put("third_pick", "{0:d}".format(tpa['team_number']), tpa)
+            self.put_in_firebase("third_pick", "{0:d}".format(tpa['team_number']), tpa)
         else:
             logger.e("3rd tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("3rd tpa variable is not a TeamPickAbility object or dict")
@@ -542,10 +543,10 @@ class FirebaseCom:
                 json_dict = json.loads(open(self.base_filepath + location + ".json").read())
 
                 last_modified_ref = "{0:s}/last_modified".format(location)
-                response = self.get_from_firebase(self.base_ref + last_modified_ref)
+                response = self.firebase.get(self.base_ref + last_modified_ref)
 
                 if response is None or response > json_dict['last_modified']:
-                    response = self.get_from_firebase(self.base_ref + location)
+                    response = self.firebase.get(self.base_ref + location)
                     if response is None:
                         return None
                     f.write(json.dumps(response))
@@ -565,15 +566,23 @@ class FirebaseCom:
         self.tlock.acquire()
         self.plock.acquire()
         # last_modified is a long in milliseconds (due to android)
-        d.last_modified = int(time.time() * 1000)
-        success = self.firebase.put(self.base_ref + location + key, key, d)
+        d['last_modified'] = int(time.time() * 1000)
+        key = str(key)
+        for i in range(3):
+            try:
+                success = self.firebase.put(self.base_ref + location, key, d)
+                if success:
+                    break
+            except:
+                pass
+
         self.tlock.release()
         self.plock.release()
         if not success:
             logger.error("Error updating {}".format(key))
             raise Exception("Error updating {}".format(key))
-        with open(self.base_filepath + location + key + ".json", "w") as f:
-            f.write(json.dumps(d))
+        with open(self.base_filepath + location + "/" + key + ".json", "w") as f:
+            f.write(json.dumps(d, sort_keys=True, indent=4))
 
     def cache(self):
         '''Cache the firebase to a json file'''

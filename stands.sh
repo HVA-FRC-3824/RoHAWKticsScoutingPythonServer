@@ -1,1 +1,1 @@
-sudo python3 src/server.py -c ../stands_config.json
+sudo python3 src/server.py -c stands_config.json

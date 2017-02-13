@@ -16,7 +16,7 @@ class LedManager(Looper):
         Looper.__init__(self)
 
         self.led_status = {self.GREEN: self.NONE, self.YELLOW: self.NONE, self.RED: self.NONE}
-        self.led_pins = {self.GREEN: 21, self.YELLOW: 20, self.RED: 19}
+        self.led_pins = {self.GREEN: 40, self.YELLOW: 38, self.RED: 36}
 
         GPIO.setmode(GPIO.BOARD)
 

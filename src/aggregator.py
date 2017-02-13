@@ -35,9 +35,14 @@ class Aggregator:
                 A `dict` contain all the match numbers for each team
         '''
         team_matches = {}
+        num_matches = -1
+        event_matches.sort(key=lambda team: int(team['match_number']))
         for tba_match in event_matches:
             if tba_match['comp_level'] != "qm":
                 continue
+
+            if tba_match['match_number'] > num_matches:
+                num_matches = tba_match['match_number']
 
             match = Match()
             match.match_number = tba_match['match_number']
@@ -52,7 +57,7 @@ class Aggregator:
                 team_matches[team_number].append(match.match_number)
             firebase.update_match(match)
             logger.info("Match {0:d} added".format(match.match_number))
-        return team_matches
+        return team_matches, num_matches
 
     @staticmethod
     def set_teams(firebase, event_teams, team_matches):
@@ -66,13 +71,16 @@ class Aggregator:
             team_matches (dict): The match numbers for each team
         '''
         team_logistics = []
-
+        team_numbers = []
+        event_teams.sort(key=lambda team: int(team['team_number']))
         for tba_team in event_teams:
             info = TeamLogistics()
             info.team_number = tba_team['team_number']
             info.nickname = tba_team['nickname']
             info.matches = team_matches[info.team_number]
             team_logistics.append(info)
+
+            team_numbers.append(info.team_number)
 
             pit = TeamPitData()
             pit.team_number = info.team_number
@@ -81,9 +89,9 @@ class Aggregator:
             pick = TeamPickAbility()
             pick.team_number = info.team_number
             pick.nickname = info.nickname
-            firebase.update_first_team_pick_ability(pick)
-            firebase.update_second_team_pick_ability(pick)
-            firebase.update_third_team_pick_ability(pick)
+            firebase.update_team_first_pick_ability(pick)
+            firebase.update_team_second_pick_ability(pick)
+            firebase.update_team_third_pick_ability(pick)
             logger.info("Team {0:d} added".format(info.team_number))
 
         min_matches = 100  # Each team should always have less than 100 matches
@@ -94,7 +102,9 @@ class Aggregator:
         for team in team_logistics:
             if len(team.matches) > min_matches:
                 team.surrogate_match_number = team.matches[3]
-            firebase.update_team_logistics(info)
+            firebase.update_team_logistics(team)
+
+        return team_numbers
 
     @staticmethod
     def set_rankings(firebase, event_rankings):
@@ -102,7 +112,8 @@ class Aggregator:
            to the :class:`TeamRankingData`
         '''
         first = True
-        for tba_ranking in list(event_rankings):
+
+        for tba_ranking in event_rankings:
             if first:
                 first = False
                 continue
@@ -115,6 +126,8 @@ class Aggregator:
             ranking.wins = int(win_tie_lose[0])
             ranking.ties = int(win_tie_lose[2])
             ranking.loses = int(win_tie_lose[1])
+            ranking.first_tie_breaker = int(float(tba_ranking_list[3]))
+            ranking.second_tie_breaker = int(float(tba_ranking_list[4]))
             ranking.played = int(tba_ranking_list[8])
             firebase.update_current_team_ranking_data(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))

@@ -2,6 +2,9 @@ class DataModel:
     '''Base class for the data models that allows them to easily convert to `dict` which
        can be converted to json
     '''
+    def __init__(self):
+        self.last_modified = 0
+
     def to_dict(self):
         '''Converts the object to a `dict`
 
@@ -16,7 +19,7 @@ class DataModel:
                 d[key] = value.to_dict()
         return d
 
-    def set(self, d):
+    def set(self, **d):
         '''Sets the values from the `dict` d'''
         for key, value in iter(d.items()):
             if isinstance(value, dict):

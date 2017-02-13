@@ -5,6 +5,8 @@ from .gear import Gear
 class TeamMatchData(DataModel):
     '''Data collected by a match scout about a specific robot in a specific match'''
     def __init__(self, **kwargs):
+        DataModel.__init__(self)
+
         self.team_number = -1
         self.match_number = -1
         self.alliance_color = ""

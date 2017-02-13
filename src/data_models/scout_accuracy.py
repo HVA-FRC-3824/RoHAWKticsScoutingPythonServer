@@ -5,6 +5,8 @@ class ScoutAccuracy(DataModel):
     '''Data model that contains all the information about the error between this
        particular scouts data and `The Blue Alliance <thebluealliance.com>`_`'''
     def __init__(self, **kwargs):
+        DataModel.__init__(self)
+
         self.name = ""
         self.scouted_matches = {}
 

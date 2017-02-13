@@ -15,7 +15,7 @@ from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
 from socket_server import SocketServer
 from scout_analysis import ScoutAnalysis
-from constant import Constants
+from constants import Constants
 from messenger import Messenger
 from led_manager import LedManager
 
@@ -88,20 +88,29 @@ class Server(Looper):
                         return
 
             event_matches = self.tba.get_event_matches()
-            team_matches = Aggregator.set_matches(self.firebase, event_matches)
+            team_matches, num_matches = Aggregator.set_matches(self.firebase, event_matches)
             logger.info("Added matches to Firebase")
 
             event_teams = self.tba.get_event_teams()
-            Aggregator.set_teams(self.firebase, event_teams, team_matches)
+            team_numbers = Aggregator.set_teams(self.firebase, event_teams, team_matches)
             logger.info("Added teams to Firebase")
 
             event_rankings = self.tba.get_event_rankings()
             Aggregator.set_rankings(self.firebase, event_rankings)
             logger.info("Added rankings to Firebase")
-            sys.exit()
+
+            with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
+                      self.event_key + "/event_extras.json", 'w') as f:
+                json_dict = {}
+                json_dict['number_of_matches'] = num_matches
+                json_dict['team_numbers'] = team_numbers
+                f.write(json.dumps(json_dict, sort_keys=True, indent=4))
+
+            logger.info("Exiting...")
+            os._exit(0)
         else:
             with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
-                      self.event_id + "/event_extras.json") as f:
+                      self.event_key + "/event_extras.json") as f:
                 json_dict = json.loads(f.read())
                 # Constants is a singleton
                 Constants().team_numbers = json_dict['team_numbers']
@@ -235,6 +244,7 @@ class Server(Looper):
             self.socket.stop()
         self.led_manager.stop()
         Looper.stop(self)
+
 
 if __name__ == "__main__":
     # Collect command line arguments

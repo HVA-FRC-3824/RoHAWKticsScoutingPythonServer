@@ -4,6 +4,8 @@ from .data_model import DataModel
 class SuperMatchData(DataModel):
     '''Data model that contains the data collect by a Super Scout for a match'''
     def __init__(self, **kwargs):
+        DataModel.__init__(self)
+
         self.match_number = -1
         self.scout_name = ""
 

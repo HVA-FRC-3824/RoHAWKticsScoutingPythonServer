@@ -201,7 +201,7 @@ class SocketServer(Looper):
         '''Sets up reverse port forward for attached android devices via the
            android debug bridge (adb)
         '''
-        self.adb = "./adb"
+        self.adb = os.path.dirname(os.path.abspath(__file__)) + "/../adb"
         dir = os.path.dirname(__file__)
         if not os.path.exists(os.path.join(dir, self.adb)):
             logger.error("adb is not compiled")

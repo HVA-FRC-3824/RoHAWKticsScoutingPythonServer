@@ -65,7 +65,7 @@ class Looper:
                 else:
                     self.on_ploop(message)
             else:
-                self.on_ploop()
+                pass
         self.on_pend()
 
     def on_tstart(self):
@@ -97,7 +97,7 @@ class Looper:
         '''
         raise NotImplementedError("on_tloop")
 
-    def on_ploop(self):
+    def on_ploop(self, message):
         '''Runs on each loop of the process
 
         Raises:

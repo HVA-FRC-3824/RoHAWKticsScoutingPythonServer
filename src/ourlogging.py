@@ -37,7 +37,7 @@ class AnsiColorFormatter(logging.Formatter):
 
 def setup_logging(fn):
 
-    fmt = '%(relativeCreated)s - %(threadName)s - %(filename)s - %(levelname)s - %(message)s'
+    fmt = '%(asctime)s - %(threadName)s - %(filename)s - %(levelname)s - %(message)s'
     root = logging.getLogger()
     root.setLevel(logging.DEBUG)
 
