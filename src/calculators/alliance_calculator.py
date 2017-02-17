@@ -166,7 +166,7 @@ class AllianceCalculator:
 
 
         '''
-        x = 40 * 9  # kPa
+        x = 40 * 9  # kPa in terms of low goal teleop
         auto_high = 0
         auto_low = 0
         teleop_high = 0
@@ -207,7 +207,7 @@ class AllianceCalculator:
         mu = 0
         sigma = 0
         for t in self.teams:
-            mu += t.calc.auto_gears_delivered.average + t.calc.teleop_gears_delivered.average
-            sigma += t.calc.gears_delivered.average**2 + t.calc.teleop_gears_delivered.average**2
+            mu += t.calc.auto_total_gears_placed.average + t.calc.teleop_total_gears_placed.average
+            sigma += t.calc.auto_total_gears_placed.average**2 + t.calc.teleop_total_gears_placed.average**2
         sigma = math.sqrt(sigma)
         return Calculator.probability_density(x, mu, sigma)

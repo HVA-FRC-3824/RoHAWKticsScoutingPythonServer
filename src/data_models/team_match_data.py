@@ -12,6 +12,7 @@ class TeamMatchData(DataModel):
         self.alliance_color = ""
         self.allaince_number = -1
         self.scout_name = ""
+        self.total_points = -1
 
         # Autonomous
         self.auto_start_position = ""
@@ -25,6 +26,7 @@ class TeamMatchData(DataModel):
         self.auto_low_goal_missed = -1
         self.auto_low_goal_correction = -1
         self.auto_hoppers = -1
+        self.auto_points = -1
 
         # Teleop
         self.teleop_gears = []
@@ -37,10 +39,12 @@ class TeamMatchData(DataModel):
         self.teleop_low_goal_correction = -1
         self.teleop_hoppers = -1
         self.teleop_picked_up_gears = -1
+        self.teleop_points = -1
 
         # Endgame
         self.endgame_climb = ""
         self.endgame_climb_time = ""
+        self.endgame_points = -1
 
         # Post Match
         self.no_show = False

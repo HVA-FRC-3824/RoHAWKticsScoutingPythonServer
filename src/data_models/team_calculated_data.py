@@ -45,6 +45,7 @@ class TeamCalculatedData(DataModel):
         self.endgame_climb_did_not_finish_in_time = LowLevelStats()
         self.endgame_climb_robot_fell = LowLevelStats()
         self.endgame_climb_no_attempt = LowLevelStats()
+        self.endgame_climb_creditted_through_foul = LowLevelStats()
         self.endgame_climb_time = LowLevelStats()
 
         # Post Match

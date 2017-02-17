@@ -143,7 +143,8 @@ class Aggregator:
             if tmd.team_number not in list_dict:
                 list_dict[tmd.team_number] = {}
 
-            # calculate the points score by this particular team in this match
+            # calculate the points score by this particular team in this match (as if they were by
+            # themselves). fuel points will be added later after corrections have been added
             tmd.auto_points = 0
             tmd.auto_points += 5 if tmd.auto_baseline else 0
             tmd.teleop_points = 0
@@ -154,31 +155,22 @@ class Aggregator:
             teleop_gears_placed = 0
             for gear in tmd.teleop_gears:
                 teleop_gears_placed += gear.placed
-
+            rotor = 0
             if auto_gears_placed == 3:
                 tmd.auto_points += 120  # rotor 1, 2 in auto
-                if teleop_gears_placed == 9:
-                    tmd.teleop_points += 80  # rotor 3, 4 in teleop
-                elif teleop_gears_placed > 3:
-                    tmd.teleop_points += 40  # rotor 4 in teleop
+                rotor = 2
             elif auto_gears_placed > 1:
                 tmd.auto_points += 60  # rotor 1 in auto
-                if auto_gears_placed + teleop_gears_placed == 12:
-                    tmd.teleop_points += 120  # rotor 2, 3, 4 in teleop
-                elif auto_gears_placed + teleop_gears_placed > 6:
-                    tmd.teleop_points += 80  # rotor 2, 3 in teleop
-                elif auto_gears_placed + teleop_gears_placed > 2:
-                    tmd.teleop_points += 40  # rotor 2 in teleop
+                rotor = 1
+
+            if auto_gears_placed + teleop_gears_placed >= 12:
+                tmd.teleop_points += (4 - rotor) * 40
+            elif auto_gears_placed + teleop_gears_placed >= 6:
+                tmd.teleop_points += (3 - rotor) * 40
+            elif auto_gears_placed + teleop_gears_placed >= 2:
+                tmd.teleop_points += (2 - rotor) * 40
             else:
-                # No rotors in auto
-                if teleop_gears_placed == 12:
-                    tmd.teleop_points += 160  # rotor 1, 2, 3, 4 in teleop
-                elif teleop_gears_placed > 6:
-                    tmd.teleop_points += 120  # rotor 1, 2, 3 in teleop
-                elif teleop_gears_placed > 2:
-                    tmd.teleop_points += 80  # rotor 1, 2 in teleop
-                else:
-                    tmd.teleop_points += 40  # assuming free gear can be placed on rotor 1
+                tmd.teleop_points += 40  # assuming free gear can be placed on rotor 1
 
             tmd.endgame_points = 50 if tmd.endgame_climb == "successful" else 0
 
@@ -186,7 +178,7 @@ class Aggregator:
                 if key == 'team_number':
                     continue
 
-                # Convert firebase booleans
+                # Convert firebase booleans (not sure if needed)
                 if value == 'true':
                     value = True
                 elif value == 'false':
@@ -204,9 +196,10 @@ class Aggregator:
                         continue
 
                     # create lists for low level stats calculations
-                    if key is not list_dict[tmd.team_number]:
+                    if key not in list_dict[tmd.team_number]:
                         list_dict[tmd.team_number][key] = []
                     list_dict[tmd.team_number][key].append(value)
+                # The only lists in this data model are the auto_gears and teleop_gears
                 elif isinstance(value, list):
                     if len(value) > 0:
                         if(isinstance(value[0], Gear)):
@@ -234,10 +227,20 @@ class Aggregator:
                                                                                period, location,
                                                                                attempt)].append(d[attempt][location])
                                     break
+                # Break up the climb text into lists for LowLevelStats
                 elif key == constants.ENDGAME_CLIMB:
-                    list_dict[tmd.team_number][constants.ENDGAME_CLIMB_OPTIONS[tmd.endgame_climb]] += 1
+                    for key, option in constants.ENDGAME_CLIMB_OPTIONS.items():
+                        if(option not in list_dict[tmd.team_number]):
+                            list_dict[tmd.team_number][option] = []
+                        if tmd.endgame_climb == key:
+                            list_dict[tmd.team_number][option].append(1)
+                        else:
+                            list_dict[tmd.team_number][option].append(0)
+
                 elif key == constants.ENDGAME_CLIMB_TIME:
-                    if tmd.endgame_climb_time != constants.ENDGAME_CLIMB_TIME_N_A:
+                    # Only track time on climbs that were successful
+                    if(tmd.endgame_climb_time != constants.ENDGAME_CLIMB_TIME_N_A and
+                       tmd.endgame_climb == constants.ENDGAME_CLIMB_SUCCESSFUL):
                         match = re.search(pattern, tmd.endgame_climb_time)
                         if match:
                             if constants.ENDGAME_CLIMB_TIME is not list_dict[tmd.team_number]:
@@ -250,19 +253,20 @@ class Aggregator:
             list_dict[tmd.team_number]["teleop_high_goal_made"][-1] += tmd.teleop_high_goal_correction
             list_dict[tmd.team_number]["teleop_low_goal_made"][-1] += tmd.teleop_low_goal_correction
 
+            # points updated with fuel points that have been corrected
             tmd.auto_points += (int(list_dict[tmd.team_number]["auto_high_goal_made"][-1]) +
                                 int(list_dict[tmd.team_number]["auto_low_goal_made"][-1] / 3))
             tmd.teleop_points += (int(list_dict[tmd.team_number]["teleop_high_goal_made"][-1] / 3) +
                                   int(list_dict[tmd.team_number]["teleop_low_goal_made"][-1] / 9))
             tmd.total_points = tmd.auto_points + tmd.teleop_points + tmd.endgame_points
 
-            if "auto_points" in list_dict[tmd.team_number]:
+            if "auto_points" not in list_dict[tmd.team_number]:
                 list_dict[tmd.team_number]["auto_points"] = []
             list_dict[tmd.team_number]["auto_points"].append(tmd.auto_points)
-            if "teleop_points" in list_dict[tmd.team_number]:
+            if "teleop_points" not in list_dict[tmd.team_number]:
                 list_dict[tmd.team_number]["teleop_points"] = []
             list_dict[tmd.team_number]["teleop_points"].append(tmd.teleop_points)
-            if "total_points" in list_dict[tmd.team_number]:
+            if "total_points" not in list_dict[tmd.team_number]:
                 list_dict[tmd.team_number]["total_points"] = []
             list_dict[tmd.team_number]["total_points"].append(tmd.total_points)
             firebase.update_team_match_data(tmd)
@@ -271,12 +275,11 @@ class Aggregator:
         for team_number, lists in iter(list_dict.items()):
             tcd = TeamCalculatedData()
             tcd.team_number = team_number
-            for key, l in iter(lists.items()):
+            for key, l in lists.items():
                 if key in tcd.__dict__ and isinstance(tcd.__dict__[key], LowLevelStats):
                     tcd.__dict__[key] = LowLevelStats().from_list(l)
             firebase.update_team_calculated_data(tcd)
             logger.info("Updated Low Level Calculations for Team {0:d}".format(team_number))
-        # high level calculations
 
     @staticmethod
     def make_super_calculations(firebase):
@@ -302,15 +305,21 @@ class Aggregator:
                         team_number = match.teams[int(key[5]) + 2]
                     if team_number not in pilot_rating_dict:
                         pilot_rating_dict[team_number] = []
+                    # first character of the options is a number
+                    # Don't include when this pilot isn't used
+                    if int(value[0]) == 0:
+                        continue
                     pilot_rating_dict[team_number].append(int(value[0]))
 
                     continue
 
+                # get the keys of the qualitative input
                 if 'blue' in key:
                     key = key[5:]
                 elif 'red' in key:
                     key = key[4:]
 
+                # key is in the list if it is a qualitative unput
                 if key in lists:
                     for i, team_number in enumerate(value):
                         if team_number not in lists[key]:
@@ -403,6 +412,9 @@ class Aggregator:
                     team.predicted_ranking.ties += 1
                     team.predicted_ranking.RPs += 1
 
+                team.predicted_ranking.RPs += 1 if ac.rotor_chance() > 0.5 else 0
+                team.predicted_ranking.RPs += 1 if ac.pressure_chance() > 0.5 else 0
+
                 team.predicted_ranking.first_tie_breaker += ac.predicted_score()
                 teams.predicted_ranking.second_tie_breaker += ac.predicted_auto_score()
             teams.append(team)
@@ -442,51 +454,53 @@ class Aggregator:
 
             # First Pick
             team.first_pick.pick_ability = tc.first_pick_ability()
-            team.robot_picture_filepath = team.pit.robot_picture_filepath
+            team.first_pick.robot_picture_filepath = team.pit.robot_picture_filepath
             team.first_pick.yellow_card = team.calc.yellow_card.total > 0
             team.first_pick.red_card = team.calc.red_card.total > 0
-            team.stopped_moving = team.calc.stopped_moving.total > 1
-            team.first_pick.top_line = ("PA: {0:f} High Goal: Auto{}, Teleop {}"
+            team.first_pick.stopped_moving = team.calc.stopped_moving.total > 1
+            team.first_pick.top_line = ("PA: {0:0.2f} High Goal: Auto{1:0.2f}, Teleop {2:0.2f}"
                                         .format(team.first_pick.pick_ability,
                                                 team.calc.auto_high_goal_made.average,
                                                 team.calc.teleop_high_goal_made.average))
-            team.first_pick.second_line = ("Average Gears: Auto {}, Teleop {}"
+            team.first_pick.second_line = ("Average Gears: Auto {0:0.2f}, Teleop {1:0.2f}"
                                            .format(team.calc.auto_total_gears_placed.average,
                                                    team.calc.teleop_total_gears_placed.average))
-            team.first_pick.third_line = ("Climb: Percentage {}%, Time {}s"
-                                          .format(team.calc.endgame_climb_successful.average,
+            team.first_pick.third_line = ("Climb: Percentage {0:0.2f}%, Time {1:0.2f}s"
+                                          .format(team.calc.endgame_climb_successful.average * 100,
                                                   team.calc.endgame_climb_time.average))
             firebase.update_first_team_pick_ability(team.first_pick)
             logger.info("Updated first pick info for {0:d} on Firebase".format(team.team_number))
 
             # Second Pick
             team.second_pick.pick_ability = tc.second_pick_ability()
-            team.robot_picture_filepath = team.pit.robot_picture_filepath
+            team.second_pick.robot_picture_filepath = team.pit.robot_picture_filepath
             team.second_pick.yellow_card = team.calc.yellow_card.total > 0
             team.second_pick.red_card = team.calc.red_card.total > 0
-            team.stopped_moving = team.calc.stopped_moving.total > 1
-            team.first_pick.top_line = ("PA: {0:f} Def: {} Con: {} Speed: {}"
-                                        .format(team.second_pick.pick_ability,
-                                                team.calc.rank_defense,
-                                                team.calc.rank_control,
-                                                team.calc.rank_speed))
-            team.first_pick.second_line = ("Average Gears: Auto {}, Teleop {}"
-                                           .format(team.calc.auto_total_gears_placed.average,
-                                                   team.calc.teleop_total_gears_placed.average))
-            team.first_pick.third_line = ("Climb: Percentage {}%, Time {}s"
-                                          .format(team.calc.endgame_climb_successful.average,
-                                                  team.calc.endgame_climb_time.average))
+            team.second_pick.stopped_moving = team.calc.stopped_moving.total > 1
+            team.second_pick.top_line = ("PA: {0:0.2f} Def: {1:d} Con: {2:d} Speed: {3:d}"
+                                         .format(team.second_pick.pick_ability,
+                                                 team.calc.rank_defense,
+                                                 team.calc.rank_control,
+                                                 team.calc.rank_speed))
+            team.second_pick.second_line = ("Average Gears: Auto {0:0.2f}, Teleop {1:0.2f}"
+                                            .format(team.calc.auto_total_gears_placed.average,
+                                                    team.calc.teleop_total_gears_placed.average))
+            team.second_pick.third_line = ("Climb: Percentage {0:0.2f}%, Time {1:0.2f}s"
+                                           .format(team.calc.endgame_climb_successful.average * 100,
+                                                   team.calc.endgame_climb_time.average))
             firebase.update_second_team_pick_ability(team.second_pick)
             logger.info("Updated second pick info for {0:d} on Firebase".format(team.team_number))
 
             # Third Pick
+            '''
             team.third_pick.pick_ability = tc.third_pick_ability()
-            team.robot_picture_filepath = team.pit.robot_picture_filepath
+            team.third_pick.robot_picture_filepath = team.pit.robot_picture_filepath
             team.third_pick.yellow_card = team.calc.yellow_card.total > 0
             team.third_pick.red_card = team.calc.red_card.total > 0
-            team.stopped_moving = team.calc.stopped_moving.total > 1
+            team.third_pick.stopped_moving = team.calc.stopped_moving.total > 1
             team.third_pick.top_line = "PA: {0:f}".format(team.third_pick.pick_ability)
             team.third_pick.second_line = "".format()
             team.third_pick.third_line = "".format()
             firebase.update_third_team_pick_ability(team.third_pick)
             logger.info("Updated third pick info for {0:d} on Firebase".format(team.team_number))
+            '''
