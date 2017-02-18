@@ -8,7 +8,7 @@ class TeamLogistics(DataModel):
 
         self.team_number = -1
         self.nickname = ""
-        self.matches = []
+        self.match_numbers = []
         self.surrogate_match_number = -1
 
         self.set(**kwargs)
