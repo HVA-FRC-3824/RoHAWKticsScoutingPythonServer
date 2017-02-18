@@ -90,14 +90,16 @@ class TeamCalculator:
             teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 220 / 12
         gear_contribution = auto_gear_contribution + teleop_gear_contribution
 
-        # multipliers will be correctly determined later
+        # TODO: multipliers will be correctly determined later
         defense_contribution = self.team.calc.zscore_control * 4
         speed_contribution = self.team.calc.zscore_speed * 2
         control_contribution = self.team.calc.zscore_control * 4
+        torque_contribution = self.team.calc.zscore_control * 2
 
         spa = functional_percentage * (average_baseline_points + gear_contribution +
                                        defense_contribution + speed_contribution +
-                                       control_contribution + average_climb_points)
+                                       control_contribution + torque_contribution +
+                                       average_climb_points)
         return spa
 
     def third_pick_ability(self):

@@ -96,11 +96,11 @@ class Aggregator:
 
         min_matches = 100  # Each team should always have less than 100 matches
         for team in team_logistics:
-            if len(team.matches) < min_matches:
+            if len(team.match_numbers) < min_matches:
                 min_matches = len(team_matches)
 
         for team in team_logistics:
-            if len(team.matches) > min_matches:
+            if len(team.match_numbers) > min_matches:
                 team.surrogate_match_number = team.matches[3]
             firebase.update_team_logistics(team)
 
@@ -316,15 +316,22 @@ class Aggregator:
                 # get the keys of the qualitative input
                 if 'blue' in key:
                     key = key[5:]
+                # handle both blue and red on the blue
                 elif 'red' in key:
-                    key = key[4:]
+                    continue
 
                 # key is in the list if it is a qualitative unput
                 if key in lists:
-                    for i, team_number in enumerate(value):
+                    match = firebase.get_match(smd.match_number)
+                    for i, team_number in enumerate(match.teams):
                         if team_number not in lists[key]:
                             lists[key][team_number] = []
-                        match_rank = 3 - i
+
+                        # first 3 team numbers are blue. second 3 team numbers are red
+                        if i < 3:
+                            match_rank = 4 - smd.__dict__["blue" + key][i]
+                        else:
+                            match_rank = 4 - smd.__dict__["red" + key][i]
                         if match_rank == 3:
                             match_rank = 4
                         lists[key][team_number].append(match_rank)
@@ -477,11 +484,12 @@ class Aggregator:
             team.second_pick.yellow_card = team.calc.yellow_card.total > 0
             team.second_pick.red_card = team.calc.red_card.total > 0
             team.second_pick.stopped_moving = team.calc.stopped_moving.total > 1
-            team.second_pick.top_line = ("PA: {0:0.2f} Def: {1:d} Con: {2:d} Speed: {3:d}"
+            team.second_pick.top_line = ("PA: {0:0.2f} Def: {1:d} Con: {2:d} Speed: {3:d} Torqu: {3:d}"
                                          .format(team.second_pick.pick_ability,
                                                  team.calc.rank_defense,
                                                  team.calc.rank_control,
-                                                 team.calc.rank_speed))
+                                                 team.calc.rank_speed,
+                                                 team.calc.rank_torque))
             team.second_pick.second_line = ("Average Gears: Auto {0:0.2f}, Teleop {1:0.2f}"
                                             .format(team.calc.auto_total_gears_placed.average,
                                                     team.calc.teleop_total_gears_placed.average))
