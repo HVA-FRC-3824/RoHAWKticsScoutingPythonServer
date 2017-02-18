@@ -77,7 +77,7 @@ class Aggregator:
             info = TeamLogistics()
             info.team_number = tba_team['team_number']
             info.nickname = tba_team['nickname']
-            info.matches = team_matches[info.team_number]
+            info.match_numbers = team_matches[info.team_number]
             team_logistics.append(info)
 
             team_numbers.append(info.team_number)
