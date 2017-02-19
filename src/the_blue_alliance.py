@@ -59,7 +59,7 @@ class TheBlueAlliance:
 
             # if cache has last modified then set the 'If-Modified-Since' header
             if 'last_modified' in json_dict:
-                self.headers["If-Modified-Since"] = json_dict['last_modified']
+                self.headers["If-Modified-Since"] = str(json_dict['last_modified'])
             elif 'last_modified' in json_dict:
                 del json_dict['last_modified']
 
@@ -75,11 +75,10 @@ class TheBlueAlliance:
 
             # header has a 'Last-Modified' field which is used for caching
             if 'Last-Modified' in response.headers:
-                last_modified = time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple())
+                last_modified = int(time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple()))
                 if json_dict['last_modified'] < last_modified:
                     json_dict['last_modified'] = last_modified
                     json_dict['data'] = json.loads(response.text)
-                    json_dict['data']['last_modified'] = last_modified
                     with open(self.base_filepath + filepath, 'w') as f:
                         f.write(json.dumps(json_dict, sort_keys=True, indent=4))
                     return json_dict['data']
@@ -101,7 +100,7 @@ class TheBlueAlliance:
             response = requests.get(request_url, headers=self.headers)
             # There should be a last modified header
             if 'Last-Modified' in response.headers:
-                json_dict['last_modified'] = time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple())
+                json_dict['last_modified'] = int(time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple()))
             else:
                 logger.warning("No Last-Modified header")
             json_dict['data'] = json.loads(response.text)

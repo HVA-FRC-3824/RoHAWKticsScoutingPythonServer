@@ -43,8 +43,8 @@ class Server(Looper):
             sys.exit()
         logger.info("Event Key: {0:s}".format(self.event_key))
 
-        self.leds = LedManager()
-        self.leds.starting_up()
+        self.led_manager = LedManager()
+        self.led_manager.starting_up()
 
         self.firebase = FirebaseCom(self.event_key)
         self.tba = TheBlueAlliance(self.event_key)
@@ -125,7 +125,7 @@ class Server(Looper):
         self.on_tstart()
         iteration = 1
         while self.running:
-            logger.info("Iteration {0:d}".format(self.iteration))
+            logger.info("Iteration {0:d}".format(iteration))
             start_time = time.time()
             self.on_tloop()
             end_time = time.time()
@@ -234,7 +234,8 @@ class Server(Looper):
                             except:
                                 pass
 
-        self.time_since_last_cache += self.time_between_cycles
+        if self.cache_firebase:
+            self.time_since_last_cache += self.time_between_cycles
 
     def stop(self):
         '''Stops all threads'''
