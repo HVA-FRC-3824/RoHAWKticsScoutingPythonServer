@@ -26,6 +26,7 @@ class TeamCalculatedData(DataModel):
         self.auto_hoppers = LowLevelStats()
 
         # Teleop
+        self.teleop_total_gears_placed = LowLevelStats()
         self.teleop_near_gears_placed = LowLevelStats()
         self.teleop_center_gears_placed = LowLevelStats()
         self.teleop_far_gears_placed = LowLevelStats()
@@ -56,8 +57,8 @@ class TeamCalculatedData(DataModel):
         # Fouls
         self.fouls = LowLevelStats()
         self.tech_fouls = LowLevelStats()
-        self.yellow_cards = LowLevelStats()
-        self.red_cards = LowLevelStats()
+        self.yellow_card = LowLevelStats()
+        self.red_card = LowLevelStats()
 
         # Qualitative
         self.zscore_speed = 0.0

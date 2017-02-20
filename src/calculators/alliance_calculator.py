@@ -38,9 +38,9 @@ class AllianceCalculator:
                         team.calc.teleop_high_goal_made.average / 3 +
                         team.calc.teleop_low_goal_made.average / 9)
             # Add climbing points
-            p_score += 50 * team.calc.climb.average
-            auto_gears += team.calc.auto_gears_delivered.average
-            teleop_gears += team.calc.teleop_gears_delivered.average
+            p_score += 50 * team.calc.endgame_climb_successful.average
+            auto_gears += team.calc.auto_total_gears_placed.average
+            teleop_gears += team.calc.teleop_total_gears_placed.average
 
         rotors = 0
         # Calculate points from gears

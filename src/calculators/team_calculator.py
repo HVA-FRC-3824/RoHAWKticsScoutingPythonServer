@@ -83,14 +83,9 @@ class TeamCalculator:
             (baseline_percentage(T) * 5 + climb_percentage(T) * 50)
         '''
         functional_percentage = (1 - self.dysfunctional_percentage())
-        average_baseline_points = self.team.calc.auto_baseline.average() * 5
+        average_baseline_points = self.team.calc.auto_baseline.average * 5
         average_climb_points = self.team.calc.endgame_climb_successful.average * 50
         auto_gear_contribution = self.team.calc.auto_total_gears_placed.average * 60
-        if auto_gear_contribution > 40:
-            teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 260 / 11
-        else:
-            teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 220 / 12
-        gear_contribution = auto_gear_contribution + teleop_gear_contribution
 
         # TODO: multipliers will be correctly determined later
         defense_contribution = self.team.calc.zscore_control * 4
@@ -98,7 +93,7 @@ class TeamCalculator:
         control_contribution = self.team.calc.zscore_control * 4
         torque_contribution = self.team.calc.zscore_control * 2
 
-        spa = functional_percentage * (average_baseline_points + gear_contribution +
+        spa = functional_percentage * (average_baseline_points + auto_gear_contribution +
                                        defense_contribution + speed_contribution +
                                        control_contribution + torque_contribution +
                                        average_climb_points)

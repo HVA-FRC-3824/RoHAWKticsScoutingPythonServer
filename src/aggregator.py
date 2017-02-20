@@ -128,6 +128,7 @@ class Aggregator:
             ranking.first_tie_breaker = int(float(tba_ranking_list[3]))
             ranking.second_tie_breaker = int(float(tba_ranking_list[4]))
             ranking.played = int(tba_ranking_list[8])
+            print(ranking)
             firebase.update_current_team_ranking_data(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
@@ -396,9 +397,11 @@ class Aggregator:
         # Predicted Rankings
         teams = []
         for team_number, team in firebase.get_teams().items():
-            print("{}: {}".format(team_number, team))
-
+            team.predicted_ranking = TeamRankingData({'team_number': team.team_number})
             team.predicted_ranking.played = len(team.info.match_numbers)
+
+            if(team.current_ranking is None):
+                team.current_ranking = TeamRankingData({'team_number': team.team_number})
 
             team.predicted_ranking.RPs = team.current_ranking.RPs
             team.predicted_ranking.wins = team.current_ranking.wins
@@ -468,13 +471,12 @@ class Aggregator:
         :class:`SuperMatchData`, and :class:`TeamCalculatedData`
         '''
         for team_number, team in firebase.get_teams().items():
-            print("{}: {}".format(team_number, team))
-
             tc = TeamCalculator(team)
 
             # First Pick
             team.first_pick.pick_ability = tc.first_pick_ability()
-            team.first_pick.robot_picture_filepath = team.pit.robot_picture_filepath
+            if(team.pit.robot_image_default > -1):
+                team.first_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.first_pick.yellow_card = team.calc.yellow_card.total > 0
             team.first_pick.red_card = team.calc.red_card.total > 0
             team.first_pick.stopped_moving = team.calc.stopped_moving.total > 1
@@ -489,16 +491,17 @@ class Aggregator:
                                           .format(team.calc.endgame_climb_successful.average * 100,
                                                   team.calc.endgame_climb_time.average))
             team.first_pick.fourth_line = ""
-            firebase.update_first_team_pick_ability(team.first_pick)
+            firebase.update_team_first_pick_ability(team.first_pick)
             logger.info("Updated first pick info for {0:d} on Firebase".format(team.team_number))
 
             # Second Pick
             team.second_pick.pick_ability = tc.second_pick_ability()
-            team.second_pick.robot_picture_filepath = team.pit.robot_picture_filepath
+            if(team.pit.robot_image_default > -1):
+                team.second_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.second_pick.yellow_card = team.calc.yellow_card.total > 0
             team.second_pick.red_card = team.calc.red_card.total > 0
             team.second_pick.stopped_moving = team.calc.stopped_moving.total > 1
-            team.second_pick.top_line = ("PA: {0:0.2f} Def: {1:d} Con: {2:d} Speed: {3:d} Torqu: {3:d}"
+            team.second_pick.top_line = ("PA: {0:0.2f} Defense: {1:d} Control: {2:d} Speed: {3:d} Torque: {3:d}"
                                          .format(team.second_pick.pick_ability,
                                                  team.calc.rank_defense,
                                                  team.calc.rank_control,
@@ -512,13 +515,13 @@ class Aggregator:
                                                    team.calc.endgame_climb_time.average))
             team.second_pick.fourth_line = ("Weight: {0:0.2f} lbs, PL: {1:s}"
                                             .format(team.pit.weight, team.pit.programming_language))
-            firebase.update_second_team_pick_ability(team.second_pick)
+            firebase.update_team_second_pick_ability(team.second_pick)
             logger.info("Updated second pick info for {0:d} on Firebase".format(team.team_number))
 
             # Third Pick
             '''
             team.third_pick.pick_ability = tc.third_pick_ability()
-            team.third_pick.robot_picture_filepath = team.pit.robot_picture_filepath
+            team.third_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.third_pick.yellow_card = team.calc.yellow_card.total > 0
             team.third_pick.red_card = team.calc.red_card.total > 0
             team.third_pick.stopped_moving = team.calc.stopped_moving.total > 1
@@ -526,6 +529,6 @@ class Aggregator:
             team.third_pick.second_line = "".format()
             team.third_pick.third_line = "".format()
             team.third_pick.fourth_line = ""
-            firebase.update_third_team_pick_ability(team.third_pick)
+            firebase.update_team_third_pick_ability(team.third_pick)
             logger.info("Updated third pick info for {0:d} on Firebase".format(team.team_number))
             '''
