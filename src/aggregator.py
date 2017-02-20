@@ -293,6 +293,8 @@ class Aggregator:
             if 'zscore' in key:
                 lists[key[6:]] = {}
 
+        print(lists)
+
         pilot_rating_dict = {}
 
         # get match rankings from super match data and put in lists for averaging
@@ -319,7 +321,7 @@ class Aggregator:
 
                 # get the keys of the qualitative input
                 if 'blue' in key:
-                    key = key[5:]
+                    key = key[4:]
                 # handle both blue and red on the blue
                 elif 'red' in key:
                     continue
@@ -335,7 +337,7 @@ class Aggregator:
                         if i < 3:
                             match_rank = 4 - smd.__dict__["blue" + key][i]
                         else:
-                            match_rank = 4 - smd.__dict__["red" + key][i]
+                            match_rank = 4 - smd.__dict__["red" + key][i - 3]
                         if match_rank == 3:
                             match_rank = 4
                         lists[key][team_number].append(match_rank)
@@ -378,8 +380,8 @@ class Aggregator:
             # add calculations to firebase
             for i, team in enumerate(teams):
                 firebase_team = firebase.get_team_calculated_data(team['team_number'])
-                firebase_team.__dict__["zscore_"+key] = team['zscore']
-                firebase_team.__dict__["rank_"+key] = i + 1
+                firebase_team.__dict__["zscore"+key] = team['zscore']
+                firebase_team.__dict__["rank"+key] = i + 1
                 firebase.update_team_calculated_data(firebase_team)
 
     @staticmethod

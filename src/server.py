@@ -188,15 +188,29 @@ class Server(Looper):
                         # TODO: figure out why
                         except:
                             pass
+        if not self.running:
+            return
+
         if self.aggregate:
             logger.info("Aggregating")
             try:
                 logger.info("Making match calculations")
                 Aggregator.make_team_calculations(self.firebase)
+
+                if not self.running:
+                    return
+
                 logger.info("Making super match calculations")
                 Aggregator.make_super_calculations(self.firebase)
+
+                if not self.running:
+                    return
+
                 logger.info("Making pick list calculations")
                 Aggregator.make_pick_list_calculations(self.firebase)
+
+                if not self.running:
+                    return
             except:
                 self.led_manager.error()
                 if self.running:
@@ -210,6 +224,9 @@ class Server(Looper):
                         # TODO: figure out why
                         except:
                             pass
+
+            if not self.running:
+                return
 
             if self.tba.event_down():
                 try:
