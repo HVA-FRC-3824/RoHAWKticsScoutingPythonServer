@@ -6,7 +6,6 @@ from constants import Constants
 
 from data_models.gear import Gear
 from data_models.match import Match
-from data_models.alliance import Alliance
 from data_models.team_logistics import TeamLogistics
 from data_models.team_pit_data import TeamPitData
 from data_models.team_ranking_data import TeamRankingData
@@ -140,6 +139,7 @@ class Aggregator:
         constants = Constants()
         pattern = re.compile(r"< (\d+)s")
         for tmd in firebase.get_all_team_match_data().values():
+            logger.info("Match Calculating: Team Number: {0:d}, Match Number: {1:d}".format(tmd.team_number, tmd.match_number))
             if tmd.team_number not in list_dict:
                 list_dict[tmd.team_number] = {}
 
@@ -228,7 +228,7 @@ class Aggregator:
                                                                                attempt)].append(d[attempt][location])
                                     break
                 # Break up the climb text into lists for LowLevelStats
-                elif key == constants.ENDGAME_CLIMB:
+                elif key == constants.ENDGAME_CLIMB_KEY:
                     for key, option in constants.ENDGAME_CLIMB_OPTIONS.items():
                         if(option not in list_dict[tmd.team_number]):
                             list_dict[tmd.team_number][option] = []
@@ -237,15 +237,15 @@ class Aggregator:
                         else:
                             list_dict[tmd.team_number][option].append(0)
 
-                elif key == constants.ENDGAME_CLIMB_TIME:
+                elif key == constants.ENDGAME_CLIMB_TIME_KEY:
                     # Only track time on climbs that were successful
                     if(tmd.endgame_climb_time != constants.ENDGAME_CLIMB_TIME_N_A and
                        tmd.endgame_climb == constants.ENDGAME_CLIMB_SUCCESSFUL):
                         match = re.search(pattern, tmd.endgame_climb_time)
                         if match:
-                            if constants.ENDGAME_CLIMB_TIME is not list_dict[tmd.team_number]:
-                                list_dict[tmd.team_number][constants.ENDGAME_CLIMB_TIME] = []
-                            list_dict[tmd.team_number][constants.ENDGAME_CLIMB_TIME].append(int(match.group(0)))
+                            if constants.ENDGAME_CLIMB_TIME_KEY not in list_dict[tmd.team_number]:
+                                list_dict[tmd.team_number][constants.ENDGAME_CLIMB_TIME_KEY] = []
+                            list_dict[tmd.team_number][constants.ENDGAME_CLIMB_TIME_KEY].append(int(match.group(1)))
 
             # Apply correction for high/low goal
             list_dict[tmd.team_number]["auto_high_goal_made"][-1] += tmd.auto_high_goal_correction
@@ -271,6 +271,8 @@ class Aggregator:
             list_dict[tmd.team_number]["total_points"].append(tmd.total_points)
             firebase.update_team_match_data(tmd)
 
+        logger.info("Creating Low Level Statistics")
+
         # Create LowLevelStats
         for team_number, lists in iter(list_dict.items()):
             tcd = TeamCalculatedData()
@@ -293,16 +295,17 @@ class Aggregator:
         pilot_rating_dict = {}
 
         # get match rankings from super match data and put in lists for averaging
-        for smd in firebase.get_all_super_match_data():
+        for match_number, smd in firebase.get_all_super_match_data().items():
+            logger.info("calculations for super match {0:d}".format(match_number))
             for key, value in smd.__dict__.items():
 
                 # Create lists for LowLevelStats calculations for pilot rating
                 if "pilot_rating" in key:
                     match = firebase.get_match(smd.match_number)
                     if 'blue' in key:
-                        team_number = match.teams[int(key[5]) - 1]
+                        team_number = match.teams[int(key[4]) - 1]
                     else:
-                        team_number = match.teams[int(key[5]) + 2]
+                        team_number = match.teams[int(key[3]) + 2]
                     if team_number not in pilot_rating_dict:
                         pilot_rating_dict[team_number] = []
                     # first character of the options is a number
@@ -336,11 +339,15 @@ class Aggregator:
                             match_rank = 4
                         lists[key][team_number].append(match_rank)
 
+        logger.info("Making pilot rating calculations")
+
         # calculate pilot ratings
         for key, value in pilot_rating_dict.items():
             tcd = firebase.get_team_calculated_data(key)
             tcd.pilot_rating = LowLevelStats().from_list(value)
             firebase.update_team_calculated_data(tcd)
+
+        logger.info("Making zscore calculations")
 
         # calculate zscore for qualitative metrics
         zscore_components = {}
@@ -354,15 +361,15 @@ class Aggregator:
                 average = 0.0
                 for value in lists[key][team_number]:
                     average += value
-                zscore_components[key]['team_number'].append(team_number)
+                zscore_components[key]['team_numbers'].append(team_number)
                 zscore_components[key]['averages'].append(average / len(list[key][team_number]))
             zscore_components[key]['zscores'] = stats.zscore(zscore_components[key]['averages'])
 
             # Create list for sorting
             teams = []
-            for i in range(len(zscore_components[key]['team_number'])):
+            for i in range(len(zscore_components[key]['team_numbers'])):
                 team = {}
-                team['team_number'] = zscore_components[key]['team_number'][i]
+                team['team_number'] = zscore_components[key]['team_numbers'][i]
                 team['zscore'] = zscore_components[key]['zscores'][i]
             # Make the zscore negative for sorting so larger numbers are at the beginning
             teams = sorted(teams, key=lambda team: -team['zscore'])
@@ -379,14 +386,18 @@ class Aggregator:
         '''Pulls the current rankings from `The Blue Alliance <thebluealliance.com>`_
            and predicts the final rankings
         '''
+        logger.info("Pulling current rankings")
         # Current Rankings
         event_rankings = tba.get_event_rankings()
-        Aggregator.set_rankings(event_rankings)
+        Aggregator.set_rankings(firebase, event_rankings)
         logger.info("Updated current rankings on Firebase")
 
+        logger.info("Predicting final rankings")
         # Predicted Rankings
         teams = []
-        for team in firebase.get_teams():
+        for team_number, team in firebase.get_teams().items():
+            print("{}: {}".format(team_number, team))
+
             team.predicted_ranking.played = len(team.info.match_numbers)
 
             team.predicted_ranking.RPs = team.current_ranking.RPs
@@ -404,11 +415,11 @@ class Aggregator:
                     continue
 
                 if match.is_blue(team.team_number):
-                    ac = AllianceCalculator(Alliance(*match.teams[0:2]))
-                    opp = AllianceCalculator(Alliance(*match.teams[3:5]))
+                    ac = AllianceCalculator(match.teams[0:2])
+                    opp = AllianceCalculator(match.teams[3:5])
                 else:
-                    ac = AllianceCalculator(Alliance(*match.teams[3:5]))
-                    opp = AllianceCalculator(Alliance(*match.teams[0:2]))
+                    ac = AllianceCalculator(match.teams[3:5])
+                    opp = AllianceCalculator(match.teams[0:2])
 
                 if ac.win_probability_over(opp) > 0.5:
                     team.predicted_ranking.wins += 1
@@ -456,7 +467,9 @@ class Aggregator:
         '''Make calculations for :class:`TeamPickAbility` based on :class:`TeamMatchData`,
         :class:`SuperMatchData`, and :class:`TeamCalculatedData`
         '''
-        for team in firebase.get_teams().values():
+        for team_number, team in firebase.get_teams().items():
+            print("{}: {}".format(team_number, team))
+
             tc = TeamCalculator(team)
 
             # First Pick
@@ -475,6 +488,7 @@ class Aggregator:
             team.first_pick.third_line = ("Climb: Percentage {0:0.2f}%, Time {1:0.2f}s"
                                           .format(team.calc.endgame_climb_successful.average * 100,
                                                   team.calc.endgame_climb_time.average))
+            team.first_pick.fourth_line = ""
             firebase.update_first_team_pick_ability(team.first_pick)
             logger.info("Updated first pick info for {0:d} on Firebase".format(team.team_number))
 
@@ -496,6 +510,8 @@ class Aggregator:
             team.second_pick.third_line = ("Climb: Percentage {0:0.2f}%, Time {1:0.2f}s"
                                            .format(team.calc.endgame_climb_successful.average * 100,
                                                    team.calc.endgame_climb_time.average))
+            team.second_pick.fourth_line = ("Weight: {0:0.2f} lbs, PL: {1:s}"
+                                            .format(team.pit.weight, team.pit.programming_language))
             firebase.update_second_team_pick_ability(team.second_pick)
             logger.info("Updated second pick info for {0:d} on Firebase".format(team.team_number))
 
@@ -509,6 +525,7 @@ class Aggregator:
             team.third_pick.top_line = "PA: {0:f}".format(team.third_pick.pick_ability)
             team.third_pick.second_line = "".format()
             team.third_pick.third_line = "".format()
+            team.third_pick.fourth_line = ""
             firebase.update_third_team_pick_ability(team.third_pick)
             logger.info("Updated third pick info for {0:d} on Firebase".format(team.team_number))
             '''

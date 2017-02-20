@@ -3,7 +3,7 @@ from .data_model import DataModel
 
 class SuperMatchData(DataModel):
     '''Data model that contains the data collect by a Super Scout for a match'''
-    def __init__(self, **kwargs):
+    def __init__(self, d=None):
         DataModel.__init__(self)
 
         self.match_number = -1
@@ -23,4 +23,5 @@ class SuperMatchData(DataModel):
 
         self.notes = ""
 
-        self.set(**kwargs)
+        if d is not None:
+            self.set(d)

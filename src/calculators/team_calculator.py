@@ -1,4 +1,3 @@
-from data_models.alliance import Alliance
 from data_models.match import Match
 
 from calculators.alliance_calculator import AllianceCalculator
@@ -45,8 +44,8 @@ class TeamCalculator:
         predicted_RPs = 0
         for match_index in range(len(self.team.completed_matches), len(self.team.info.match_numbers)):
             match = self.firebase.get_match(self.team.info.match_numbers[match_index])
-            blue_alliance = Alliance(match.teams[0:2])
-            red_alliance = Alliance(match.teams[3:5])
+            blue_alliance = match.teams[0:2]
+            red_alliance = match.teams[3:5]
 
             if match.is_blue(self.team.team_number):
                 ac = AllianceCalculator(blue_alliance, self.firebase)
@@ -70,7 +69,10 @@ class TeamCalculator:
 
         - predicted_score(A) predicted score of alliance A (this team and our team)
         '''
-        alliance = Alliance(self.team, self.firebase.get_team(Constants.OUR_TEAM_NUMBER))
+        if Constants.OUR_TEAM_NUMBER in Constants().team_numbers:
+            alliance = [self.team, self.firebase.get_team(Constants.OUR_TEAM_NUMBER)]
+        else:
+            alliance = [self.team]
         ac = AllianceCalculator(alliance)
         return ac.predicted_score()
 

@@ -15,18 +15,51 @@ class DataModel:
                  if not callable(value) and not key.startswith('__'))
 
         for key, value in iter(d.items()):
-            if isinstance(value, DataModel):
+            if isinstance(value, DataModel) or isinstance(value, obj):
                 d[key] = value.to_dict()
+            elif isinstance(value, list):
+                d[key] = []
+                for v in value:
+                    if isinstance(v, DataModel) or isinstance(v, obj):
+                        d[key].append(v.to_dict())
+                    else:
+                        d[key].append(v)
         return d
 
-    def set(self, **d):
+    def set(self, d):
         '''Sets the values from the `dict` d'''
-        for key, value in iter(d.items()):
-            if isinstance(value, dict):
-                self.__dict__[key] = self._dict__[key].__class__(**value)
-            elif isinstance(value, list):
-                _class = self.__dict__["_"+key+"_type"].__class__
-                for v in value:
-                    self.__dict__[key].append(_class(**value))
+        for a, b in iter(d.items()):
+            if isinstance(b, (list, tuple)):
+                setattr(self, a, [obj(x) if isinstance(x, dict) else x for x in b])
             else:
-                self.__dict__[key] = value
+                setattr(self, a, obj(b) if isinstance(b, dict) else b)
+
+
+class obj:
+    def __init__(self, d):
+        for a, b in iter(d.items()):
+            if isinstance(b, (list, tuple)):
+                setattr(self, a, [obj(x) if isinstance(x, dict) else x for x in b])
+            else:
+                setattr(self, a, obj(b) if isinstance(b, dict) else b)
+
+    def to_dict(self):
+        '''Converts the object to a `dict`
+
+        Returns:
+            `dict` representation of the object
+        '''
+        d = dict((key, value) for key, value in iter(self.__dict__.items())
+                 if not callable(value) and not key.startswith('__'))
+
+        for key, value in iter(d.items()):
+            if isinstance(value, DataModel) or isinstance(value, obj):
+                d[key] = value.to_dict()
+            elif isinstance(value, list):
+                d[key] = []
+                for v in value:
+                    if isinstance(v, DataModel) or isinstance(v, obj):
+                        d[key].append(v.to_dict())
+                    else:
+                        d[key].append(v)
+        return d

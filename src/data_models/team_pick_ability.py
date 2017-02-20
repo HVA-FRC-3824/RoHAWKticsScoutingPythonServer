@@ -3,7 +3,7 @@ from .data_model import DataModel
 
 class TeamPickAbility(DataModel):
     '''Data about a team's strength as a specific type of pick'''
-    def __init__(self, **kwargs):
+    def __init__(self, d=None):
         DataModel.__init__(self)
 
         self.team_number = -1
@@ -25,4 +25,5 @@ class TeamPickAbility(DataModel):
         self.picked = False
         self.dnp = False
 
-        self.set(**kwargs)
+        if d is not None:
+            self.set(d)

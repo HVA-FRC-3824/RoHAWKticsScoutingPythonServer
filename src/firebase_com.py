@@ -75,7 +75,7 @@ class FirebaseCom:
         response = self.get_from_firebase("schedule/", str(match_number))
         if response is None:
             return None
-        return Match(**response)
+        return Match(response)
 
     def get_all_matches(self):
         '''get logistics information for all matches'''
@@ -83,7 +83,7 @@ class FirebaseCom:
         for match_number in range(1, Constants().number_of_matches):
             response = self.get_match(match_number)
             if response is not None:
-                d[match_number] = Match(**response)
+                d[match_number] = response
         return d
 
     def update_team_match_data(self, tmd):
@@ -94,24 +94,25 @@ class FirebaseCom:
             self.put_in_firebase("partial_match/",
                                  "{0:d}_{1:d}".format(tmd['match_number'],
                                                       tmd['team_number']), tmd)
-            response = self.get_from_firebase("scout_names/", "")
+            response = self.get_from_firebase("partial_match/", "scout_names")
             if response is None:
                 list_ = []
                 list_.append(tmd['scout_name'])
-                self.put_in_firebase("", "scout_name", list_)
-            elif tmd['scout_name'] not in response:
-                response.append(tmd['scout_name'])
-                self.put_in_firebase("", "scout_name", response)
+                self.put_in_firebase("partial_match/", "scout_names", {'list': list_})
+            elif tmd['scout_name'] not in response['list']:
+                response['list'].append(tmd['scout_name'])
+                self.put_in_firebase("partial_match/", "scout_names", response)
         else:
             logger.error("tmd variable not a TeamMatchData object or dict")
             raise TypeError("tmd variable not a TeamMatchData object or dict")
 
     def get_team_match_data(self, team_number, match_number):
         '''get the match data for a specific team in a specific match'''
-        response = self.get_from_firebase("partial_match/", "{0:d}_{1:d}".format(match_number, team_number))
+        response = self.get_from_firebase("partial_match/", "{0:d}_{1:d}".format(int(match_number),
+                                                                                 int(team_number)))
         if response is None:
             return None
-        return TeamMatchData(**response)
+        return TeamMatchData(response)
 
     def get_all_team_match_data(self):
         '''get the match data for each team for each match'''
@@ -121,7 +122,7 @@ class FirebaseCom:
             for team_number in match.teams:
                 response = self.get_team_match_data(match_number=match_number, team_number=team_number)
                 if response is not None:
-                    d["{0:d}_{1:d}".format(match_number, team_number)] = TeamMatchData(**response)
+                    d["{0:d}_{1:d}".format(match_number, team_number)] = response
         return d
 
     def update_team_pit_data(self, tpd):
@@ -129,7 +130,7 @@ class FirebaseCom:
         if isinstance(tpd, TeamPitData):
             self.update_team_pit_data(tpd.to_dict())
         elif isinstance(tpd, dict):
-            self.put_in_firebase("pit/", "{0:d}".format(tpd['team_number']), tpd)
+            self.put_in_firebase("pit/", str(tpd['team_number']), tpd)
         else:
             logger.e("tpd variable not a TeamPitData object or dict")
             raise TypeError("tpd variable not a TeamPitData object or dict")
@@ -139,13 +140,15 @@ class FirebaseCom:
         response = self.get_from_firebase("pit/", str(team_number))
         if response is None:
             return None
-        return TeamPitData(**response)
+        return TeamPitData(response)
 
     def get_all_team_pit_data(self):
         '''get the pit data for all teams'''
-        response = {}
+        d = {}
         for team_number in Constants().team_numbers:
-            response[team_number] = self.get_team_pit_data(team_number)
+            response = self.get_team_pit_data(team_number)
+            if response is not None:
+                d[team_number] = response
         return response
 
     def update_super_match_data(self, smd):
@@ -153,7 +156,7 @@ class FirebaseCom:
         if isinstance(smd, SuperMatchData):
             self.update_super_match_data(smd.to_dict())
         elif isinstance(smd, dict):
-            self.put_in_firebase("super_match/", "{0:d}".format(smd['match_number']), smd)
+            self.put_in_firebase("super_match/", str(smd['match_number']), smd)
         else:
             logger.e("smd variable is not a SuperMatchData object or dict")
             raise TypeError("smd variable is not a SuperMatchData object or dict")
@@ -163,7 +166,7 @@ class FirebaseCom:
         response = self.get_from_firebase("super_match/", str(match_number))
         if response is None:
             return None
-        return SuperMatchData(**response)
+        return SuperMatchData(response)
 
     def get_all_super_match_data(self):
         '''get the super scout data for all matches'''
@@ -171,7 +174,7 @@ class FirebaseCom:
         for match_number in range(1, Constants().number_of_matches):
             response = self.get_super_match_data(match_number)
             if response is not None:
-                d[match_number] = SuperMatchData(**response)
+                d[match_number] = response
         return d
 
     def update_team_dt_feedback(self, tdtf):
@@ -179,7 +182,7 @@ class FirebaseCom:
         if isinstance(tdtf, TeamDTFeedback):
             self.update_team_dt_feedback(tdtf.to_dict)
         elif isinstance(tdtf, dict):
-            self.put_in_firebase("feedback/", "{0:d}".format(tdtf['team_number']), tdtf)
+            self.put_in_firebase("feedback/", str(tdtf['team_number']), tdtf)
         else:
             logger.e("tdtf variable is not a TeamDTFeedback object or dict")
             raise TypeError("tdtf variable is not a TeamDTFeedback object or dict")
@@ -189,7 +192,7 @@ class FirebaseCom:
         response = self.get_from_firebase("feedback/", str(team_number))
         if response is None:
             return None
-        return TeamDTFeedback(**response)
+        return TeamDTFeedback(response)
 
     def get_all_team_dt_feedback(self):
         '''get all the drive team's feedback'''
@@ -204,14 +207,14 @@ class FirebaseCom:
                         continue
                     response = self.get_team_dt_feedback(match.teams[i])
                     if response is not None:
-                        d[match.teams[i]] = TeamDTFeedback(**response)
+                        d[match.teams[i]] = response
             else:
                 for i in range(3, 3):
                     if i == our_number:
                         continue
                     response = self.get_team_dt_feedback(match.teams[i])
                     if response is not None:
-                        d[match.teams[i]] = TeamDTFeedback(**response)
+                        d[match.teams[i]] = response
         return d
 
     def update_team_logistics(self, tl):
@@ -229,7 +232,7 @@ class FirebaseCom:
         response = self.get_from_firebase("info/", str(team_number))
         if response is None:
             return None
-        return TeamLogistics(**response)
+        return TeamLogistics(response)
 
     def get_all_team_logistics(self):
         '''get the logistics information for all teams'''
@@ -237,7 +240,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_team_logistics(team_number)
             if response is not None:
-                d[team_number] = TeamLogistics(**response)
+                d[team_number] = response
         return d
 
     def update_team_calculated_data(self, tcd):
@@ -245,7 +248,7 @@ class FirebaseCom:
         if isinstance(tcd, TeamCalculatedData):
             self.update_team_calculated_data(tcd.to_dict())
         elif isinstance(tcd, dict):
-            self.put_in_firebase("calculated", "{0:d}".format(tcd['team_number']), tcd)
+            self.put_in_firebase("calculated", str(tcd['team_number']), tcd)
         else:
             logger.error("tcd variable is not a TeamCalculatedData object or dict")
             raise TypeError("tcd variable is not a TeamCalculatedData object or dict")
@@ -255,7 +258,7 @@ class FirebaseCom:
         response = self.get_from_firebase("calculated/", str(team_number))
         if response is None:
             return None
-        return TeamCalculatedData(**response)
+        return TeamCalculatedData(response)
 
     def get_all_team_calculated_data(self):
         '''get the calculated data for all teams'''
@@ -263,7 +266,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_team_calculated_data(team_number)
             if response is not None:
-                d[team_number] = TeamCalculatedData(**response)
+                d[team_number] = response
         return d
 
     def update_current_team_ranking_data(self, trd):
@@ -271,7 +274,7 @@ class FirebaseCom:
         if isinstance(trd, TeamRankingData):
             self.update_current_team_ranking_data(trd.to_dict())
         elif isinstance(trd, dict):
-            self.put_in_firebase("rankings/current/", "{0:d}".format(trd['team_number']), trd)
+            self.put_in_firebase("rankings/current/", str(trd['team_number']), trd)
         else:
             logger.e("c trd variable is not a TeamRankingData object or dict")
             raise TypeError("c trd variable is not a TeamRankingData object or dict")
@@ -281,7 +284,7 @@ class FirebaseCom:
         response = self.get_from_firebase("rankings/current/", str(team_number))
         if response is None:
             return None
-        return TeamRankingData(**response)
+        return TeamRankingData(response)
 
     def get_all_current_team_ranking_data(self):
         '''get the current rankings for all of the teams at the event'''
@@ -289,7 +292,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_current_team_ranking_data(team_number)
             if response is not None:
-                d[team_number] = TeamRankingData(**response)
+                d[team_number] = response
         return d
 
     def update_predicted_team_ranking_data(self, trd):
@@ -297,7 +300,7 @@ class FirebaseCom:
         if isinstance(trd, TeamRankingData):
             self.update_predicted_trd(trd.to_dict())
         elif isinstance(trd, dict):
-            self.firebase.put("rankings/predicted/", "{0:d}".format(trd['team_number']), trd)
+            self.firebase.put("rankings/predicted/", str(trd['team_number']), trd)
         else:
             logger.e("p trd variable is not a TeamRankingData object or dict")
             raise TypeError("p trd variable is not a TeamRankingData object or dict")
@@ -307,7 +310,7 @@ class FirebaseCom:
         response = self.get_from_firebase("rankings/predicted/", str(team_number))
         if response is None:
             return None
-        return TeamRankingData(**response)
+        return TeamRankingData(response)
 
     def get_all_predicted_team_ranking_data(self):
         '''get the predicted ranking data for all teams'''
@@ -315,7 +318,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_predicted_team_ranking_data(team_number)
             if response is not None:
-                d[team_number] = TeamRankingData(**response)
+                d[team_number] = response
         return d
 
     def update_team_first_pick_ability(self, tpa):
@@ -323,7 +326,7 @@ class FirebaseCom:
         if isinstance(tpa, TeamPickAbility):
             self.update_team_first_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
-            self.put_in_firebase("first_pick", "{0:d}".format(tpa['team_number']), tpa)
+            self.put_in_firebase("first_pick", str(tpa['team_number']), tpa)
         else:
             logger.e("1st tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("1st tpa variable is not a TeamPickAbility object or dict")
@@ -333,7 +336,7 @@ class FirebaseCom:
         response = self.get_from_firebase("first_pick/", str(team_number))
         if response is None:
             return None
-        return TeamPickAbility(**response)
+        return TeamPickAbility(response)
 
     def get_all_team_first_pick_ability(self):
         '''get the first pick ability for all teams'''
@@ -341,7 +344,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_team_first_pick_ability(team_number)
             if response is not None:
-                d[team_number] = TeamPickAbility(**response)
+                d[team_number] = response
         return d
 
     def update_team_second_pick_ability(self, tpa):
@@ -349,7 +352,7 @@ class FirebaseCom:
         if isinstance(tpa, TeamPickAbility):
             self.update_team_second_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
-            self.put_in_firebase("second_pick", "{0:d}".format(tpa['team_number']), tpa)
+            self.put_in_firebase("second_pick", str(tpa['team_number']), tpa)
         else:
             logger.e("2nd tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("2nd tpa variabel is not a TeamPickAbility object or dict")
@@ -359,7 +362,7 @@ class FirebaseCom:
         response = self.get_from_firebase("second_pick/", str(team_number))
         if response is None:
             return None
-        return TeamPickAbility(**response)
+        return TeamPickAbility(response)
 
     def get_all_team_second_pick_ability(self):
         '''get the second pick ability data for all teams'''
@@ -367,7 +370,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_team_second_pick_ability(team_number)
             if response is not None:
-                d[team_number] = TeamPickAbility(**response)
+                d[team_number] = response
         return d
 
     def update_team_third_pick_ability(self, tpa):
@@ -375,7 +378,7 @@ class FirebaseCom:
         if isinstance(tpa, TeamPickAbility):
             self.update_team_third_pick_ability(tpa.to_dict())
         elif isinstance(tpa, dict):
-            self.put_in_firebase("third_pick", "{0:d}".format(tpa['team_number']), tpa)
+            self.put_in_firebase("third_pick", str(tpa['team_number']), tpa)
         else:
             logger.e("3rd tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("3rd tpa variable is not a TeamPickAbility object or dict")
@@ -385,7 +388,7 @@ class FirebaseCom:
         response = self.get_from_firebase("third_pick/", str(team_number))
         if response is None:
             return None
-        return TeamPickAbility(**response)
+        return TeamPickAbility(response)
 
     def get_all_team_third_pick_ability(self):
         '''get the third pick data for all teams'''
@@ -393,7 +396,7 @@ class FirebaseCom:
         for team_number in Constants().team_numbers:
             response = self.get_team_third_pick_ability(team_number)
             if response is not None:
-                d[team_number] = TeamPickAbility(**response)
+                d[team_number] = response
         return d
 
     def update_team(self, team):
@@ -429,16 +432,17 @@ class FirebaseCom:
         team.first_pick = self.get_team_first_pick_ability(team_number)
         team.second_pick = self.get_team_second_pick_ability(team_number)
         team.third_pick = self.get_team_third_pick_ability(team_number)
-        for match_number in team.info.matches:
+        for match_number in team.info.match_numbers:
             tmd = self.get_team_match_data(team_number=team_number, match_number=match_number)
             if tmd is not None:
                 team.completed_matches[match_number] = tmd
             else:
                 break
+        return team
 
     def get_teams(self):
         '''get a list of all the teams'''
-        return [self.get_team(x) for x in Constants().team_numbers]
+        return {x: self.get_team(x) for x in Constants().team_numbers}
 
     def update_scout_accuracy(self, scout):
         '''update the data for scout accuracy'''
@@ -455,15 +459,15 @@ class FirebaseCom:
         response = self.get_from_firebase("scout_accuracy/", str(scout_name))
         if response is None:
             return None
-        return ScoutAccuracy(**response)
+        return ScoutAccuracy(response)
 
     def get_all_scout_accuracy(self):
         '''get all the data for scout accuracy'''
         d = {}
-        for scout_name in self.get_from_firebase("", "scout_names"):
+        for scout_name in self.get_from_firebase("partial_match/", "scout_names")['list']:
             response = self.get_scout_accuracy(scout_name)
             if response is not None:
-                d[scout_name] = ScoutAccuracy(**response)
+                d[scout_name] = response
         return d
 
     def update_strategy(self, strategy):
@@ -474,15 +478,14 @@ class FirebaseCom:
             self.put_in_firebase("strategy/drawings", strategy['name'], strategy)
 
             # Append to the list of strategy names to be used in get all strategies
-            response = self.get_from_firebase("strategy/drawing_names")
+            response = self.get_from_firebase("strategy/", "drawing_names")
             if response is None:
                 list_ = []
                 list_.append(strategy['name'])
-                self.put_in_firebase("strategy/", "drawing_names", list_)
-            else:
-                if strategy['name'] not in response:
-                    response.append(strategy['name'])
-                    self.put_in_firebase("strategy", "drawing_names", response)
+                self.put_in_firebase("strategy/", "drawing_names", {'list': list_})
+            elif strategy['name'] not in response['list']:
+                response['list'].append(strategy['name'])
+                self.put_in_firebase("strategy/", "drawing_names", response)
         else:
             logger.error("strategy variable is not a Strategy or dict")
             raise Exception("strategy variable is not a Strategy or dict")
@@ -492,15 +495,15 @@ class FirebaseCom:
         response = self.get_from_firebase("strategy/drawings/", strategy_name)
         if response is None:
             return None
-        return Strategy(**response)
+        return Strategy(response)
 
     def get_all_strategies(self):
         '''get all individual strategies'''
         d = {}
-        for strategy_name in self.get_from_firebase("strategy/drawing_names/", ""):
+        for strategy_name in self.get_from_firebase("strategy/", "drawing_names")['list']:
             response = self.get_strategy(strategy_name)
             if response is not None:
-                d[strategy_name] = Strategy(**response)
+                d[strategy_name] = response
         return d
 
     def update_strategy_suggestion(self, strategy_suggestion):
@@ -511,15 +514,14 @@ class FirebaseCom:
             self.put_in_firebase("strategy/suggestions/", strategy_suggestion['key'], strategy_suggestion)
 
             # Append to the list of strategy suggestions keys to be used in get all strategy suggestions
-            response = self.get_from_firebase("strategy/suggestion_keys/", "")
+            response = self.get_from_firebase("strategy/", "suggestion_keys")
             if response is None:
                 list_ = []
                 list_.append(strategy_suggestion['key'])
-                self.put_in_firebase("strategy/", "suggestion_keys", list_)
-            else:
-                if strategy_suggestion['key'] not in response:
-                    response.append(strategy_suggestion['key'])
-                    self.put_in_firebase("strategy/", "suggestion_keys", response)
+                self.put_in_firebase("strategy/", "suggestion_keys", {'list': list_})
+            elif strategy_suggestion['key'] not in response['list']:
+                response['list'].append(strategy_suggestion['key'])
+                self.put_in_firebase("strategy/", "suggestion_keys", response)
         else:
             logger.error("strategy_suggestion variable is not a StrategySuggestion or dict")
             raise Exception("strategy_suggestion variable is not a StrategySuggestion or dict")
@@ -529,36 +531,41 @@ class FirebaseCom:
         response = self.get_from_firebase("strategy/suggestions/", strategy_suggestion_key)
         if response is None:
             return None
-        return StrategySuggestion(**response)
+        return StrategySuggestion(response)
 
     def get_all_strategy_suggestions(self):
         '''get all individual strategy suggestions'''
         d = {}
-        for strategy_suggestion_key in self.get_from_firebase("strategy/suggestion_keys/", ""):
+        for strategy_suggestion_key in self.get_from_firebase("strategy/", "suggestion_keys")['list']:
             response = self.get_strategy_suggestion(strategy_suggestion_key)
             if response is not None:
-                d[strategy_suggestion_key] = StrategySuggestion(**response)
+                d[strategy_suggestion_key] = response
         return d
 
     def get_from_firebase(self, location, key):
         '''Grabs the specified location from firebase if new data if not then
            grabs from file
         '''
-        if os.path.isfile(self.base_filepath + location + key):
+        if os.path.isfile(self.base_filepath + location + key + ".json"):
             with open(self.base_filepath + location + ".json", "w") as f:
-                json_dict = json.loads(open(self.base_filepath + location + ".json").read())
-
-                last_modified_ref = "{0:s}/last_modified".format(location)
-                response = self.firebase.get(self.base_ref + last_modified_ref)
-
-                if response is None or response > json_dict['last_modified']:
-                    response = self.firebase.get(self.base_ref + location, key)
-                    if response is None:
-                        return None
-                    f.write(json.dumps(response))
-                    return response
-                else:
-                    return json_dict
+                json_dict = json.loads(open(self.base_filepath + location + key + ".json").read())
+                for i in range(3):
+                    try:
+                        response = self.firebase.get(self.base_ref + location + key, "last_modified")
+                        if response is None or response > json_dict['last_modified']:
+                            for j in range(3):
+                                try:
+                                    response = self.firebase.get(self.base_ref + location, key)
+                                    if response is None:
+                                        return None
+                                    f.write(json.dumps(response))
+                                    return response
+                                except:
+                                    pass
+                        else:
+                            return json_dict
+                    except:
+                        pass
         else:
             response = self.firebase.get(self.base_ref + location, key)
             if response is None:
@@ -577,16 +584,14 @@ class FirebaseCom:
         for i in range(3):
             try:
                 success = self.firebase.put(self.base_ref + location, key, d)
-                if success:
-                    break
+                if not success:
+                    logger.error("Error updating {}".format(key))
+                    raise Exception("Error updating {}".format(key))
+                break
             except:
                 pass
-
         self.tlock.release()
         self.plock.release()
-        if not success:
-            logger.error("Error updating {}".format(key))
-            raise Exception("Error updating {}".format(key))
         with open(self.base_filepath + location + key + ".json", "w") as f:
             f.write(json.dumps(d, sort_keys=True, indent=4))
 

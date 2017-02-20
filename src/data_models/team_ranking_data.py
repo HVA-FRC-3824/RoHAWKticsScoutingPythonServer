@@ -3,7 +3,7 @@ from .data_model import DataModel
 
 class TeamRankingData(DataModel):
     '''Data about a team's current or predicted ranking'''
-    def __init__(self, **kwargs):
+    def __init__(self, d=None):
         DataModel.__init__(self)
 
         self.team_number = -1
@@ -17,4 +17,5 @@ class TeamRankingData(DataModel):
         self.first_tie_breaker = 0
         self.second_tie_breaker = 0
 
-        self.set(**kwargs)
+        if d is not None:
+            self.set(d)

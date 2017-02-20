@@ -188,11 +188,14 @@ class Server(Looper):
                         # TODO: figure out why
                         except:
                             pass
-
         if self.aggregate:
+            logger.info("Aggregating")
             try:
+                logger.info("Making match calculations")
                 Aggregator.make_team_calculations(self.firebase)
+                logger.info("Making super match calculations")
                 Aggregator.make_super_calculations(self.firebase)
+                logger.info("Making pick list calculations")
                 Aggregator.make_pick_list_calculations(self.firebase)
             except:
                 self.led_manager.error()
@@ -210,7 +213,6 @@ class Server(Looper):
 
             if self.tba.event_down():
                 try:
-
                     urlopen('http://216.58.192.142', timeout=1)
                     self.led_manager.tba_down()
                     logger.warning("The Blue Alliance is down (possibly just for this event)")
@@ -220,6 +222,7 @@ class Server(Looper):
                     logger.warning("Internet connection is down")
             else:
                 try:
+                    logger.info("Making ranking calculations")
                     Aggregator.make_ranking_calculations(self.firebase, self.tba)
                 except:
                     self.led_manager.error()
