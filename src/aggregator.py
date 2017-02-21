@@ -128,7 +128,6 @@ class Aggregator:
             ranking.first_tie_breaker = int(float(tba_ranking_list[3]))
             ranking.second_tie_breaker = int(float(tba_ranking_list[4]))
             ranking.played = int(tba_ranking_list[8])
-            print(ranking)
             firebase.update_current_team_ranking_data(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
@@ -293,7 +292,6 @@ class Aggregator:
             if 'zscore' in key:
                 lists[key[6:]] = {}
 
-        print(lists)
 
         pilot_rating_dict = {}
 
@@ -365,7 +363,7 @@ class Aggregator:
                 for value in lists[key][team_number]:
                     average += value
                 zscore_components[key]['team_numbers'].append(team_number)
-                zscore_components[key]['averages'].append(average / len(list[key][team_number]))
+                zscore_components[key]['averages'].append(average / len(lists[key][team_number]))
             zscore_components[key]['zscores'] = stats.zscore(zscore_components[key]['averages'])
 
             # Create list for sorting

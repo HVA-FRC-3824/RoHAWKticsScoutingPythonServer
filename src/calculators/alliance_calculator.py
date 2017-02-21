@@ -16,11 +16,19 @@ class AllianceCalculator:
         # Solves cyclical dependency
         from .team_calculator import TeamCalculator
 
+        self.firebase = FirebaseCom()
+
+        # if teams is a list of int then convert to a list of class:`Teams`
+        if isinstance(teams[0], int):
+            temp = []
+            for team in teams:
+                temp.append(self.firebase.get_team(team))
+            teams = temp
+
         self.teams = teams
         self.team_calculators = []
         for team in self.teams:
             self.team_calculators.append(TeamCalculator(team))
-        self.firebase = FirebaseCom()
 
     def predicted_score(self, elimination=False):
         '''Predicted Score
@@ -72,8 +80,47 @@ class AllianceCalculator:
         .. math:: std\_predicted\_score = \sqrt{\sum_{T \in A} std\_auto\_ability(T)^2}
         '''
         std_p_score = 0.0
+
+        p_auto_score = 0.0
+        p_teleop_score = 0.0
+        p_endgame_score = 0.0
+
+        auto_gears = 0
+        teleop_gears = 0
+
         for team in self.teams:
-            std_p_score += team.std_auto_ability() ** 2
+
+            auto_gears += team.calc.auto_total_gears_placed.average
+            teleop_gears += team.calc.teleop_total_gears_placed.average
+
+            p_auto_score += team.calc.auto_high_goal_made.average
+            p_auto_score += team.calc.auto_low_goal_made.average / 3
+            p_teleop_score += team.calc.teleop_high_goal_made.average / 3
+            p_teleop_score += team.calc.teleop_low_goal_made.average / 9
+            p_endgame_score += team.calc.endgame_climb_successful.average * 50
+
+        rotors = 0
+
+        if auto_gears >= 3:
+            p_auto_score += 120
+            rotors = 2
+        elif auto_gears >= 1:
+            p_auto_score += 60
+            rotors = 1
+
+        if auto_gears + teleop_gears >= 12:
+            p_teleop_score += (4 - rotors) * 40
+        elif auto_gears + teleop_gears >= 6:
+            p_teleop_score += (3 - rotors) * 40
+        elif auto_gears + teleop_gears >= 2:
+            p_teleop_score += (2 - rotors) * 40
+        else:
+            p_teleop_score += (1 - rotors) * 40
+
+        std_p_score += p_auto_score ** 2
+        std_p_score += p_teleop_score ** 2
+        std_p_score += p_endgame_score ** 2
+
         std_p_score = std_p_score ** 0.5
         return std_p_score
 

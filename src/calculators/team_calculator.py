@@ -9,8 +9,13 @@ from constants import Constants
 class TeamCalculator:
     '''Makes all the higher level calculations for a specific team'''
     def __init__(self, team):
-        self.team = team
+
         self.firebase = FirebaseCom()
+
+        if isinstance(team, int):
+            team = self.firebase.get_team(team)
+
+        self.team = team
 
     def num_completed_matches(self):
         '''Number of matches completed by this team'''
