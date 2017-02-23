@@ -34,21 +34,30 @@ class Aggregator:
                 A `dict` contain all the match numbers for each team
         '''
         team_matches = {}
+        team_surrogate_matches = {}
         num_matches = -1
-        event_matches.sort(key=lambda team: int(team['match_number']))
+        event_matches.sort(key=lambda match: int(match['match_number']))
         for tba_match in event_matches:
+
+            # ignore elimination matches
             if tba_match['comp_level'] != "qm":
                 continue
 
+            # 
             if tba_match['match_number'] > num_matches:
                 num_matches = tba_match['match_number']
 
+            # Get the team numbers from the match
             match = Match()
             match.match_number = tba_match['match_number']
             for color in ['blue', 'red']:
-                for team_key in tba_match['alliances'][color]['teams']:
+                for team_key in tba_match[color]['team_keys']:
                     match.teams.append(int(team_key[3:]))
-                match.scores.append(int(tba_match['alliances'][color]['score']))
+                match.scores.append(int(tba_match[color]['score']))
+
+                # Collect surrogate matches
+                for surrogate_team_key in tba_match[color]['surrogate_team_keys']:
+                    team_surrogate_matches[int(surrogate_team_key[3:])] = match.match_number
 
             for team_number in match.teams:
                 if team_number not in team_matches:
@@ -56,10 +65,10 @@ class Aggregator:
                 team_matches[team_number].append(match.match_number)
             firebase.update_match(match)
             logger.info("Match {0:d} added".format(match.match_number))
-        return team_matches, num_matches
+        return team_matches, team_surrogate_matches, num_matches
 
     @staticmethod
-    def set_teams(firebase, event_teams, team_matches):
+    def set_teams(firebase, event_teams, team_matches, team_surrogate_matches):
         '''Converts the team information from `The Blue Alliance <thebluealliance.com>`_
            to :class:`TeamLogistics`.
             Converts the team information from `The Blue Alliance <thebluealliance.com>`_
@@ -69,7 +78,6 @@ class Aggregator:
             event_teams (dict): The team information from `The Blue Alliance <thebluealliance.com>`_
             team_matches (dict): The match numbers for each team
         '''
-        team_logistics = []
         team_numbers = []
         event_teams.sort(key=lambda team: int(team['team_number']))
         for tba_team in event_teams:
@@ -77,7 +85,11 @@ class Aggregator:
             info.team_number = tba_team['team_number']
             info.nickname = tba_team['nickname']
             info.match_numbers = team_matches[info.team_number]
-            team_logistics.append(info)
+            if info.team_number in team_surrogate_matches:
+                info.surrogate_match_number = team_surrogate_matches[info.team_number]
+            else:
+                info.surrogate_match_number = -1
+            firebase.update_team_logistics(info)
 
             team_numbers.append(info.team_number)
 
@@ -93,16 +105,6 @@ class Aggregator:
             firebase.update_team_third_pick_ability(pick)
             logger.info("Team {0:d} added".format(info.team_number))
 
-        min_matches = 100  # Each team should always have less than 100 matches
-        for team in team_logistics:
-            if len(team.match_numbers) < min_matches:
-                min_matches = len(team_matches)
-
-        for team in team_logistics:
-            if len(team.match_numbers) > min_matches:
-                team.surrogate_match_number = team.matches[3]
-            firebase.update_team_logistics(team)
-
         return team_numbers
 
     @staticmethod
@@ -110,24 +112,17 @@ class Aggregator:
         '''Convert the ranking information from `The Blue Alliance <thebluealliance.com>`_
            to the :class:`TeamRankingData`
         '''
-        first = True
-
         for tba_ranking in event_rankings:
-            if first:
-                first = False
-                continue
-            tba_ranking_list = list(tba_ranking)
             ranking = TeamRankingData()
-            ranking.team_number = int(tba_ranking_list[1])
-            ranking.rank = int(tba_ranking_list[0])
-            ranking.RPs = int(float(tba_ranking_list[2]))
-            win_tie_lose = tba_ranking_list[7].split('-')
-            ranking.wins = int(win_tie_lose[0])
-            ranking.ties = int(win_tie_lose[2])
-            ranking.loses = int(win_tie_lose[1])
-            ranking.first_tie_breaker = int(float(tba_ranking_list[3]))
-            ranking.second_tie_breaker = int(float(tba_ranking_list[4]))
-            ranking.played = int(tba_ranking_list[8])
+            ranking.team_number = int(tba_ranking['team_key'][3:])
+            ranking.rank = tba_ranking['rank']
+            ranking.RPs = tba_ranking['sort_orders'][0]
+            ranking.wins = tba_ranking['record']['wins']
+            ranking.ties = tba_ranking['record']['ties']
+            ranking.loses = tba_ranking['record']['loses']
+            ranking.first_tie_breaker = tba_ranking['sort_orders'][1]
+            ranking.second_tie_breaker = tba_ranking['sort_orders'][2]
+            ranking.played = tba_ranking['matches_played']
             firebase.update_current_team_ranking_data(ranking)
             logger.info("Added ranking for team {0:d}".format(ranking.team_number))
 
@@ -139,7 +134,8 @@ class Aggregator:
         constants = Constants()
         pattern = re.compile(r"< (\d+)s")
         for tmd in firebase.get_all_team_match_data().values():
-            logger.info("Match Calculating: Team Number: {0:d}, Match Number: {1:d}".format(tmd.team_number, tmd.match_number))
+            logger.info("Match Calculating: Team Number: {0:d}, Match Number: {1:d}"
+                        .format(tmd.team_number, tmd.match_number))
             if tmd.team_number not in list_dict:
                 list_dict[tmd.team_number] = {}
 

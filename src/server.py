@@ -88,11 +88,11 @@ class Server(Looper):
                         return
 
             event_matches = self.tba.get_event_matches()
-            team_matches, num_matches = Aggregator.set_matches(self.firebase, event_matches)
+            team_matches, team_surrogate_matches, num_matches = Aggregator.set_matches(self.firebase, event_matches)
             logger.info("Added matches to Firebase")
 
             event_teams = self.tba.get_event_teams()
-            team_numbers = Aggregator.set_teams(self.firebase, event_teams, team_matches)
+            team_numbers = Aggregator.set_teams(self.firebase, event_teams, team_matches, team_surrogate_matches)
             logger.info("Added teams to Firebase")
 
             event_rankings = self.tba.get_event_rankings()
