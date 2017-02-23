@@ -3,7 +3,8 @@ import utils
 import logging
 import os
 import json
-from datetime import datetime as dt
+import datetime
+import time
 from ourlogging import setup_logging
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -33,24 +34,20 @@ class TheBlueAlliance:
             self.behind_threshold = behind_threshold
 
         if not hasattr(self, 'instance'):
-            self.base_url = "http://www.thebluealliance.com/api/v3/"
-            self.headers = {"X-TBA-Auth-Key": "T17kbsiAc8dNL9EGuxIN9EyjP2XCJKVeN5hg5ILqxYF6CW1MFm0WehgsRsicdRYW"}
-
-            self.dt_format = "%a, %d %b %Y %H:%M:%S %Z"
+            self.base_url = "http://www.thebluealliance.com/api/v2/"
+            self.headers = {"X-TBA-App-Id": "frc3824:scouting-system:v2"}
 
             if not hasattr(self, 'behind_threshold'):
                 self.behind_threshold = 3
 
             self.instance = True
 
-    def make_request(self, url):
+    def make_request(self, url, filepath):
         '''Send request a url
 
         Args:
             url (`str`): the url where the data is
         '''
-        filepath = url + ".json"
-
         json_dict = {}
         request_url = "{0:s}event/{1:s}/{2:s}".format(self.base_url, self.event_id, url)
         print(request_url)
@@ -60,12 +57,11 @@ class TheBlueAlliance:
             with open(self.base_filepath + filepath) as f:
                 json_dict = json.loads(f.read())
 
-            # if cache has last modified then set the 'if-modified-since' header otherwise remove it
+            # if cache has last modified then set the 'If-Modified-Since' header
             if 'last_modified' in json_dict:
-                self.headers["if-modified-since"] = dt.fromtimestamp(json_dict['last_modified'])\
-                    .strftime(self.dt_format)
-            elif 'if-modified-since' in self.headers:
-                del self.headers['if-modified-since']
+                self.headers["If-Modified-Since"] = str(json_dict['last_modified'])
+            elif 'last_modified' in json_dict:
+                del json_dict['last_modified']
 
             # get request to website
             response = requests.get(request_url, headers=self.headers)
@@ -77,11 +73,9 @@ class TheBlueAlliance:
             elif response.status_code != 200:
                 return json_dict['data']
 
-            # header has a 'last-modified' field which is used for caching
-            if 'last-modified' in response.headers:
-                last_modified = dt.strptime(response.headers['last-modified'], self.dt_format).timestamp()
-
-                # Modifications since cached version
+            # header has a 'Last-Modified' field which is used for caching
+            if 'Last-Modified' in response.headers:
+                last_modified = int(time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple()))
                 if json_dict['last_modified'] < last_modified:
                     json_dict['last_modified'] = last_modified
                     json_dict['data'] = json.loads(response.text)
@@ -92,27 +86,23 @@ class TheBlueAlliance:
                 # No modifications, so use cached version
                 else:
                     return json_dict['data']
-
             # No 'Last-Modified' field so use data pulled from tba
             else:
-                logger.warning("No last-modified header")
+                logger.warning("No Last-Modified header")
                 json_dict['data'] = json.loads(response.text)
                 with open(self.base_filepath + filepath, 'w') as f:
                     f.write(json.dumps(json_dict, sort_keys=True, indent=4))
                 return json_dict['data']
-
         # no cache file
         else:
-            if "if-modified-since" in self.headers:
-                del self.headers["if-modified-since"]
+            if "If-Modified-Since" in self.headers:
+                del self.headers["If-Modified-Since"]
             response = requests.get(request_url, headers=self.headers)
-
             # There should be a last modified header
-            if 'last-modified' in response.headers:
-                json_dict['last_modified'] = dt.strptime(response.headers['last-modified'], self.dt_format).timestamp()
+            if 'Last-Modified' in response.headers:
+                json_dict['last_modified'] = int(time.mktime(datetime.datetime.strptime(response.headers['Last-Modified'], "%a, %d %b %Y %H:%M:%S %Z").timetuple()))
             else:
-                logger.warning("No last-modified header")
-
+                logger.warning("No Last-Modified header")
             json_dict['data'] = json.loads(response.text)
             with open(self.base_filepath + filepath, 'w') as f:
                 f.write(json.dumps(json_dict, sort_keys=True, indent=4))
@@ -122,21 +112,24 @@ class TheBlueAlliance:
         '''Gets all the team logistic information for an event'''
         logger.info("Downloading teams from The Blue Alliance for {0:s}".format(self.event_id))
         url = "teams"
-        data = self.make_request(url)
+        filepath = "teams.json"
+        data = self.make_request(url, filepath)
         return data
 
     def get_event_rankings(self):
         '''Gets all the ranking information for an event'''
         logger.info("Downloading rankings from The Blue Alliance for {0:s}".format(self.event_id))
         url = "rankings"
-        data = self.make_request(url)
+        filepath = "rankings.json"
+        data = self.make_request(url, filepath)
         return data
 
     def get_event_matches(self):
         '''Gets all the match information for an event'''
         logger.info("Downloading matches from The Blue Alliance for {0:s}".format(self.event_id))
         url = "matches"
-        data = self.make_request(url)
+        filepath = "matches.json"
+        data = self.make_request(url, filepath)
         return data
 
     def is_behind(self, matches):
