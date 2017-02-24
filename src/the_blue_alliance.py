@@ -148,10 +148,10 @@ class TheBlueAlliance:
     def event_down(self):
         '''Checks if `The Blue Alliance <thebluealliance.com>`_ datafeed for this event is down'''
         url = "status"
-        if "If-Modified-Since" in self.headers:
-            del self.headers['If-Modified-Since']
+        if "if-modified-since" in self.headers:
+            del self.headers['if-modified-since']
         response = requests.get(self.base_url + url, headers=self.headers)
-        if response.status_code != 200:
+        if response.status_code != 200 and response.status_code != 304:
             return True
         data = utils.make_ascii_from_json(response.json())
         return self.event_id in data['down_events'] or data['is_datafeed_down']

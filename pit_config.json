@@ -1,5 +1,5 @@
 {
-	"event_key" : "2016cars",
+	"event_key" : "2017week0",
     "socket": true,
     "bluetooth": true,
     "setup": false,
@@ -11,9 +11,9 @@
     "aggregate": true,
     "scout_analysis": true,
     "scout_analysis_config": {
-		"total_threshold": 10,
-	    "auto_threshold": 15,
-	    "teleop_threshold": 20,
+		"total_threshold": 20,
+	    "auto_threshold": 10,
+	    "teleop_threshold": 10,
 	    "endgame_threshold": 0
 	},
 	"logins_file": "../logins.json",

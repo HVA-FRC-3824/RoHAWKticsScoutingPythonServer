@@ -81,7 +81,7 @@ class Server(Looper):
 
             if self.tba.event_down():
                 while True:
-                    response = input("Event is down exit? (y/n)").lower()
+                    response = input("Event is down. Exit? (y/n)").lower()
                     if response in ['y', 'yes']:
                         sys.exit()
                     elif response in ['n', 'no']:
