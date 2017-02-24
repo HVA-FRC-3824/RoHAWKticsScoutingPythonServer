@@ -36,4 +36,4 @@ lm.internet_connection_down()
 
 input("end")
 
-lm.on_pend()
+lm.stop()

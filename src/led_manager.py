@@ -18,19 +18,17 @@ class LedManager(Looper):
     NONE = "none"
 
     def __init__(self):
-        pass
-        #Looper.__init__(self)
+        Looper.__init__(self)
 
-        # self.led_status = {self.GREEN: self.NONE, self.YELLOW: self.NONE, self.RED: self.NONE}
-        # self.led_pins = {self.GREEN: 40, self.YELLOW: 38, self.RED: 36}
-        # self.led_pins = {self.GREEN: 21, self.YELLOW: 20, self.RED: 16}
+        self.led_status = {self.GREEN: self.NONE, self.YELLOW: self.NONE, self.RED: self.NONE}
+        self.led_pins = {self.GREEN: 40, self.YELLOW: 38, self.RED: 36}
 
-        # GPIO.setmode(GPIO.BOARD)
+        GPIO.setmode(GPIO.BOARD)
 
         # setup pins
-        # GPIO.setup(self.led_pins.values(), GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(list(self.led_pins.values()), GPIO.OUT, initial=GPIO.LOW)
 
-        # self.pstart()
+        self.pstart()
         # self.tstart()
 
     def on_pstart(self):
@@ -58,67 +56,54 @@ class LedManager(Looper):
 
     def on_tloop(self):
         for color, status in self.led_status.items():
-            logger.info("color: {} status: {}".format(color, status))
+            # logger.info("color: {} status: {}".format(color, status))
             if status == self.SOLID:
-                GPIO.setup(self.led_pins[color], 1)
+                GPIO.output(self.led_pins[color], 1)
             elif status == self.NONE:
-                GPIO.setup(self.led_pins[color], 0)
+                GPIO.output(self.led_pins[color], 0)
             else:
-                GPIO.setup(self.led_pins[color], self.iteration % 2)
+                GPIO.output(self.led_pins[color], self.iteration % 2)
         self.iteration += 1
 
         time.sleep(.25)
 
     def on_pend(self):
         # clean up green and yellow pins, but leave red on if error
-        GPIO.setup(self.led_pins[self.GREEN], GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.led_pins[self.YELLOW], GPIO.OUT, initial=GPIO.LOW)
+        GPIO.output(self.led_pins[self.GREEN], 0)
+        GPIO.output(self.led_pins[self.YELLOW], 0)
 
     def on_tend(self):
         # clean up green and yellow pins, but leave red on if error
-        GPIO.setup(self.led_pins[self.GREEN], GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.led_pins[self.YELLOW], GPIO.OUT, initial=GPIO.LOW)
+        GPIO.output(self.led_pins[self.GREEN], 0)
+        GPIO.output(self.led_pins[self.YELLOW], 0)
 
     def starting_up(self):
-        # self.pipe.send("starting_up")
+        self.pipe.send("starting_up")
         # self.set_led(self.GREEN, self.FLASHING)
-        pass
 
     def start_up_complete(self):
-        pass
-        # GPIO.setup(self.led_pins[self.GREEN], GPIO.OUT, initial=GPIO.HIGH)
-        # self.pipe.send("start_up_complete")
+        self.pipe.send("start_up_complete")
         # self.set_led(self.GREEN, self.SOLID)
 
     def internet_connected(self):
-        pass
-        # GPIO.setup(self.led_pins[self.YELLOW], GPIO.OUT, initial=GPIO.HIGH)
-        # self.pipe.send("internet_connected")
+        self.pipe.send("internet_connected")
         # self.set_led(self.YELLOW, self.SOLID)
 
     def internet_connection_down(self):
-        pass
-        # GPIO.setup(self.led_pins[self.YELLOW], GPIO.OUT, initial=GPIO.LOW)
-        # self.pipe.send("internet_connection_down")
+        self.pipe.send("internet_connection_down")
         # self.set_led(self.YELLOW, self.NONE)
 
     def tba_down(self):
-        # self.pipe.send("tba_down")
+        self.pipe.send("tba_down")
         # self.set_led(self.YELLOW, self.FLASHING)
-        pass
 
     def error(self):
-        pass
-        # GPIO.setup(self.led_pins[self.RED], GPIO.OUT, initial=GPIO.HIGH)
-        # self.pipe.send("error")
+        self.pipe.send("error")
         # self.set_led(self.RED, self.SOLID)
 
     def clear_error(self):
-        pass
-        # GPIO.setup(self.led_pins[self.RED], GPIO.OUT, initial=GPIO.LOW)
-        # self.pipe.send("clear_error")
+        self.pipe.send("clear_error")
         # self.set_led(self.RED, self.NONE)
 
     def set_led(self, color, status):
-        pass
-        # self.led_status[color] = status
+        self.led_status[color] = status
