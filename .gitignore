@@ -1,4 +1,4 @@
-CachedFirebases/
+cached/
 
 # make sure that this file is never put in the repo
 login.json
