@@ -61,7 +61,7 @@ class Looper:
             if pipe.poll():
                 message = pipe.recv()
                 if message == "stop":
-                    self.stop()
+                    break
                 else:
                     self.on_ploop(message)
             else:
