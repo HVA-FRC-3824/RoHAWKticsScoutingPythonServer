@@ -1,7 +1,7 @@
 {
-	"event_key" : "2016cars",
-    "socket": true,
-    "bluetooth": true,
+	"event_key" : "2017week0",
+    "socket": false,
+    "bluetooth": false,
     "setup": false,
     "log_level": "debug",
     "time_between_cycles": 600,

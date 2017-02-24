@@ -1,0 +1,475 @@
+{
+    "data": [
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1519",
+                        "frc811",
+                        "frc125"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc6324",
+                        "frc4905",
+                        "frc1517"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm1",
+            "match_number": 1,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487425500,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc2079",
+                        "frc238",
+                        "frc4905"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc78",
+                        "frc1517",
+                        "frc3467"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm10",
+            "match_number": 10,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487430900,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc509",
+                        "frc5813",
+                        "frc1831"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc811",
+                        "frc319",
+                        "frc885"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm11",
+            "match_number": 11,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487431500,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc238",
+                        "frc1153",
+                        "frc58"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1058",
+                        "frc1519",
+                        "frc190"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm12",
+            "match_number": 12,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487432100,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc6324",
+                        "frc501",
+                        "frc2342"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc2079",
+                        "frc1721",
+                        "frc5687"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm13",
+            "match_number": 13,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487432700,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1289",
+                        "frc2084",
+                        "frc1517"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc4761",
+                        "frc78",
+                        "frc157"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm14",
+            "match_number": 14,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487433300,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [
+                        "frc501",
+                        "frc238"
+                    ],
+                    "teams": [
+                        "frc501",
+                        "frc88",
+                        "frc238"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [
+                        "frc2079"
+                    ],
+                    "teams": [
+                        "frc1729",
+                        "frc125",
+                        "frc2079"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm15",
+            "match_number": 15,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487433900,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1153",
+                        "frc4761",
+                        "frc5687"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc238",
+                        "frc885",
+                        "frc157"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm2",
+            "match_number": 2,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487426100,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc5813",
+                        "frc2079",
+                        "frc501"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1289",
+                        "frc509",
+                        "frc58"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm3",
+            "match_number": 3,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487426700,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc78",
+                        "frc2342",
+                        "frc190"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc319",
+                        "frc1831",
+                        "frc88"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm4",
+            "match_number": 4,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487427300,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1721",
+                        "frc2084",
+                        "frc885"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc3467",
+                        "frc1729",
+                        "frc1058"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm5",
+            "match_number": 5,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487427900,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc501",
+                        "frc1289",
+                        "frc319"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1153",
+                        "frc1519",
+                        "frc4905"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm6",
+            "match_number": 6,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487428500,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc811",
+                        "frc5687",
+                        "frc58"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc88",
+                        "frc3467",
+                        "frc2084"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm7",
+            "match_number": 7,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487429100,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1729",
+                        "frc190",
+                        "frc6324"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc509",
+                        "frc2342",
+                        "frc4761"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm8",
+            "match_number": 8,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487429700,
+            "time_string": null,
+            "videos": []
+        },
+        {
+            "alliances": {
+                "blue": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc1831",
+                        "frc1058",
+                        "frc1721"
+                    ]
+                },
+                "red": {
+                    "score": -1,
+                    "surrogates": [],
+                    "teams": [
+                        "frc5813",
+                        "frc157",
+                        "frc125"
+                    ]
+                }
+            },
+            "comp_level": "qm",
+            "event_key": "2017week0",
+            "key": "2017week0_qm9",
+            "match_number": 9,
+            "score_breakdown": null,
+            "set_number": 1,
+            "time": 1487430300,
+            "time_string": null,
+            "videos": []
+        }
+    ],
+    "last_modified": 1487397446.0
+}
