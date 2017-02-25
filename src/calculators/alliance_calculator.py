@@ -74,6 +74,18 @@ class AllianceCalculator:
 
         return p_score
 
+    def predicted_auto_score(self, elimination=False):
+        p_auto_score = 0
+        auto_gears = 0
+        for team in self.teams:
+            p_auto_score += (team.calc.auto_high_goal_made.average + team.calc.auto_low_goal_made.average)
+            auto_gears += team.calc.auto_total_gears_placed.average
+        if auto_gears >= 3:
+            p_auto_score += 120
+        elif auto_gears >= 1:
+            p_auto_score += 60
+        return p_auto_score
+
     def std_predicted_score(self, elimination=False):
         '''Standard Deviation of Predicted Score
 
@@ -169,7 +181,7 @@ class AllianceCalculator:
             N_1 = self.sample_size()
             N_2 = o.sample_size()
 
-            t = Calculator.welchs_test(self.predicted_score, o.predicted_score(), s_1, s_2, N_1, N_2)
+            t = Calculator.welchs_test(self.predicted_score(), o.predicted_score(), s_1, s_2, N_1, N_2)
 
             v = Calculator.dof(s_1, s_2, N_1, N_2)
             win_chance = stats.t.cdf(t, v)
@@ -214,7 +226,7 @@ class AllianceCalculator:
         auto_low_squared = 0
         teleop_high_squared = 0
         teleop_low_squared = 0
-        for t in self.team_calculators:
+        for t in self.teams:
             auto_high += t.calc.auto_high_goal_made.average * 9
             auto_high_squared += (t.calc.auto_high_goal_made.average * 9)**2
             auto_low += t.calc.auto_low_goal_made.average * 3
@@ -245,7 +257,7 @@ class AllianceCalculator:
         x = 12  # gears
         mu = 0
         sigma = 0
-        for t in self.team_calculators:
+        for t in self.teams:
             mu += t.calc.auto_total_gears_placed.average + t.calc.teleop_total_gears_placed.average
             sigma += t.calc.auto_total_gears_placed.average**2 + t.calc.teleop_total_gears_placed.average**2
         sigma = math.sqrt(sigma)

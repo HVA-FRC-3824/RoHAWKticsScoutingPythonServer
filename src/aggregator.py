@@ -43,7 +43,6 @@ class Aggregator:
             if tba_match['comp_level'] != "qm":
                 continue
 
-            # 
             if tba_match['match_number'] > num_matches:
                 num_matches = tba_match['match_number']
 
@@ -112,14 +111,14 @@ class Aggregator:
         '''Convert the ranking information from `The Blue Alliance <thebluealliance.com>`_
            to the :class:`TeamRankingData`
         '''
-        for tba_ranking in event_rankings:
+        for tba_ranking in event_rankings['rankings']:
             ranking = TeamRankingData()
             ranking.team_number = int(tba_ranking['team_key'][3:])
             ranking.rank = tba_ranking['rank']
             ranking.RPs = tba_ranking['sort_orders'][0]
             ranking.wins = tba_ranking['record']['wins']
             ranking.ties = tba_ranking['record']['ties']
-            ranking.loses = tba_ranking['record']['loses']
+            ranking.losses = tba_ranking['record']['losses']
             ranking.first_tie_breaker = tba_ranking['sort_orders'][1]
             ranking.second_tie_breaker = tba_ranking['sort_orders'][2]
             ranking.played = tba_ranking['matches_played']
@@ -288,7 +287,6 @@ class Aggregator:
             if 'zscore' in key:
                 lists[key[6:]] = {}
 
-
         pilot_rating_dict = {}
 
         # get match rankings from super match data and put in lists for averaging
@@ -402,9 +400,10 @@ class Aggregator:
             team.predicted_ranking.RPs = team.current_ranking.RPs
             team.predicted_ranking.wins = team.current_ranking.wins
             team.predicted_ranking.ties = team.current_ranking.ties
-            team.predicted_ranking.loses = team.current_ranking.loses
+            team.predicted_ranking.losses = team.current_ranking.losses
             team.predicted_ranking.first_tie_breaker = team.current_ranking.first_tie_breaker
             team.predicted_ranking.second_tie_breaker = team.current_ranking.second_tie_breaker
+            match_predictions = {}
 
             for index in range(len(team.completed_matches), len(team.info.match_numbers)):
                 match = firebase.get_match(team.info.match_numbers[index])
@@ -413,28 +412,67 @@ class Aggregator:
                 if match.match_number == team.info.surrogate_match_number:
                     continue
 
+                if match.match_number not in match_predictions:
+
+                    match_predictions[match.match_number] = {'blue': {}, 'red': {}}
+                    blue = AllianceCalculator(match.teams[0:2])
+                    red = AllianceCalculator(match.teams[3:5])
+
+                    for color in ['blue', 'red']:
+                        match_predictions[match.match_number][color]['rps'] = 0
+                        match_predictions[match.match_number][color]['win'] = False
+                        match_predictions[match.match_number][color]['tie'] = False
+                        match_predictions[match.match_number][color]['loss'] = False
+                        match_predictions[match.match_number][color]['1st_tb'] = 0
+                        match_predictions[match.match_number][color]['2nd_tb'] = 0
+
+                    if blue.predicted_score() > red.predicted_score():
+                        match_predictions[match.match_number]['blue']['rps'] += 2
+                        match_predictions[match.match_number]['blue']['win'] = True
+                        match_predictions[match.match_number]['red']['loss'] = True
+
+                    elif red.predicted_score() > blue.predicted_score():
+                        match_predictions[match.match_number]['red']['rps'] += 2
+                        match_predictions[match.match_number]['red']['win'] = True
+                        match_predictions[match.match_number]['blue']['loss'] = True
+                    else:
+                        match_predictions[match.match_number]['blue']['rps'] += 1
+                        match_predictions[match.match_number]['red']['rps'] += 1
+                        match_predictions[match.match_number]['blue']['tie'] = True
+                        match_predictions[match.match_number]['red']['tie'] = True
+
+                    if blue.rotor_chance() > 0.5:
+                        match_predictions[match.match_number]['blue']['rps'] += 1
+
+                    if red.rotor_chance() > 0.5:
+                        match_predictions[match.match_number]['red']['rps'] += 1
+
+                    if blue.pressure_chance() > 0.5:
+                        match_predictions[match.match_number]['blue']['rps'] += 1
+
+                    if red.pressure_chance() > 0.5:
+                        match_predictions[match.match_number]['red']['rps'] += 1
+
+                    match_predictions[match.match_number]['blue']['1st_tb'] = blue.predicted_score()
+
+                    match_predictions[match.match_number]['red']['1st_tb'] = red.predicted_score()
+                    match_predictions[match.match_number]['blue']['2nd_tb'] = blue.predicted_auto_score()
+                    match_predictions[match.match_number]['red']['2nd_tb'] = red.predicted_auto_score()
+
                 if match.is_blue(team.team_number):
-                    ac = AllianceCalculator(match.teams[0:2])
-                    opp = AllianceCalculator(match.teams[3:5])
+                    mp = match_predictions[match.match_number]['blue']
                 else:
-                    ac = AllianceCalculator(match.teams[3:5])
-                    opp = AllianceCalculator(match.teams[0:2])
+                    mp = match_predictions[match.match_number]['red']
 
-                if ac.win_probability_over(opp) > 0.5:
-                    team.predicted_ranking.wins += 1
-                    team.predicted_ranking.RPs += 2
-                elif opp.win_probabiliy_over(ac) > 0.5:
-                    team.predicted_ranking.loses += 1
-                else:
-                    team.predicted_ranking.ties += 1
-                    team.predicted_ranking.RPs += 1
+                team.predicted_ranking.wins += 1 if mp['win'] else 0
+                team.predicted_ranking.ties += 1 if mp['win'] else 0
+                team.predicted_ranking.losses += 1 if mp['loss'] else 0
+                team.predicted_ranking.RPs += mp['rps']
+                team.predicted_ranking.first_tie_breaker += mp['1st_tb']
+                team.predicted_ranking.second_tie_breaker += mp['2nd_tb']
 
-                team.predicted_ranking.RPs += 1 if ac.rotor_chance() > 0.5 else 0
-                team.predicted_ranking.RPs += 1 if ac.pressure_chance() > 0.5 else 0
-
-                team.predicted_ranking.first_tie_breaker += ac.predicted_score()
-                teams.predicted_ranking.second_tie_breaker += ac.predicted_auto_score()
             teams.append(team)
+            logger.info("Predicted Ranking for {0:d}".format(team.team_number))
 
         # Sort for ranking
         def ranking_cmp(team1, team2):

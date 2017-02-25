@@ -274,4 +274,5 @@ class SocketServer(Looper):
         self.server.close()
         for client in self.clients:
             client.stop()
+        self.server.close()
         Looper.stop(self)

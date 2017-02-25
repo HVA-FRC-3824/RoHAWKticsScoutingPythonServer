@@ -12,7 +12,7 @@ class TeamRankingData(DataModel):
         self.RPs = 0
         self.wins = 0
         self.ties = 0
-        self.loses = 0
+        self.losses = 0
         self.played = 0
         self.first_tie_breaker = 0
         self.second_tie_breaker = 0

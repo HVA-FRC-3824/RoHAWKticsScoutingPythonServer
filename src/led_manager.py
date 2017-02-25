@@ -22,7 +22,7 @@ class LedManager(Looper):
 
         self.led_status = {self.GREEN: self.NONE, self.YELLOW: self.NONE, self.RED: self.NONE}
         self.led_pins = {self.GREEN: 40, self.YELLOW: 38, self.RED: 36}
-
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
 
         # setup pins

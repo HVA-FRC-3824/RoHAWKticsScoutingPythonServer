@@ -67,7 +67,7 @@ class FirebaseCom:
         elif isinstance(match, dict):
             self.put_in_firebase("schedule/", "{0:d}".format(match['match_number']), match)
         else:
-            logger.e("match variable not a Match object or dict")
+            logger.error("match variable not a Match object or dict")
             raise TypeError("match variable not a Match object or dict")
 
     def get_match(self, match_number):
@@ -132,7 +132,7 @@ class FirebaseCom:
         elif isinstance(tpd, dict):
             self.put_in_firebase("pit/", str(tpd['team_number']), tpd)
         else:
-            logger.e("tpd variable not a TeamPitData object or dict")
+            logger.error("tpd variable not a TeamPitData object or dict")
             raise TypeError("tpd variable not a TeamPitData object or dict")
 
     def get_team_pit_data(self, team_number):
@@ -158,7 +158,7 @@ class FirebaseCom:
         elif isinstance(smd, dict):
             self.put_in_firebase("super_match/", str(smd['match_number']), smd)
         else:
-            logger.e("smd variable is not a SuperMatchData object or dict")
+            logger.error("smd variable is not a SuperMatchData object or dict")
             raise TypeError("smd variable is not a SuperMatchData object or dict")
 
     def get_super_match_data(self, match_number):
@@ -184,7 +184,7 @@ class FirebaseCom:
         elif isinstance(tdtf, dict):
             self.put_in_firebase("feedback/", str(tdtf['team_number']), tdtf)
         else:
-            logger.e("tdtf variable is not a TeamDTFeedback object or dict")
+            logger.error("tdtf variable is not a TeamDTFeedback object or dict")
             raise TypeError("tdtf variable is not a TeamDTFeedback object or dict")
 
     def get_team_dt_feedback(self, team_number):
@@ -224,7 +224,7 @@ class FirebaseCom:
         elif isinstance(tl, dict):
             self.put_in_firebase("info/", tl['team_number'], tl)
         else:
-            logger.e("tl variable is not a TeamLogistics object or dict")
+            logger.error("tl variable is not a TeamLogistics object or dict")
             raise TypeError("tl variable is not a TeamLogistics object or dict")
 
     def get_team_logistics(self, team_number):
@@ -276,7 +276,7 @@ class FirebaseCom:
         elif isinstance(trd, dict):
             self.put_in_firebase("rankings/current/", str(trd['team_number']), trd)
         else:
-            logger.e("c trd variable is not a TeamRankingData object or dict")
+            logger.error("c trd variable is not a TeamRankingData object or dict")
             raise TypeError("c trd variable is not a TeamRankingData object or dict")
 
     def get_current_team_ranking_data(self, team_number):
@@ -302,7 +302,7 @@ class FirebaseCom:
         elif isinstance(trd, dict):
             self.firebase.put("rankings/predicted/", str(trd['team_number']), trd)
         else:
-            logger.e("p trd variable is not a TeamRankingData object or dict")
+            logger.error("p trd variable is not a TeamRankingData object or dict")
             raise TypeError("p trd variable is not a TeamRankingData object or dict")
 
     def get_predicted_team_ranking_data(self, team_number):
@@ -328,7 +328,7 @@ class FirebaseCom:
         elif isinstance(tpa, dict):
             self.put_in_firebase("first_pick", str(tpa['team_number']), tpa)
         else:
-            logger.e("1st tpa variable is not a TeamPickAbility object or dict")
+            logger.error("1st tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("1st tpa variable is not a TeamPickAbility object or dict")
 
     def get_team_first_pick_ability(self, team_number):
@@ -354,7 +354,7 @@ class FirebaseCom:
         elif isinstance(tpa, dict):
             self.put_in_firebase("second_pick", str(tpa['team_number']), tpa)
         else:
-            logger.e("2nd tpa variable is not a TeamPickAbility object or dict")
+            logger.error("2nd tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("2nd tpa variabel is not a TeamPickAbility object or dict")
 
     def get_team_second_pick_ability(self, team_number):
@@ -380,7 +380,7 @@ class FirebaseCom:
         elif isinstance(tpa, dict):
             self.put_in_firebase("third_pick", str(tpa['team_number']), tpa)
         else:
-            logger.e("3rd tpa variable is not a TeamPickAbility object or dict")
+            logger.error("3rd tpa variable is not a TeamPickAbility object or dict")
             raise TypeError("3rd tpa variable is not a TeamPickAbility object or dict")
 
     def get_team_third_pick_ability(self, team_number):
@@ -416,7 +416,7 @@ class FirebaseCom:
             for tmd in team['completed_matches'].values():
                 self.update_team_match_data(tmd)
         else:
-            logger.e("team variable is not Team object or dict")
+            logger.error("team variable is not Team object or dict")
             raise TypeError("team variable is not Team object or dict")
 
     def get_team(self, team_number):
@@ -546,26 +546,42 @@ class FirebaseCom:
         '''Grabs the specified location from firebase if new data if not then
            grabs from file
         '''
+
+        # Get cached version if exists
         if os.path.isfile(self.base_filepath + location + key + ".json"):
             with open(self.base_filepath + location + ".json", "w") as f:
                 json_dict = json.loads(open(self.base_filepath + location + key + ".json").read())
+                # 3 attempts to get last_modified variable
                 for i in range(3):
                     try:
                         response = self.firebase.get(self.base_ref + location + key, "last_modified")
+                    # Catch exception and try again
+                    except:
+                        logger.warning("Caught error with getting timestamp")
+                    # if successful (no exception)
+                    else:
+                        # if data needs to be pulled
                         if response is None or response > json_dict['last_modified']:
+                            del response
+                            # 3 attempts
                             for j in range(3):
                                 try:
                                     response = self.firebase.get(self.base_ref + location, key)
                                     if response is None:
-                                        return None
+                                        return json_dict
                                     f.write(json.dumps(response))
                                     return response
                                 except:
-                                    pass
+                                    logger.warning("Caught error with getting data from firebase. Attempt {}".format(j + 1))
+                                else:
+                                    if response is None:
+                                        return json_dict
+                                    with open(self.base_filepath + location + key + ".json", 'w') as f:
+                                        f.write(json.dumps(response, indents=4))
+
+                        # if no new information return cached version
                         else:
                             return json_dict
-                    except:
-                        pass
         else:
             response = self.firebase.get(self.base_ref + location, key)
             if response is None:
@@ -589,7 +605,7 @@ class FirebaseCom:
                     raise Exception("Error updating {}".format(key))
                 break
             except:
-                pass
+                logger.warning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
         self.tlock.release()
         self.plock.release()
         with open(self.base_filepath + location + key + ".json", "w") as f:

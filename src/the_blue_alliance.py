@@ -150,7 +150,11 @@ class TheBlueAlliance:
         url = "status"
         if "if-modified-since" in self.headers:
             del self.headers['if-modified-since']
-        response = requests.get(self.base_url + url, headers=self.headers)
+        try:
+            response = requests.get(self.base_url + url, headers=self.headers)
+        except:
+            logger.warning("Caught exception on requesting TBA status")
+            return True
         if response.status_code != 200 and response.status_code != 304:
             return True
         data = utils.make_ascii_from_json(response.json())
