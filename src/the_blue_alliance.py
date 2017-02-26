@@ -53,7 +53,6 @@ class TheBlueAlliance:
 
         json_dict = {}
         request_url = "{0:s}event/{1:s}/{2:s}".format(self.base_url, self.event_id, url)
-        print(request_url)
 
         # check if cached file exists
         if os.path.isfile(self.base_filepath + filepath):

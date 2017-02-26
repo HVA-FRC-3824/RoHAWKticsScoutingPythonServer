@@ -471,32 +471,32 @@ class Aggregator:
                 team.predicted_ranking.first_tie_breaker += mp['1st_tb']
                 team.predicted_ranking.second_tie_breaker += mp['2nd_tb']
 
-            teams.append(team)
+            teams.append(team.predicted_ranking)
             logger.info("Predicted Ranking for {0:d}".format(team.team_number))
 
         # Sort for ranking
         def ranking_cmp(team1, team2):
-            if team1.predicted_ranking.RPs > team2.predicted_ranking.RPs:
+            if team1.RPs > team2.RPs:
                 return 1
-            elif team1.predicted_ranking.RPs < team2.predicted_ranking.RPs:
+            elif team1.RPs < team2.RPs:
                 return -1
             else:  # tie
-                if team1.predicted_ranking.first_tie_breaker > team2.predicted_ranking.first_tie_breaker:
+                if team1.first_tie_breaker > team2.first_tie_breaker:
                     return 1
-                elif team1.predicted_ranking.first_tie_breaker < team2.predicted_ranking.first_tie_breaker:
+                elif team1.first_tie_breaker < team2.first_tie_breaker:
                     return -1
                 else:
-                    if team1.predicted_ranking.second_tie_breaker > team2.predicted_ranking.second_tie_breaker:
+                    if team1.second_tie_breaker > team2.second_tie_breaker:
                         return 1
-                    elif team1.predicted_ranking.second_tie_breaker < team2.predicted_ranking.second_tie_breaker:
+                    elif team1.second_tie_breaker < team2.second_tie_breaker:
                         return -1
                     else:
                         return 0  # Really we should never get here
 
         teams.sort(key=cmp_to_key(ranking_cmp), reverse=True)
         for rank, team in enumerate(teams):
-            team.predicted_ranking = rank + 1
-            firebase.update_predicted_team_ranking_data(team.predicted_ranking)
+            team.rank = rank + 1
+            firebase.update_predicted_team_ranking_data(team)
             logger.info("Updated predicted ranking for {0:d} on Firebase".format(team.team_number))
 
     @staticmethod

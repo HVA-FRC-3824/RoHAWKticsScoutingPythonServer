@@ -120,6 +120,8 @@ class FirebaseCom:
         d = {}
         for match_number in range(1, Constants().number_of_matches):
             match = self.get_match(match_number)
+            if match is None:
+                continue
             for team_number in match.teams:
                 response = self.get_team_match_data(match_number=match_number, team_number=team_number)
                 if response is not None:
@@ -299,7 +301,7 @@ class FirebaseCom:
     def update_predicted_team_ranking_data(self, trd):
         '''update the predicted ranking data on a specific team'''
         if isinstance(trd, TeamRankingData):
-            self.update_predicted_trd(trd.to_dict())
+            self.update_predicted_team_ranking_data(trd.to_dict())
         elif isinstance(trd, dict):
             self.firebase.put("rankings/predicted/", str(trd['team_number']), trd)
         else:
@@ -611,7 +613,7 @@ class FirebaseCom:
             # No cached version to return
             return None
 
-    def put_in_firebase(self, location, key, d):
+    def put_in_firebase(self, location, key, d, empty_queue=True):
         '''Updates firebase at the specified location and write to file'''
         self.tlock.acquire()
         self.plock.acquire()
@@ -621,18 +623,25 @@ class FirebaseCom:
         # 3 attempts
         for i in range(3):
             try:
-                success = self.firebase.put(self.base_ref + location, key, d)
-                print(success)
+                self.firebase.put(self.base_ref + location, key, d)
             # Catch exception and try again
             except:
                 logger.warning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
             else:
-                break
+                self.tlock.release()
+                self.plock.release()
+                with open(self.base_filepath + location + key + ".json", "w") as f:
+                    f.write(json.dumps(d, sort_keys=True, indent=4))
+                # empty the queue of failed puts
+                if empty_queue:
+                    puts = self.queued_puts
+                    self.queued_puts = []
+                    for put in puts:
+                        self.put_in_firebase(put[0], put[1], put[2], False)
+                return
 
-        self.tlock.release()
-        self.plock.release()
-        with open(self.base_filepath + location + key + ".json", "w") as f:
-            f.write(json.dumps(d, sort_keys=True, indent=4))
+        # 3 failures probably means there is an issue with the internet connection
+        self.queued_puts.append((location, key, d))
 
     def cache(self):
         '''Cache the firebase to a json file'''
