@@ -590,6 +590,9 @@ class FirebaseCom:
                     # if no new information return cached version
                     else:
                         return json_dict
+            # 3 failures probably means there is an issue with the internet connection
+            # return the cached version until internet connection is fixed
+            return json_dict
         # No cached version
         else:
             # 3 attempts
