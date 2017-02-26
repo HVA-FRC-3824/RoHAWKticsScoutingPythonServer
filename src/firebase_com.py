@@ -53,6 +53,7 @@ class FirebaseCom:
             self.plock = PLock()
             self.tlock = TLock()
             self.firebase = fb.FirebaseApplication(url)
+            self.queued_puts = []
 
     def setup_folders(self):
         for ext in ["schedule", "partial_match", "pit", "super_match", "feedback",
@@ -549,46 +550,66 @@ class FirebaseCom:
 
         # Get cached version if exists
         if os.path.isfile(self.base_filepath + location + key + ".json"):
-            with open(self.base_filepath + location + ".json", "w") as f:
-                json_dict = json.loads(open(self.base_filepath + location + key + ".json").read())
-                # 3 attempts to get last_modified variable
-                for i in range(3):
-                    try:
-                        response = self.firebase.get(self.base_ref + location + key, "last_modified")
-                    # Catch exception and try again
-                    except:
-                        logger.warning("Caught error with getting timestamp")
-                    # if successful (no exception)
-                    else:
-                        # if data needs to be pulled
-                        if response is None or response > json_dict['last_modified']:
-                            del response
-                            # 3 attempts
-                            for j in range(3):
-                                try:
-                                    response = self.firebase.get(self.base_ref + location, key)
-                                    if response is None:
-                                        return json_dict
-                                    f.write(json.dumps(response))
-                                    return response
-                                except:
-                                    logger.warning("Caught error with getting data from firebase. Attempt {}".format(j + 1))
-                                else:
-                                    if response is None:
-                                        return json_dict
-                                    with open(self.base_filepath + location + key + ".json", 'w') as f:
-                                        f.write(json.dumps(response, indents=4))
+            with open(self.base_filepath + location + key + ".json") as f:
+                json_dict = json.loads(f.read())
+            # 3 attempts to get last_modified variable
+            for i in range(3):
+                try:
+                    response = self.firebase.get(self.base_ref + location + key, "last_modified")
+                # Catch exception and try again
+                except:
+                    logger.warning("Caught error with getting timestamp")
+                # if successful (no exception)
+                else:
+                    # if data needs to be pulled
+                    if response is None or response > json_dict['last_modified']:
+                        del response
+                        # 3 attempts
+                        for j in range(3):
+                            try:
+                                response = self.firebase.get(self.base_ref + location, key)
+                            # Catch exception and try again
+                            except:
+                                logger.warning("Caught error with getting data from firebase. Attempt {}".format(j + 1))
+                            else:
+                                # Successfully pulled a response
 
-                        # if no new information return cached version
-                        else:
-                            return json_dict
+                                # Nothing in that location in the database
+                                if response is None:
+                                    return None
+                                # Record cached version
+                                with open(self.base_filepath + location + key + ".json", 'w') as f:
+                                    f.write(json.dumps(response, sort_keys=True, indent=4))
+                                return response
+                        # 3 failures probably means there is an issue with the internet connection
+                        # return the cached version until internet connection is fixed
+                        return json_dict
+
+                    # if no new information return cached version
+                    else:
+                        return json_dict
+        # No cached version
         else:
-            response = self.firebase.get(self.base_ref + location, key)
-            if response is None:
-                return None
-            with open(self.base_filepath + location + ".json", "w") as f:
-                f.write(json.dumps(response))
-            return response
+            # 3 attempts
+            for i in range(3):
+                try:
+                    response = self.firebase.get(self.base_ref + location, key)
+                # Catch exception and try again
+                except:
+                    logger.warnning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
+                else:
+                    # Successfully pulled a response
+
+                    # Nothing in that location in the database
+                    if response is None:
+                        return None
+                    # Record cached version
+                    with open(self.base_filepath + location + key + ".json", "w") as f:
+                        f.write(json.dumps(response, sort_keys=True, indent=4))
+                    return response
+            # 3 failures probably means there is an issue with the internet connection
+            # No cached version to return
+            return None
 
     def put_in_firebase(self, location, key, d):
         '''Updates firebase at the specified location and write to file'''
@@ -597,15 +618,17 @@ class FirebaseCom:
         # last_modified is a long in milliseconds (due to android)
         d['last_modified'] = int(time.time() * 1000)
         key = str(key)
+        # 3 attempts
         for i in range(3):
             try:
                 success = self.firebase.put(self.base_ref + location, key, d)
-                if not success:
-                    logger.error("Error updating {}".format(key))
-                    raise Exception("Error updating {}".format(key))
-                break
+                print(success)
+            # Catch exception and try again
             except:
                 logger.warning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
+            else:
+                break
+
         self.tlock.release()
         self.plock.release()
         with open(self.base_filepath + location + key + ".json", "w") as f:
