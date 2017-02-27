@@ -24,6 +24,11 @@ class ScoutAccuracy(DataModel):
         if d is not None:
             self.set(d)
 
+            temp = self.scouted_matches
+            self.scouted_matches = {}
+            for key, value in temp.__dict__.items():
+                self.scouted_matches[int(key)] = value
+
     def total(self):
         '''Tallies the error from each individual match scouted'''
         self.total_error = 0

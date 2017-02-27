@@ -3,6 +3,7 @@ import datetime
 from firebase import firebase as fb
 import os
 import time
+# import traceback
 
 from threading import Lock as TLock
 from multiprocessing import Lock as PLock
@@ -303,7 +304,7 @@ class FirebaseCom:
         if isinstance(trd, TeamRankingData):
             self.update_predicted_team_ranking_data(trd.to_dict())
         elif isinstance(trd, dict):
-            self.firebase.put("rankings/predicted/", str(trd['team_number']), trd)
+            self.put_in_firebase("rankings/predicted/", str(trd['team_number']), trd)
         else:
             logger.error("p trd variable is not a TeamRankingData object or dict")
             raise TypeError("p trd variable is not a TeamRankingData object or dict")
@@ -452,14 +453,14 @@ class FirebaseCom:
         if isinstance(scout, ScoutAccuracy):
             self.update_scout_accuracy(scout.to_dict())
         elif isinstance(scout, dict):
-            self.firebase.put_in_firebase("scout_accuracy/", scout['name'], scout)
+            self.put_in_firebase("scout_accuracy/", scout['name'].replace(" ", "_"), scout)
         else:
             logger.error("scout_analysis variable is not a ScoutAccuracy or dict")
             raise Exception("scout_analysis variable is not a ScoutAccuracy or dict")
 
     def get_scout_accuracy(self, scout_name):
         '''get the data for scout accuracy'''
-        response = self.get_from_firebase("scout_accuracy/", str(scout_name))
+        response = self.get_from_firebase("scout_accuracy/", scout_name.replace(" ", "_"))
         if response is None:
             return None
         return ScoutAccuracy(response)
@@ -550,6 +551,11 @@ class FirebaseCom:
            grabs from file
         '''
 
+        if(location[-1] != '/'):
+            location += '/'
+
+        logger.info("GET - Location: {} Key: {}".format(location, key))
+
         # Get cached version if exists
         if os.path.isfile(self.base_filepath + location + key + ".json"):
             with open(self.base_filepath + location + key + ".json") as f:
@@ -601,7 +607,7 @@ class FirebaseCom:
                     response = self.firebase.get(self.base_ref + location, key)
                 # Catch exception and try again
                 except:
-                    logger.warnning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
+                    logger.warning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
                 else:
                     # Successfully pulled a response
 
@@ -620,16 +626,22 @@ class FirebaseCom:
         '''Updates firebase at the specified location and write to file'''
         self.tlock.acquire()
         self.plock.acquire()
+
+        if(location[-1] != '/'):
+            location += '/'
+
+        logger.info("PUT - Location: {} Key: {}".format(location, key))
+
         # last_modified is a long in milliseconds (due to android)
         d['last_modified'] = int(time.time() * 1000)
         key = str(key)
         # 3 attempts
         for i in range(3):
             try:
-                self.firebase.put(self.base_ref + location, key, d)
+                self.firebase.put(url=self.base_ref + location, name=key, data=d)
             # Catch exception and try again
             except:
-                logger.warning("Caught error with getting data from firebase. Attempt {}".format(i + 1))
+                logger.warning("Caught error with putting data in firebase. Attempt {}".format(i + 1))
             else:
                 self.tlock.release()
                 self.plock.release()
@@ -642,7 +654,8 @@ class FirebaseCom:
                     for put in puts:
                         self.put_in_firebase(put[0], put[1], put[2], False)
                 return
-
+        self.tlock.release()
+        self.plock.release()
         # 3 failures probably means there is an issue with the internet connection
         self.queued_puts.append((location, key, d))
 

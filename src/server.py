@@ -54,10 +54,10 @@ class Server(Looper):
 
         self.aggregate = kwargs.get('aggregate', False)
 
-        if kwargs.get('messenger', False):
-            self.messenger = Messenger(**kwargs)
+        # if kwargs.get('messenger', False):
+        self.messenger = Messenger(**kwargs)
 
-        self.crash_reporter = kwargs.get('crash_reporter', False)
+        self.report_crash = kwargs.get('report_crash', False)
         self.cache_firebase = kwargs.get('cache_firebase', False)
         if self.cache_firebase:
             self.time_between_caches = kwargs.get('time_between_caches', self.DEFAULT_TIME_BETWEEN_CACHES)
@@ -73,7 +73,7 @@ class Server(Looper):
         if kwargs.get('socket', False):
             self.socket = SocketServer()
 
-        if kwargs.get('scouter_analysis', False):
+        if kwargs.get('scout_analysis', False):
             self.scout_analysis = ScoutAnalysis(**kwargs)
 
         if kwargs.get('setup', False):
@@ -115,7 +115,6 @@ class Server(Looper):
                 # Constants is a singleton
                 Constants().team_numbers = json_dict['team_numbers']
                 Constants().number_of_matches = json_dict['number_of_matches']
-                Constants().scout_names = json_dict['scout_names']
 
     def start(self):
         '''Starts the main thread loop'''
@@ -174,20 +173,16 @@ class Server(Looper):
         elif hasattr(self, 'scout_analysis'):
             self.led_manager.internet_connected()
             try:
+                logger.info("Analyzing scouts")
                 self.scout_analysis.analyze_scouts()
             except:
                 self.led_manager.error()
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
-                    if self.crash_reporter:
+                    if self.report_crash:
                         logger.error("Reporting crash")
-                        try:
-                            self.messenger.send_message("Server Crash!!!", traceback.format_exc())
-                        # weird exception that doesn't stop the text/email
-                        # TODO: figure out why
-                        except:
-                            pass
+                        self.messenger.send_message("Server Crash!!!", traceback.format_exc())
         if not self.running:
             return
 
@@ -216,14 +211,9 @@ class Server(Looper):
                 if self.running:
                     logger.error("Crash")
                     logger.error(traceback.format_exc())
-                    if self.crash_reporter:
+                    if self.report_crash:
                         logger.error("Reporting crash")
-                        try:
-                            self.messenger.send_message("Server Crash!!!", traceback.format_exc())
-                        # weird exception that doesn't stop the text/email
-                        # TODO: figure out why
-                        except:
-                            pass
+                        self.messenger.send_message("Server Crash!!!", traceback.format_exc())
 
             if not self.running:
                 return
@@ -246,13 +236,9 @@ class Server(Looper):
                     if self.running:
                         logger.error("Crash")
                         logger.error(traceback.format_exc())
-                        if self.crash_reporter:
+                        if self.report_crash:
                             logger.error("Reporting crash")
-                            try:
-                                self.messenger.send_message("Server Crash!!!", traceback.format_exc())
-                            # weird exception that doesn't stop the text
-                            except:
-                                pass
+                            self.messenger.send_message("Server Crash!!!", traceback.format_exc())
 
         if self.cache_firebase:
             self.time_since_last_cache += self.time_between_cycles

@@ -24,6 +24,13 @@ class DataModel:
                         d[key].append(v.to_dict())
                     else:
                         d[key].append(v)
+            elif isinstance(value, dict):
+                d[key] = {}
+                for k, v in value.items():
+                    if isinstance(v, DataModel) or isinstance(v, obj):
+                        d[key][k] = v.to_dict()
+                    else:
+                        d[key][k] = v
         return d
 
     def set(self, d):
@@ -62,4 +69,11 @@ class obj:
                         d[key].append(v.to_dict())
                     else:
                         d[key].append(v)
+            elif isinstance(value, dict):
+                d[key] = {}
+                for k, v in value.items():
+                    if isinstance(v, DataModel) or isinstance(v, obj):
+                        d[key][k] = v.to_dict()
+                    else:
+                        d[key][k] = v
         return d

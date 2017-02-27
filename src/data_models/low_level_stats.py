@@ -1,5 +1,4 @@
 import math
-import sys
 from .data_model import DataModel
 
 
@@ -92,8 +91,8 @@ class LowLevelStats(DataModel):
     def from_float(list_):
         '''Creates a :class:`LowLevelStats` from a list of floats'''
         l = LowLevelStats()
-        l.max = sys.floatmin
-        l.min = sys.floatmax
+        l.max = -float("inf")
+        l.min = float("inf")
 
         for item in list_:
             if item > l.max:

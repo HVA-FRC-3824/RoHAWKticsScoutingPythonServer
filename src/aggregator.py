@@ -50,12 +50,12 @@ class Aggregator:
             match = Match()
             match.match_number = tba_match['match_number']
             for color in ['blue', 'red']:
-                for team_key in tba_match[color]['team_keys']:
+                for team_key in tba_match['alliances'][color]['team_keys']:
                     match.teams.append(int(team_key[3:]))
-                match.scores.append(int(tba_match[color]['score']))
+                match.scores.append(int(tba_match['alliances'][color]['score']))
 
                 # Collect surrogate matches
-                for surrogate_team_key in tba_match[color]['surrogate_team_keys']:
+                for surrogate_team_key in tba_match['alliances'][color]['surrogate_team_keys']:
                     team_surrogate_matches[int(surrogate_team_key[3:])] = match.match_number
 
             for team_number in match.teams:
@@ -224,14 +224,14 @@ class Aggregator:
                                     break
                 # Break up the climb text into lists for LowLevelStats
                 elif key == constants.ENDGAME_CLIMB_KEY:
-                    for key, option in constants.ENDGAME_CLIMB_OPTIONS.items():
+                    for option_key, option in constants.ENDGAME_CLIMB_OPTIONS.items():
+                        option = 'endgame_climb_' + option
                         if(option not in list_dict[tmd.team_number]):
                             list_dict[tmd.team_number][option] = []
-                        if tmd.endgame_climb == key:
+                        if value == option_key:
                             list_dict[tmd.team_number][option].append(1)
                         else:
                             list_dict[tmd.team_number][option].append(0)
-
                 elif key == constants.ENDGAME_CLIMB_TIME_KEY:
                     # Only track time on climbs that were successful
                     if(tmd.endgame_climb_time != constants.ENDGAME_CLIMB_TIME_N_A and
@@ -390,6 +390,7 @@ class Aggregator:
         logger.info("Predicting final rankings")
         # Predicted Rankings
         teams = []
+        match_predictions = {}
         for team_number, team in firebase.get_teams().items():
             team.predicted_ranking = TeamRankingData({'team_number': team.team_number})
             team.predicted_ranking.played = len(team.info.match_numbers)
@@ -403,7 +404,6 @@ class Aggregator:
             team.predicted_ranking.losses = team.current_ranking.losses
             team.predicted_ranking.first_tie_breaker = team.current_ranking.first_tie_breaker
             team.predicted_ranking.second_tie_breaker = team.current_ranking.second_tie_breaker
-            match_predictions = {}
 
             for index in range(len(team.completed_matches), len(team.info.match_numbers)):
                 match = firebase.get_match(team.info.match_numbers[index])
