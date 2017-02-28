@@ -104,7 +104,7 @@ class ScoutAnalysis:
                 nothing_new = True
                 for tmd in tmds:
                     sa = self.firebase.get_scout_accuracy(tmd.scout_name)
-                    if sa.last_modified < latest_last_modified:
+                    if sa is None or sa.last_modified < latest_last_modified:
                         nothing_new = False
                         break
 
@@ -223,7 +223,7 @@ class ScoutAnalysis:
                     if sa is None:
                         sa = ScoutAccuracy()
                         sa.name = scout_name
-                    sa.scouted_matches[str(match_number)] = sma
+                    sa.scouted_matches['M' + str(match_number)] = sma
                     sa.total()
                     print("totalled")
                     self.firebase.update_scout_accuracy(sa)

@@ -206,7 +206,6 @@ class Aggregator:
                                 attempt = 'placed' if v.placed else 'dropped'
                                 d[attempt]['total'] += 1
                                 d[attempt][v.location] += 1
-
                             for period in ['auto', 'teleop']:
                                 if period in key:
                                     if "{0:s}_total_gears_placed".format(period) is not list_dict[tmd.team_number]:
