@@ -223,7 +223,7 @@ class ScoutAnalysis:
                     if sa is None:
                         sa = ScoutAccuracy()
                         sa.name = scout_name
-                    sa.scouted_matches[match_number] = sma
+                    sa.scouted_matches[str(match_number)] = sma
                     sa.total()
                     print("totalled")
                     self.firebase.update_scout_accuracy(sa)

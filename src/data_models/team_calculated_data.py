@@ -24,6 +24,7 @@ class TeamCalculatedData(DataModel):
         self.auto_low_goal_made = LowLevelStats()
         self.auto_low_goal_missed = LowLevelStats()
         self.auto_hoppers = LowLevelStats()
+        self.auto_points = LowLevelStats()
 
         # Teleop
         self.teleop_total_gears_placed = LowLevelStats()
@@ -40,6 +41,7 @@ class TeamCalculatedData(DataModel):
         self.teleop_low_goal_missed = LowLevelStats()
         self.teleop_hoppers = LowLevelStats()
         self.teleop_picked_up_gears = LowLevelStats()
+        self.teleop_points = LowLevelStats()
 
         # Endgame
         self.endgame_climb_successful = LowLevelStats()
@@ -48,6 +50,9 @@ class TeamCalculatedData(DataModel):
         self.endgame_climb_no_attempt = LowLevelStats()
         self.endgame_climb_credited_through_foul = LowLevelStats()
         self.endgame_climb_time = LowLevelStats()
+        self.endgame_points = LowLevelStats()
+
+        self.total_points = LowLevelStats()
 
         # Post Match
         self.no_show = LowLevelStats()
