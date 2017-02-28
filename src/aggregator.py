@@ -4,7 +4,6 @@ import scipy.stats as stats
 
 from constants import Constants
 
-from data_models.gear import Gear
 from data_models.match import Match
 from data_models.team_logistics import TeamLogistics
 from data_models.team_pit_data import TeamPitData
@@ -146,10 +145,10 @@ class Aggregator:
 
             auto_gears_placed = 0
             for gear in tmd.auto_gears:
-                auto_gears_placed += gear.placed
+                auto_gears_placed += 1 if gear.placed else 0
             teleop_gears_placed = 0
             for gear in tmd.teleop_gears:
-                teleop_gears_placed += gear.placed
+                teleop_gears_placed += 1 if gear.placed else 0
             rotor = 0
             if auto_gears_placed == 3:
                 tmd.auto_points += 120  # rotor 1, 2 in auto
@@ -197,7 +196,7 @@ class Aggregator:
                 # The only lists in this data model are the auto_gears and teleop_gears
                 elif isinstance(value, list):
                     if len(value) > 0:
-                        if(isinstance(value[0], Gear)):
+                        if('gears' in key):
                             d = {}
                             for attempt in ['placed', 'dropped']:
                                 d[attempt] = {}
