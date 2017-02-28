@@ -554,7 +554,7 @@ class FirebaseCom:
         if(location[-1] != '/'):
             location += '/'
 
-        logger.info("GET - Location: {} Key: {}".format(location, key))
+        logger.debug("GET - Location: {} Key: {}".format(location, key))
 
         # Get cached version if exists
         if os.path.isfile(self.base_filepath + location + key + ".json"):
@@ -630,7 +630,7 @@ class FirebaseCom:
         if(location[-1] != '/'):
             location += '/'
 
-        logger.info("PUT - Location: {} Key: {}".format(location, key))
+        logger.debug("PUT - Location: {} Key: {}".format(location, key))
 
         # last_modified is a long in milliseconds (due to android)
         d['last_modified'] = int(time.time() * 1000)

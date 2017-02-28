@@ -95,6 +95,22 @@ class ScoutAnalysis:
                 if scout_scores is None:
                     continue
 
+                latest_last_modified = -1
+                for tmd in tmds:
+                    if tmd.last_modified > latest_last_modified:
+                        latest_last_modified = tmd.last_modified
+
+                # If nothing has changed then no need for calculation
+                nothing_new = True
+                for tmd in tmds:
+                    sa = self.firebase.get_scout_accuracy(tmd.scout_name)
+                    if sa.last_modified < latest_last_modified:
+                        nothing_new = False
+                        break
+
+                if nothing_new:
+                    continue
+
                 # Data Correction
                 tba_auto_high_balls = tba_match['score_breakdown'][color]['autoFuelHigh']
                 tba_auto_low_balls = tba_match['score_breakdown'][color]['autoFuelLow']
@@ -211,8 +227,8 @@ class ScoutAnalysis:
                     sa.total()
                     print("totalled")
                     self.firebase.update_scout_accuracy(sa)
-        logger.info("Exporting scouter analysis")
-        self.export()
+        # logger.info("Exporting scouter analysis")
+        # self.export()
 
     def calc_points(self, teams, with_correction):
         points = {}
@@ -268,7 +284,7 @@ class ScoutAnalysis:
             overall_writer = csv.DictWriter(overall, fieldnames=fieldnames)
             fieldnames = ['match_number', 'alliance_color', 'alliance_number', 'total_error',
                           'auto_error', 'teleop_error', 'endgame_error']
-            for scout in self.firebase.get_all_scout_accuracy():
+            for scout in self.firebase.get_all_scout_accuracy().values():
                 overall_writer.writerow(scout.to_dict())
                 with open('{0:s}/scouting_accuracies/{1:s}.csv'
                           .format(export_dir, scout.scout_name), 'w') as scout_file:
