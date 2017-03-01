@@ -67,8 +67,8 @@ class LowLevelStats(DataModel):
     def from_int(list_):
         '''Creates a :class:`LowLevelStats` from a list of ints'''
         l = LowLevelStats()
-        l.max = -float("inf")
-        l.min = float("inf")
+        l.max = list_[0]
+        l.min = list_[0]
 
         for item in list_:
             if item > l.max:

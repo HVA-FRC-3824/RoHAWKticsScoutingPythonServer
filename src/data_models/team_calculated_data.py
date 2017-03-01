@@ -65,6 +65,8 @@ class TeamCalculatedData(DataModel):
         self.yellow_card = LowLevelStats()
         self.red_card = LowLevelStats()
 
+        self.last_modified_matches = 0
+
         # Qualitative
         self.zscore_speed = 0.0
         self.rank_speed = -1
@@ -77,6 +79,8 @@ class TeamCalculatedData(DataModel):
 
         self.zscore_defense = 0.0
         self.rank_defense = -1
+
+        self.last_modified_super = 0
 
         if d is not None:
             self.set(d)

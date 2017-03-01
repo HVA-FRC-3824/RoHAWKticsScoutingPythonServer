@@ -94,7 +94,7 @@ class ScoutAnalysis:
 
                 if scout_scores is None:
                     continue
-
+                '''
                 latest_last_modified = -1
                 for tmd in tmds:
                     if tmd.last_modified > latest_last_modified:
@@ -110,55 +110,49 @@ class ScoutAnalysis:
 
                 if nothing_new:
                     continue
+                '''
+                score_breakdown = tba_match['score_breakdown'][color]
 
                 # Data Correction
-                tba_auto_high_balls = tba_match['score_breakdown'][color]['autoFuelHigh']
-                tba_auto_low_balls = tba_match['score_breakdown'][color]['autoFuelLow']
-                tba_teleop_high_balls = tba_match['score_breakdown'][color]['teleopFuelHigh']
-                tba_teleop_low_balls = tba_match['score_breakdown'][color]['teleopFuelLow']
-
-                scouted_auto_high_balls = 0
-                scouted_auto_low_balls = 0
-                scouted_teleop_high_balls = 0
-                scouted_teleop_low_balls = 0
-
-                for tmd in tmds:
-                    scouted_auto_high_balls += tmd.auto_high_goal_made
-                    scouted_auto_low_balls += tmd.auto_low_goal_made
-                    scouted_teleop_high_balls += tmd.teleop_high_goal_made
-                    scouted_teleop_low_balls += tmd.teleop_low_goal_made
+                tba_auto_high_balls = score_breakdown['autoFuelHigh']
+                tba_auto_low_balls = score_breakdown['autoFuelLow']
+                tba_teleop_high_balls = score_breakdown['teleopFuelHigh']
+                tba_teleop_low_balls = score_breakdown['teleopFuelLow']
 
                 # corrections are proportionally given based on the scouted ratios
                 for tmd in tmds:
-                    if(scouted_auto_high_balls != 0):
-                        tmd.auto_high_goal_correction = ((tba_auto_high_balls - scouted_auto_high_balls) *
-                                                         tmd.auto_high_goal_made / scouted_auto_high_balls)
-                    if(scouted_auto_low_balls != 0):
-                        tmd.auto_low_goal_correction = ((tba_auto_low_balls - scouted_auto_low_balls) *
-                                                        tmd.auto_low_goal_made / scouted_auto_low_balls)
-                    if(scouted_teleop_high_balls != 0):
-                        tmd.teleop_high_goal_correction = ((tba_teleop_high_balls - scouted_teleop_high_balls) *
-                                                           tmd.teleop_high_goal_made / scouted_teleop_high_balls)
-                    if(scouted_teleop_low_balls != 0):
-                        tmd.teleop_low_goal_correction = ((tba_teleop_low_balls - scouted_teleop_low_balls) *
-                                                          tmd.teleop_low_goal_made / scouted_teleop_low_balls)
+                    if(scout_scores['auto_high'] != 0):
+                        tmd.auto_high_goal_correction = ((tba_auto_high_balls - scout_scores['auto_high']) *
+                                                         tmd.auto_high_goal_made / scout_scores['auto_high'])
+                    if(scout_scores['auto_low'] != 0):
+                        tmd.auto_low_goal_correction = ((tba_auto_low_balls - scout_scores['auto_low']) *
+                                                        tmd.auto_low_goal_made / scout_scores['auto_low'])
+                    if(scout_scores['teleop_high'] != 0):
+                        tmd.teleop_high_goal_correction = ((tba_teleop_high_balls - scout_scores['teleop_high']) *
+                                                           tmd.teleop_high_goal_made / scout_scores['teleop_high'])
+                    if(scout_scores['teleop_low'] != 0):
+                        tmd.teleop_low_goal_correction = ((tba_teleop_low_balls - scout_scores['teleop_low']) *
+                                                          tmd.teleop_low_goal_made / scout_scores['teleop_low'])
                     self.firebase.update_team_match_data(tmd)
 
                 # update scores with correction
-                scout_scores.update(self.calc_points(tmds, True))
-
+                scout_scores = self.calc_points(tmds, True)
+                print(scout_scores)
                 #####################
 
                 sma = ScoutedMatchAccuracy()
                 sma.match_number = match_number
-                sma.total_error = abs(tba_match['score_breakdown'][color]['totalPoints'] -
-                                      tba_match['score_breakdown'][color]['foulPoints'] -
+
+                sma.total_error = abs(score_breakdown['totalPoints'] -
+                                      score_breakdown['foulPoints'] -
                                       scout_scores['total'])
-                sma.auto_error = abs(tba_match['score_breakdown'][color]['autoPoints'] -
-                                     scout_scores['auto'])
-                sma.teleop_error = abs(tba_match['score_breakdown'][color]['teleopPoints'] -
-                                       scout_scores['teleop'])
-                sma.endgame_error = abs(tba_match['score_breakdown'][color]['teleopTakeoffPoints'] -
+                sma.auto_mobility_error = abs(score_breakdown['autoMobilityPoints'] -
+                                              scout_scores['auto_mobility'])
+                sma.auto_rotor_error = abs(score_breakdown['autoRotorPoints'] -
+                                           scout_scores['auto_rotor'])
+                sma.teleop_rotor_error = abs(score_breakdown['teleopRotorPoints'] -
+                                             scout_scores['teleop_rotor'])
+                sma.endgame_error = abs(score_breakdown['teleopTakeoffPoints'] -
                                         scout_scores['endgame'])
 
                 error_message = ""
@@ -167,32 +161,39 @@ class ScoutAnalysis:
                     error_message += ("The total error for match {0:d} {1:s} exceeds the threshold.\n"
                                       .format(match_number, color))
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
-                                      .format(tba_match['score_breakdown'][color]['totalPoints'] -
-                                              tba_match['score_breakdown'][color]['foulPoints'],
+                                      .format(score_breakdown['totalPoints'] -
+                                              score_breakdown['foulPoints'],
                                               scout_scores['total'],
                                               sma.total_error))
 
-                if sma.auto_error > self.auto_threshold:
-                    error_message += ("The auto error for match {0:d} {1:s} exceeds the threshold.\n"
+                if sma.auto_mobility_error:
+                    error_message += ("The auto mobility error for match {0:d} {1:s} exceeds the threshold.\n"
                                       .format(match_number, color))
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
-                                      .format(tba_match['score_breakdown'][color]['autoPoints'],
-                                              scout_scores['auto'],
+                                      .format(score_breakdown['autoMobilityPoints'],
+                                              scout_scores['auto_mobility'],
+                                              sma.auto_error))
+                if sma.auto_rotor_error:
+                    error_message += ("The auto rotor error for match {0:d} {1:s} exceeds the threshold.\n"
+                                      .format(match_number, color))
+                    error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
+                                      .format(score_breakdown['autoRotorPoints'],
+                                              scout_scores['auto_rotor'],
                                               sma.auto_error))
 
-                if sma.teleop_error > self.teleop_threshold:
-                    error_message += ("The teleop error for match {0:d} {1:s} exceeds the threshold.\n"
+                if sma.teleop_rotor_error:
+                    error_message += ("The teleop rotor error for match {0:d} {1:s} exceeds the threshold.\n"
                                       .format(match_number, color))
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
-                                      .format(tba_match['score_breakdown'][color]['teleopPoints'],
-                                              scout_scores['teleop'],
+                                      .format(score_breakdown['teleopRotorPoints'],
+                                              scout_scores['teleop_rotor'],
                                               sma.teleop_error))
 
-                if sma.endgame_error > self.endgame_threshold:
+                if sma.endgame_error:
                     error_message += ("The endgame error for match {0:d} {1:s} exceeds the threshold.\n"
                                       .format(match_number, color))
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
-                                      .format(tba_match['score_breakdown'][color]['teleopTakeoffPoints'],
+                                      .format(score_breakdown['teleopTakeoffPoints'],
                                               scout_scores['endgame'],
                                               sma.endgame_error))
 
@@ -216,23 +217,26 @@ class ScoutAnalysis:
                 sma.alliance_color = color
                 for i, scout_name in enumerate(scout_scores['scout']):
                     sma.alliance_number = i + 1
-                    print("Match {} Alliance {} Number {}".format(match_number,
-                                                                  sma.alliance_color,
-                                                                  sma.alliance_number))
                     sa = self.firebase.get_scout_accuracy(scout_name)
                     if sa is None:
                         sa = ScoutAccuracy()
                         sa.name = scout_name
                     sa.scouted_matches['M' + str(match_number)] = sma
                     sa.total()
-                    print("totalled")
                     self.firebase.update_scout_accuracy(sa)
         # logger.info("Exporting scouter analysis")
         # self.export()
 
     def calc_points(self, teams, with_correction):
         points = {}
+        points['auto_high'] = 0
+        points['auto_low'] = 0
+        points['auto_mobility'] = 0
+        points['auto_rotor'] = 0
         points['auto'] = 0
+        points['teleop_high'] = 0
+        points['teleop_low'] = 0
+        points['teleop_rotor'] = 0
         points['teleop'] = 0
         points['endgame'] = 0
         points['total'] = 0
@@ -243,37 +247,43 @@ class ScoutAnalysis:
             if t is None:
                 return None
             points['scout'].append(t.scout_name)
+            points['auto_mobility'] += 5 if t.auto_baseline else 0
             for gear in t.auto_gears:
-                if gear.placed:
-                    auto_gears += 1
+                auto_gears += 1 if gear.placed else 0
             for gear in t.teleop_gears:
-                if gear.placed:
-                    teleop_gears += 1
-            points['auto'] += t.auto_high_goal_made + t.auto_low_goal_made / 3
-            points['teleop'] += t.teleop_high_goal_made / 3 + t.teleop_low_goal_made / 9
+                teleop_gears += 1 if gear.placed else 0
+            points['auto_high'] += t.auto_high_goal_made
+            points['auto_low'] += t.auto_low_goal_made
+            points['teleop_high'] += t.teleop_high_goal_made
+            points['teleop_low'] += t.teleop_low_goal_made
             if with_correction:
-                points['auto'] += t.auto_high_goal_correction + t.auto_low_goal_correction / 3
-                points['teleop'] += t.teleop_high_goal_correction / 3 + t.teleop_low_goal_correction / 9
+                points['auto_high'] += t.auto_high_goal_correction
+                points['auto_low'] += t.auto_low_goal_correction
+                points['teleop_high'] += t.teleop_high_goal_correction
+                points['teleop_low'] += t.teleop_low_goal_correction
+
             points['endgame'] += 50 if t.endgame_climb == "successful" else 0
         rotors = 0
         if auto_gears == 3:
-            points['auto'] += 120
+            points['auto_rotor'] += 120
             rotors = 2
         elif auto_gears > 0:
-            points['auto'] += 60
+            points['auto_rotor'] += 60
             rotors = 1
 
         if auto_gears + teleop_gears >= 12:
-            points['teleop'] += (4 - rotors) * 40
+            points['teleop_rotor'] += (4 - rotors) * 40
         elif auto_gears + teleop_gears >= 6:
-            points['teleop'] += (3 - rotors) * 40
+            points['teleop_rotor'] += (3 - rotors) * 40
         elif auto_gears + teleop_gears >= 2:
-            points['teleop'] += (2 - rotors) * 40
+            points['teleop_rotor'] += (2 - rotors) * 40
         else:
-            points['teleop'] += (1 - rotors) * 40
+            points['teleop_rotor'] += (1 - rotors) * 40
 
-        points['auto'] = int(points['auto'])
-        points['teleop'] = int(points['teleop'])
+        points['auto'] = (points['auto_mobility'] + int(points['auto_high'] + points['auto_low'] / 3) +
+                          points['auto_rotor'])
+        points['teleop'] = int(points['teleop_high'] / 3 + points['teleop_low'] / 9) + points['teleop_rotor']
+        points['total'] = points['auto'] + points['teleop'] + points['endgame']
         return points
 
     def export(self):

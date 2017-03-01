@@ -134,6 +134,7 @@ class Aggregator:
         for tmd in firebase.get_all_team_match_data().values():
             logger.info("Match Calculating: Team Number: {0:d}, Match Number: {1:d}"
                         .format(tmd.team_number, tmd.match_number))
+
             if tmd.team_number not in list_dict:
                 list_dict[tmd.team_number] = {}
 
@@ -168,9 +169,18 @@ class Aggregator:
 
             tmd.endgame_points = 50 if tmd.endgame_climb == "successful" else 0
 
-            for key, value in iter(tmd.__dict__.items()):
-                if key == 'team_number':
+            for key, value in tmd.__dict__.items():
+                if key == 'team_number' or key == 'last_modified':
                     continue
+
+                '''
+                if key == 'last_modified':
+                    if key not in list_dict[tmd.team_number]:
+                        list_dict[tmd.team_number][key] = tmd.last_modified
+                    elif tmd.last_modified > list_dict[tmd.team_number][key]:
+                        list_dict[tmd.team_number][key] = tmd.last_modified
+                    continue
+                '''
 
                 # Convert firebase booleans (not sure if needed)
                 if value == 'true':
@@ -195,31 +205,30 @@ class Aggregator:
                     list_dict[tmd.team_number][key].append(value)
                 # The only lists in this data model are the auto_gears and teleop_gears
                 elif isinstance(value, list):
-                    if len(value) > 0:
-                        if('gears' in key):
-                            d = {}
-                            for attempt in ['placed', 'dropped']:
-                                d[attempt] = {}
-                                for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
-                                    d[attempt][location] = 0
-                            for v in value:
-                                attempt = 'placed' if v.placed else 'dropped'
-                                d[attempt]['total'] += 1
-                                d[attempt][v.location] += 1
-                            for period in ['auto', 'teleop']:
-                                if period in key:
-                                    if "{0:s}_total_gears_placed".format(period) is not list_dict[tmd.team_number]:
-                                        for attempt in ['placed', 'dropped']:
-                                            for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
-                                                list_dict[tmd.team_number]['{0:s}_{1:s}_gears_{2:s}'
-                                                                           .format(period, location, attempt)] = []
+                    if('gears' in key):
+                        d = {}
+                        for attempt in ['placed', 'dropped']:
+                            d[attempt] = {}
+                            for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
+                                d[attempt][location] = 0
+                        for v in value:
+                            attempt = 'placed' if v.placed else 'dropped'
+                            d[attempt]['total'] += 1
+                            d[attempt][v.location] += 1
+                        for period in ['auto', 'teleop']:
+                            if period in key:
+                                if "{0:s}_total_gears_placed".format(period) not in list_dict[tmd.team_number]:
                                     for attempt in ['placed', 'dropped']:
-                                            for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
-                                                list_dict[tmd.team_number]['{0:s}_{1:s}_gears_{2:s}'
-                                                                           .format(
-                                                                               period, location,
-                                                                               attempt)].append(d[attempt][location])
-                                    break
+                                        for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
+                                            list_dict[tmd.team_number]['{0:s}_{1:s}_gears_{2:s}'
+                                                                       .format(period, location, attempt)] = []
+                                for attempt in ['placed', 'dropped']:
+                                    for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
+                                        list_dict[tmd.team_number]['{0:s}_{1:s}_gears_{2:s}'
+                                                                   .format(
+                                                                           period, location,
+                                                                           attempt)].append(d[attempt][location])
+                                break
                 # Break up the climb text into lists for LowLevelStats
                 elif key == constants.ENDGAME_CLIMB_KEY:
                     for option_key, option in constants.ENDGAME_CLIMB_OPTIONS.items():
@@ -268,11 +277,18 @@ class Aggregator:
 
         # Create LowLevelStats
         for team_number, lists in iter(list_dict.items()):
+            '''
+            # if no new matches then no need to update calculations
+            previous_tcd = firebase.get_team_calculated_data(team_number)
+            if(previous_tcd is not None and
+               previous_tcd.last_modified_matches > list_dict[team_number]['last_modified']):
+                continue
+            '''
             tcd = TeamCalculatedData()
             tcd.team_number = team_number
-            for key, l in lists.items():
+            for key, item in lists.items():
                 if key in tcd.__dict__ and isinstance(tcd.__dict__[key], LowLevelStats):
-                    tcd.__dict__[key] = LowLevelStats().from_list(l)
+                    tcd.__dict__[key] = LowLevelStats().from_list(item)
             firebase.update_team_calculated_data(tcd)
             logger.info("Updated Low Level Calculations for Team {0:d}".format(team_number))
 
@@ -357,13 +373,14 @@ class Aggregator:
                 zscore_components[key]['team_numbers'].append(team_number)
                 zscore_components[key]['averages'].append(average / len(lists[key][team_number]))
             zscore_components[key]['zscores'] = stats.zscore(zscore_components[key]['averages'])
-
             # Create list for sorting
             teams = []
             for i in range(len(zscore_components[key]['team_numbers'])):
                 team = {}
                 team['team_number'] = zscore_components[key]['team_numbers'][i]
                 team['zscore'] = zscore_components[key]['zscores'][i]
+                teams.append(team)
+
             # Make the zscore negative for sorting so larger numbers are at the beginning
             teams = sorted(teams, key=lambda team: -team['zscore'])
 
@@ -391,11 +408,21 @@ class Aggregator:
         match_predictions = {}
         for team_number, team in firebase.get_teams().items():
             team.predicted_ranking = TeamRankingData({'team_number': team.team_number})
-            team.predicted_ranking.played = len(team.info.match_numbers)
+            team.predicted_ranking.played = len(team.info.match_number) - 1 if team.info.surrogate_match_number != -1 else len(team.info.match_numbers)
 
             if(team.current_ranking is None):
                 team.current_ranking = TeamRankingData({'team_number': team.team_number})
-
+            '''
+            last_modified = -1
+            for tmd in team.completed_matches:
+                if tmd.last_modified > last_modified:
+                    last_modified = tmd.last_modified
+            # if no new matches then no need to update the calculation as they are still valid
+            if team.predicted_ranking.last_modified > last_modified:
+                teams.append(team.predicted_ranking)
+                logger.info("Predicted Ranking for {0:d}".format(team.team_number))
+                continue
+            '''
             team.predicted_ranking.RPs = team.current_ranking.RPs
             team.predicted_ranking.wins = team.current_ranking.wins
             team.predicted_ranking.ties = team.current_ranking.ties
@@ -463,7 +490,7 @@ class Aggregator:
                     mp = match_predictions[match.match_number]['red']
 
                 team.predicted_ranking.wins += 1 if mp['win'] else 0
-                team.predicted_ranking.ties += 1 if mp['win'] else 0
+                team.predicted_ranking.ties += 1 if mp['tie'] else 0
                 team.predicted_ranking.losses += 1 if mp['loss'] else 0
                 team.predicted_ranking.RPs += mp['rps']
                 team.predicted_ranking.first_tie_breaker += mp['1st_tb']
@@ -512,14 +539,14 @@ class Aggregator:
             team.first_pick.yellow_card = team.calc.yellow_card.total > 0
             team.first_pick.red_card = team.calc.red_card.total > 0
             team.first_pick.stopped_moving = team.calc.stopped_moving.total > 1
-            team.first_pick.top_line = ("PA: {0:0.2f} High Goal: Auto{1:0.2f}, Teleop {2:0.2f}"
+            team.first_pick.top_line = ("PA: {0:0.2f} Average High Goal Balls: Auto {1:0.2f}, Teleop {2:0.2f}"
                                         .format(team.first_pick.pick_ability,
                                                 team.calc.auto_high_goal_made.average,
                                                 team.calc.teleop_high_goal_made.average))
             team.first_pick.second_line = ("Average Gears: Auto {0:0.2f}, Teleop {1:0.2f}"
                                            .format(team.calc.auto_total_gears_placed.average,
                                                    team.calc.teleop_total_gears_placed.average))
-            team.first_pick.third_line = ("Climb: Percentage {0:0.2f}%, Time {1:0.2f}s"
+            team.first_pick.third_line = ("Climb: Success Percentage {0:0.2f}%, Time {1:0.2f}s"
                                           .format(team.calc.endgame_climb_successful.average * 100,
                                                   team.calc.endgame_climb_time.average))
             team.first_pick.fourth_line = ""
