@@ -408,7 +408,9 @@ class Aggregator:
         match_predictions = {}
         for team_number, team in firebase.get_teams().items():
             team.predicted_ranking = TeamRankingData({'team_number': team.team_number})
-            team.predicted_ranking.played = len(team.info.match_number) - 1 if team.info.surrogate_match_number != -1 else len(team.info.match_numbers)
+            team.predicted_ranking.played = (len(team.info.match_numbers) - 1 if
+                                             team.info.surrogate_match_number != -1 else
+                                             len(team.info.match_numbers))
 
             if(team.current_ranking is None):
                 team.current_ranking = TeamRankingData({'team_number': team.team_number})

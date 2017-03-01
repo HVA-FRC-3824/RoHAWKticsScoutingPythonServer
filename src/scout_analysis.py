@@ -137,7 +137,6 @@ class ScoutAnalysis:
 
                 # update scores with correction
                 scout_scores = self.calc_points(tmds, True)
-                print(scout_scores)
                 #####################
 
                 sma = ScoutedMatchAccuracy()
@@ -172,14 +171,14 @@ class ScoutAnalysis:
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
                                       .format(score_breakdown['autoMobilityPoints'],
                                               scout_scores['auto_mobility'],
-                                              sma.auto_error))
+                                              sma.auto_mobility_error))
                 if sma.auto_rotor_error:
                     error_message += ("The auto rotor error for match {0:d} {1:s} exceeds the threshold.\n"
                                       .format(match_number, color))
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
                                       .format(score_breakdown['autoRotorPoints'],
                                               scout_scores['auto_rotor'],
-                                              sma.auto_error))
+                                              sma.auto_rotor_error))
 
                 if sma.teleop_rotor_error:
                     error_message += ("The teleop rotor error for match {0:d} {1:s} exceeds the threshold.\n"
@@ -187,7 +186,7 @@ class ScoutAnalysis:
                     error_message += ("Actual: {0:d} Scouted: {1:d} Error: {2:d}\n"
                                       .format(score_breakdown['teleopRotorPoints'],
                                               scout_scores['teleop_rotor'],
-                                              sma.teleop_error))
+                                              sma.teleop_rotor_error))
 
                 if sma.endgame_error:
                     error_message += ("The endgame error for match {0:d} {1:s} exceeds the threshold.\n"
