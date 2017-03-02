@@ -6,7 +6,7 @@ from constants import Constants
 
 from data_models.match import Match
 from data_models.team_logistics import TeamLogistics
-from data_models.team_pit_data import TeamPitData
+# from data_models.team_pit_data import TeamPitData
 from data_models.team_ranking_data import TeamRankingData
 from data_models.team_pick_ability import TeamPickAbility
 from data_models.team_calculated_data import TeamCalculatedData
@@ -88,9 +88,11 @@ class Aggregator:
 
                 team_numbers.append(info.team_number)
 
+                '''
                 pit = TeamPitData()
                 pit.team_number = info.team_number
                 firebase.update_team_pit_data(pit)
+                '''
 
                 pick = TeamPickAbility()
                 pick.team_number = info.team_number
@@ -231,8 +233,7 @@ class Aggregator:
                                 for attempt in ['placed', 'dropped']:
                                     for location in constants.GEAR_LOCATIONS_WITH_TOTAL:
                                         list_dict[tmd.team_number]['{0:s}_{1:s}_gears_{2:s}'
-                                                                   .format(
-                                                                           period, location,
+                                                                   .format(period, location,
                                                                            attempt)].append(d[attempt][location])
                                 break
                 # Break up the climb text into lists for LowLevelStats
