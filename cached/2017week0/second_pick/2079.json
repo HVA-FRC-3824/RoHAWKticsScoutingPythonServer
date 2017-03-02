@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421165858,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345838353,
     "manual_ranking": -1,
     "nickname": "4H ALARM Robotics",
-    "pick_ability": 0.0,
+    "pick_ability": -3.8575383226816893,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.50",
     "stopped_moving": false,
     "team_number": 2079,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -3.86 Defense: 28 Control: 19 Speed: 16 Torque: 16",
     "yellow_card": false
 }

@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421150053,
+    "fourth_line": "",
+    "last_modified": 1488345833912,
     "manual_ranking": -1,
     "nickname": "Gearheadz",
-    "pick_ability": 0.0,
+    "pick_ability": 40.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.50, Teleop 0.50",
     "stopped_moving": false,
     "team_number": 1289,
-    "third_line": "",
-    "top_line": "",
-    "yellow_card": false
+    "third_line": "Climb: Success Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 40.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
+    "yellow_card": true
 }

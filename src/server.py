@@ -76,7 +76,9 @@ class Server(Looper):
         if kwargs.get('scout_analysis', False):
             self.scout_analysis = ScoutAnalysis(**kwargs)
 
-        if kwargs.get('setup', False):
+        setup = kwargs.get('setup', None)
+
+        if setup is not None and setup != "none":
             logger.info("Setting up database...")
 
             if self.tba.event_down():
@@ -86,25 +88,35 @@ class Server(Looper):
                         sys.exit()
                     elif response in ['n', 'no']:
                         return
+            if setup == "teams":
+                event_teams = self.tba.get_event_teams()
+                team_numbers = Aggregator.set_teams(self.firebase, event_teams)
+                logger.info("Added teams to Firebase")
 
-            event_matches = self.tba.get_event_matches()
-            team_matches, team_surrogate_matches, num_matches = Aggregator.set_matches(self.firebase, event_matches)
-            logger.info("Added matches to Firebase")
+                with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
+                          self.event_key + "/event_extras.json", 'w') as f:
+                    json_dict = {}
+                    json_dict['team_numbers'] = team_numbers
+                    f.write(json.dumps(json_dict, sort_keys=True, indent=4))
 
-            event_teams = self.tba.get_event_teams()
-            team_numbers = Aggregator.set_teams(self.firebase, event_teams, team_matches, team_surrogate_matches)
-            logger.info("Added teams to Firebase")
+            elif setup == "matches":
+                event_matches = self.tba.get_event_matches()
+                team_matches, team_surrogate_matches, num_matches = Aggregator.set_matches(self.firebase, event_matches)
+                logger.info("Added matches to Firebase")
+                with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
+                          self.event_key + "/event_extras.json") as f:
+                    json_dict = json.loads(f.read())
+                team_numbers = json_dict['team_numbers']
+                Aggregator.set_teams(self.firebase, team_numbers, team_matches, team_surrogate_matches)
+                with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
+                          self.event_key + "/event_extras.json", 'w') as f:
+                    json_dict = json.loads(f.read())
+                    json_dict['number_of_matches'] = num_matches
+                    f.write(json.dumps(json_dict, sort_keys=True, indent=4))
 
             event_rankings = self.tba.get_event_rankings()
             Aggregator.set_rankings(self.firebase, event_rankings)
             logger.info("Added rankings to Firebase")
-
-            with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
-                      self.event_key + "/event_extras.json", 'w') as f:
-                json_dict = {}
-                json_dict['number_of_matches'] = num_matches
-                json_dict['team_numbers'] = team_numbers
-                f.write(json.dumps(json_dict, sort_keys=True, indent=4))
 
             logger.info("Exiting...")
             os._exit(0)

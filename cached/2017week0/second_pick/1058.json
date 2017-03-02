@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421147935,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345839034,
     "manual_ranking": -1,
     "nickname": "PVC Pirates",
-    "pick_ability": 0.0,
+    "pick_ability": 38.5517111309549,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
     "stopped_moving": false,
     "team_number": 1058,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 50.00%, Time 5.00s",
+    "top_line": "PA: 38.55 Defense: 3 Control: 4 Speed: 9 Torque: 9",
     "yellow_card": false
 }

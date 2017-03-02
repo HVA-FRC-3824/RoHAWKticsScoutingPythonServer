@@ -17,12 +17,12 @@
     "endgame_climb_time": "< 5s",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1487642120206,
+    "last_modified": 1488346216448,
     "match_number": 6,
     "no_show": false,
     "notes": "no autonomous",
     "red_card": false,
-    "scout_name": "James Dyer\n",
+    "scout_name": "James Dyer",
     "stopped_moving": false,
     "tags_blocked_shots": false,
     "tags_broke": false,
@@ -49,7 +49,7 @@
             "placed": false
         }
     ],
-    "teleop_high_goal_correction": 0,
+    "teleop_high_goal_correction": 0.0,
     "teleop_high_goal_made": 0,
     "teleop_high_goal_missed": 0,
     "teleop_hoppers": 0,

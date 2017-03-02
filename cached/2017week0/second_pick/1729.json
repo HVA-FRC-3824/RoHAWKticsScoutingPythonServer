@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421155336,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345833575,
     "manual_ranking": -1,
     "nickname": "Team Inconceivable!",
-    "pick_ability": 0.0,
+    "pick_ability": 2.811205080839316,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
     "stopped_moving": false,
     "team_number": 1729,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 2.81 Defense: 1 Control: 2 Speed: 20 Torque: 20",
     "yellow_card": false
 }

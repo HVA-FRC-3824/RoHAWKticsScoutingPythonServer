@@ -1,10 +1,10 @@
 {
     "dnp": false,
-    "last_modified": 1487421171592,
+    "last_modified": 1488328483247,
     "manual_ranking": -1,
     "nickname": "The Robockets",
     "pick_ability": 0.0,
-    "picked": false,
+    "picked": true,
     "red_card": false,
     "robot_picture_filepath": "",
     "second_line": "",

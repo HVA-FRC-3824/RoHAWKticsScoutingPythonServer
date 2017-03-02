@@ -17,12 +17,12 @@
     "endgame_climb_time": "N/A",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1487642128575,
+    "last_modified": 1488346154009,
     "match_number": 1,
     "no_show": false,
     "notes": "Very good gear placement, not the most reliable gear cycles. Gears took a very long time to load. ",
     "red_card": false,
-    "scout_name": "Knox Crichton ",
+    "scout_name": "Knox Crichton",
     "stopped_moving": false,
     "tags_blocked_shots": false,
     "tags_broke": false,
@@ -44,7 +44,7 @@
             "placed": true
         }
     ],
-    "teleop_high_goal_correction": 0,
+    "teleop_high_goal_correction": 0.0,
     "teleop_high_goal_made": 0,
     "teleop_high_goal_missed": 0,
     "teleop_hoppers": 0,

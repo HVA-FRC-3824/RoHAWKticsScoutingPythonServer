@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421177792,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345847273,
     "manual_ranking": -1,
     "nickname": "The Blue Devils",
-    "pick_ability": 0.0,
+    "pick_ability": -4.238358881787794,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
     "stopped_moving": false,
     "team_number": 6324,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -4.24 Defense: 20 Control: 22 Speed: 17 Torque: 17",
     "yellow_card": false
 }

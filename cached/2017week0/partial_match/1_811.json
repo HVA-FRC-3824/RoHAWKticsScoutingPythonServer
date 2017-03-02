@@ -17,7 +17,7 @@
     "endgame_climb_time": "N/A",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1487642119477,
+    "last_modified": 1488346140592,
     "match_number": 1,
     "no_show": false,
     "notes": "shot slowly and inaccurately",
@@ -39,7 +39,8 @@
             "placed": true
         }
     ],
-    "teleop_high_goal_correction": 0,
+    "teleop_high_goal_correction": 0.0,
+    "teleop_high_goal_correction_made": 0.0,
     "teleop_high_goal_made": 6,
     "teleop_high_goal_missed": 22,
     "teleop_hoppers": 0,

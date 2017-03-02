@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421168757,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345840396,
     "manual_ranking": -1,
     "nickname": "Team Phoenix",
-    "pick_ability": 0.0,
+    "pick_ability": 13.633346563293795,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 1.50",
     "stopped_moving": false,
     "team_number": 2342,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 50.00%, Time 10.00s",
+    "top_line": "PA: 13.63 Defense: 5 Control: 27 Speed: 24 Torque: 24",
     "yellow_card": false
 }

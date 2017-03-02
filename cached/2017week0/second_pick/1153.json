@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421149178,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345832849,
     "manual_ranking": -1,
     "nickname": "Robo-Rebels",
-    "pick_ability": 0.0,
+    "pick_ability": 36.0517111309549,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.50",
     "stopped_moving": false,
     "team_number": 1153,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 50.00%, Time 5.00s",
+    "top_line": "PA: 36.05 Defense: 14 Control: 1 Speed: 7 Torque: 7",
     "yellow_card": false
 }

@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421172567,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345843167,
     "manual_ranking": -1,
     "nickname": "Andromeda One",
-    "pick_ability": 0.0,
+    "pick_ability": 22.77280141918083,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 1.00",
     "stopped_moving": false,
     "team_number": 4905,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 50.00%, Time 10.00s",
+    "top_line": "PA: 22.77 Defense: 11 Control: 18 Speed: 19 Torque: 19",
     "yellow_card": false
 }

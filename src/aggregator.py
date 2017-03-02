@@ -66,7 +66,7 @@ class Aggregator:
         return team_matches, team_surrogate_matches, num_matches
 
     @staticmethod
-    def set_teams(firebase, event_teams, team_matches, team_surrogate_matches):
+    def set_teams(firebase, event_teams, team_matches=None, team_surrogate_matches=None):
         '''Converts the team information from `The Blue Alliance <thebluealliance.com>`_
            to :class:`TeamLogistics`.
             Converts the team information from `The Blue Alliance <thebluealliance.com>`_
@@ -76,34 +76,40 @@ class Aggregator:
             event_teams (dict): The team information from `The Blue Alliance <thebluealliance.com>`_
             team_matches (dict): The match numbers for each team
         '''
-        team_numbers = []
-        event_teams.sort(key=lambda team: int(team['team_number']))
-        for tba_team in event_teams:
-            info = TeamLogistics()
-            info.team_number = tba_team['team_number']
-            info.nickname = tba_team['nickname']
-            info.match_numbers = team_matches[info.team_number]
-            if info.team_number in team_surrogate_matches:
-                info.surrogate_match_number = team_surrogate_matches[info.team_number]
-            else:
-                info.surrogate_match_number = -1
-            firebase.update_team_logistics(info)
+        # Pulling teams
+        if team_matches is None:
+            team_numbers = []
+            event_teams.sort(key=lambda team: int(team['team_number']))
+            for tba_team in event_teams:
+                info = TeamLogistics()
+                info.team_number = tba_team['team_number']
+                info.nickname = tba_team['nickname']
+                firebase.update_team_logistics(info)
 
-            team_numbers.append(info.team_number)
+                team_numbers.append(info.team_number)
 
-            pit = TeamPitData()
-            pit.team_number = info.team_number
-            firebase.update_team_pit_data(pit)
+                pit = TeamPitData()
+                pit.team_number = info.team_number
+                firebase.update_team_pit_data(pit)
 
-            pick = TeamPickAbility()
-            pick.team_number = info.team_number
-            pick.nickname = info.nickname
-            firebase.update_team_first_pick_ability(pick)
-            firebase.update_team_second_pick_ability(pick)
-            firebase.update_team_third_pick_ability(pick)
-            logger.info("Team {0:d} added".format(info.team_number))
-
-        return team_numbers
+                pick = TeamPickAbility()
+                pick.team_number = info.team_number
+                pick.nickname = info.nickname
+                firebase.update_team_first_pick_ability(pick)
+                firebase.update_team_second_pick_ability(pick)
+                firebase.update_team_third_pick_ability(pick)
+                logger.info("Team {0:d} added".format(info.team_number))
+            return team_numbers
+        # Pulling Matches
+        else:
+            for team_number in event_teams:
+                info = firebase.get_team_logistics(team_number)
+                info.match_numbers = team_matches[info.team_number]
+                if info.team_number in team_surrogate_matches:
+                    info.surrogate_match_number = team_surrogate_matches[info.team_number]
+                else:
+                    info.surrogate_match_number = -1
+                firebase.update_team_logistics(info)
 
     @staticmethod
     def set_rankings(firebase, event_rankings):

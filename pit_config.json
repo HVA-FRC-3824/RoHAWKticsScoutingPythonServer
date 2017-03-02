@@ -1,8 +1,9 @@
 {
-	"event_key" : "2017week0",
+	"event_key" : "2017scmb",
     "socket": true,
     "bluetooth": true,
-    "setup": false,
+    "setup": "none",
+	"matches_only": false,
     "log_level": "debug",
     "time_between_cycles": 600,
 	"cache_firebase": false,
@@ -16,7 +17,7 @@
 	    "teleop_threshold": 10,
 	    "endgame_threshold": 0
 	},
-	"logins_file": "../logins.json",
+	"logins_file": "../../logins.json",
 	"use_email": true,
 	"emails": [
 		"akmessing1@yahoo.com"

@@ -1,14 +1,4 @@
 {
-    "_auto_gears_type": {
-        "dropped": false,
-        "location": "",
-        "placed": false
-    },
-    "_teleop_gears_type": {
-        "dropped": false,
-        "location": "",
-        "placed": false
-    },
     "alliance_color": "Red",
     "alliance_number": 1,
     "auto_baseline": false,
@@ -27,7 +17,7 @@
     "endgame_climb_time": "N/A",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1487642146383,
+    "last_modified": 1488346190434,
     "match_number": 4,
     "no_show": false,
     "notes": "it looked like it was cycling through for gears, but it never actually picked up a gear. ever",

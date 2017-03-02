@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421140927,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345847952,
     "manual_ranking": -1,
     "nickname": "The PowerKnights",
-    "pick_ability": 0.0,
+    "pick_ability": -10.311418161201939,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
     "stopped_moving": false,
     "team_number": 501,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -10.31 Defense: 13 Control: 29 Speed: 14 Torque: 14",
     "yellow_card": false
 }

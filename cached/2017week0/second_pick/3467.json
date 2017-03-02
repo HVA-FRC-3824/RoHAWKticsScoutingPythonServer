@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421170066,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345834934,
     "manual_ranking": -1,
     "nickname": "Windham Windup",
-    "pick_ability": 0.0,
+    "pick_ability": -13.748557548269252,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
     "stopped_moving": false,
     "team_number": 3467,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -13.75 Defense: 10 Control: 25 Speed: 8 Torque: 8",
     "yellow_card": false
 }

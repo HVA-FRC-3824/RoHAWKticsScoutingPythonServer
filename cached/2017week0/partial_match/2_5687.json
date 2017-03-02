@@ -1,14 +1,4 @@
 {
-    "_auto_gears_type": {
-        "dropped": false,
-        "location": "",
-        "placed": false
-    },
-    "_teleop_gears_type": {
-        "dropped": false,
-        "location": "",
-        "placed": false
-    },
     "alliance_color": "Blue",
     "alliance_number": 3,
     "auto_baseline": true,
@@ -27,7 +17,7 @@
     "endgame_climb_time": "N/A",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1487642145647,
+    "last_modified": 1488346160203,
     "match_number": 2,
     "no_show": false,
     "notes": "they only went for the gears",

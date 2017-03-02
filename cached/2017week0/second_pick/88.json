@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421133392,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345836294,
     "manual_ranking": -1,
     "nickname": "TJ(Squared)",
-    "pick_ability": 0.0,
+    "pick_ability": 10.933615242517947,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.50",
     "stopped_moving": false,
     "team_number": 88,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 10.93 Defense: 2 Control: 3 Speed: 21 Torque: 21",
     "yellow_card": false
 }

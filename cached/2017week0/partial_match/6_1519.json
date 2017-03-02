@@ -17,12 +17,12 @@
     "endgame_climb_time": "< 10s",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1487642111557,
+    "last_modified": 1488346217120,
     "match_number": 6,
     "no_show": false,
     "notes": "Good climber. Miserable shooter. No apparent gear system. ",
     "red_card": false,
-    "scout_name": "Knox Crichton ",
+    "scout_name": "Knox Crichton",
     "stopped_moving": false,
     "tags_blocked_shots": false,
     "tags_broke": false,
@@ -39,7 +39,7 @@
             "placed": true
         }
     ],
-    "teleop_high_goal_correction": 0,
+    "teleop_high_goal_correction": 0.0,
     "teleop_high_goal_made": 0,
     "teleop_high_goal_missed": 0,
     "teleop_hoppers": 2,

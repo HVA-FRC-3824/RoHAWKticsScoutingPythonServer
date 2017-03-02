@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421154122,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345849319,
     "manual_ranking": -1,
     "nickname": "Tidal Force",
-    "pick_ability": 0.0,
+    "pick_ability": 16.0517111309549,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
     "stopped_moving": false,
     "team_number": 1721,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 16.05 Defense: 8 Control: 11 Speed: 12 Torque: 12",
     "yellow_card": false
 }

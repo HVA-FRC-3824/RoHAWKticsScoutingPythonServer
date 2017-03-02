@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1487421134815,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345851361,
     "manual_ranking": -1,
     "nickname": "NUTRONs",
-    "pick_ability": 0.0,
+    "pick_ability": -11.475634211118646,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.50",
     "stopped_moving": false,
     "team_number": 125,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -11.48 Defense: 18 Control: 20 Speed: 29 Torque: 29",
     "yellow_card": false
 }
