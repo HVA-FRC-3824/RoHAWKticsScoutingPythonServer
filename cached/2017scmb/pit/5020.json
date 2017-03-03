@@ -1,14 +1,19 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427290201,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 0,
+    "last_modified": 1488483498889,
+    "length": 0,
+    "max_hopper_load": 45,
+    "notes": "dimensions known, but they might not pass inspection.",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Philip",
     "team_number": 5020,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 0,
+    "width": 0
 }

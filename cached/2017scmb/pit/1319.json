@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427170634,
-    "length": 0.0,
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 3,
+    "drive_train": "4 wheel with 3 some high and low gear",
+    "height": 0,
+    "last_modified": 1488479167360,
+    "length": 0,
+    "max_hopper_load": 15,
     "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "programming_language": "C++",
+    "robot_image_default": 0,
+    "scout_name": "Knox Crichton",
     "team_number": 1319,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 0,
+    "width": 0
 }

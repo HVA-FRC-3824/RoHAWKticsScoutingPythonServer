@@ -347,10 +347,10 @@ class Aggregator:
                             lists[key][team_number] = []
 
                         # first 3 team numbers are blue. second 3 team numbers are red
-                        if i < 3:
+                        if 'blue' in key:
                             match_rank = 4 - smd.__dict__["blue" + key][i]
                         else:
-                            match_rank = 4 - smd.__dict__["red" + key][i - 3]
+                            match_rank = 4 - smd.__dict__["red" + key][i]
                         if match_rank == 3:
                             match_rank = 4
                         lists[key][team_number].append(match_rank)
@@ -359,7 +359,11 @@ class Aggregator:
 
         # calculate pilot ratings
         for key, value in pilot_rating_dict.items():
+            logger.info("Pilot rating {}".format(key))
             tcd = firebase.get_team_calculated_data(key)
+            if tcd is None:
+                tcd = TeamCalculatedData()
+                tcd.team_number = key
             tcd.pilot_rating = LowLevelStats().from_list(value)
             firebase.update_team_calculated_data(tcd)
 
@@ -543,8 +547,8 @@ class Aggregator:
 
             # First Pick
             team.first_pick.pick_ability = tc.first_pick_ability()
-            if(team.pit.robot_image_default > -1 and team.pit.robot_image_default < len(team.pit.robot_image_filepaths)):
-                team.first_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
+            # if(team.pit.robot_image_default > -1 and team.pit.robot_image_default < len(team.pit.robot_image_filepaths)):
+            #    team.first_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.first_pick.yellow_card = team.calc.yellow_card.total > 0
             team.first_pick.red_card = team.calc.red_card.total > 0
             team.first_pick.stopped_moving = team.calc.stopped_moving.total > 1
@@ -564,8 +568,8 @@ class Aggregator:
 
             # Second Pick
             team.second_pick.pick_ability = tc.second_pick_ability()
-            if(team.pit.robot_image_default > -1 and team.pit.robot_image_default < len(team.pit.robot_image_filepaths)):
-                team.second_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
+            # if(team.pit.robot_image_default > -1 and team.pit.robot_image_default < len(team.pit.robot_image_filepaths)):
+            #    team.second_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.second_pick.yellow_card = team.calc.yellow_card.total > 0
             team.second_pick.red_card = team.calc.red_card.total > 0
             team.second_pick.stopped_moving = team.calc.stopped_moving.total > 1

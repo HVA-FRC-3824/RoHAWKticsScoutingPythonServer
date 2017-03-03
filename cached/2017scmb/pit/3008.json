@@ -1,14 +1,20 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427203440,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 6,
+    "drive_train": "Mecanum",
+    "height": 36,
+    "last_modified": 1488483005150,
+    "length": 32,
+    "max_hopper_load": 0,
+    "notes": "very simple robot, gear pickup ",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_urls": [
+        "",
+        ""
+    ],
+    "scout_name": "Austin Curlee",
     "team_number": 3008,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 0,
+    "width": 40
 }

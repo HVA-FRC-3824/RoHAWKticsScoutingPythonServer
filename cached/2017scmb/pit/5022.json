@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427292420,
-    "length": 0.0,
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 3,
+    "drive_train": "arcade (4 wheel drive)",
+    "height": 0,
+    "last_modified": 1488483830178,
+    "length": 0,
+    "max_hopper_load": 30,
     "notes": "",
-    "programming_language": "",
+    "programming_language": "Labview",
     "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "scout_name": "Abigail Bradfield",
     "team_number": 5022,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 83,
+    "width": 0
 }

@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427207820,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1488481610305,
+    "length": 33,
+    "max_hopper_load": 30,
+    "notes": "picks up gear from behind\n",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "scout_name": "Austin Curlee",
     "team_number": 3489,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 109,
+    "width": 35
 }

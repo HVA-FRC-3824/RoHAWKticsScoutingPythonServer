@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427189653,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1488479680985,
+    "length": 36,
+    "max_hopper_load": 7,
+    "notes": "auto align by vision track",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "scout_name": "Knox Crichton",
     "team_number": 1758,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 88,
+    "width": 40
 }

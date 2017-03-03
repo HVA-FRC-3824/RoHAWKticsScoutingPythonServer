@@ -1,14 +1,22 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427317963,
-    "length": 0.0,
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "Tank (4 wheel)",
+    "height": 24,
+    "last_modified": 1488483734329,
+    "length": 39,
+    "max_hopper_load": 0,
     "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "programming_language": "Labview",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/6222_0.jpg"
+    ],
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Abigail Bradfield",
     "team_number": 6222,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 63,
+    "width": 35
 }

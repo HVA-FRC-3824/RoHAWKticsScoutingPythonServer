@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "3 - Competent",
+    "blue2_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        2,
+        2,
+        2
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        2,
+        2,
+        2
+    ],
+    "blue_torque": [
+        2,
+        2,
+        2
+    ],
+    "last_modified": 1488557409956,
+    "match_number": 12,
+    "notes": "1319 is a pretty big hazard, don't want to have her on the airship.",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "3 - Competent",
+    "red3_pilot_rating": "1 - Not paying attention/Slow/Clumsy",
+    "red_control": [
+        2,
+        2,
+        2
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        1,
+        2
+    ],
+    "red_torque": [
+        2,
+        2,
+        2
+    ],
+    "scout_name": "Philip Hicks"
+}

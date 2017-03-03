@@ -1,14 +1,22 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427194071,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 35,
+    "last_modified": 1488494118030,
+    "length": 32,
+    "max_hopper_load": 30,
+    "notes": "can shoot balls, deliver gears, and climb",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_urls": [
+        "",
+        "",
+        "",
+        ""
+    ],
+    "scout_name": "Seth Maxwell",
     "team_number": 2187,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 70,
+    "width": 30
 }

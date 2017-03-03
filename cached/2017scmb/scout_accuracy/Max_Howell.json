@@ -1,0 +1,21 @@
+{
+    "auto_mobility_error": 5,
+    "auto_rotor_error": 0,
+    "endgame_error": 50,
+    "last_modified": 1488554497248,
+    "name": "Max Howell",
+    "scouted_matches": {
+        "M8": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 5,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 8,
+            "teleop_rotor_error": 0,
+            "total_error": 55
+        }
+    },
+    "teleop_rotor_error": 0,
+    "total_error": 55
+}

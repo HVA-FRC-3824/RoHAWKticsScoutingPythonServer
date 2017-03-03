@@ -1,14 +1,22 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427288491,
-    "length": 0.0,
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 23.75,
+    "last_modified": 1488481851107,
+    "length": 32.5,
+    "max_hopper_load": 30,
     "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "programming_language": "Labview",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/4965_0.jpg"
+    ],
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Philip",
     "team_number": 4965,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 107,
+    "width": 28.5
 }

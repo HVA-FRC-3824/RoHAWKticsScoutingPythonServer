@@ -1,7 +1,7 @@
 {
 	"event_key" : "2017scmb",
-    "socket": true,
-    "bluetooth": true,
+    "socket": false,
+    "bluetooth": false,
     "setup": "none",
 	"matches_only": false,
     "log_level": "debug",
@@ -10,7 +10,7 @@
     "time_between_caches": -1,
     "report_crash": true,
     "aggregate": true,
-    "scout_analysis": true,
+    "scout_analysis": false,
     "scout_analysis_config": {
 		"total_threshold": 20,
 	    "auto_threshold": 10,

@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "3 - Competent",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        3,
+        3,
+        3
+    ],
+    "blue_defense": [
+        2,
+        3,
+        3
+    ],
+    "blue_speed": [
+        3,
+        2,
+        2
+    ],
+    "blue_torque": [
+        2,
+        2,
+        2
+    ],
+    "last_modified": 1488560569290,
+    "match_number": 14,
+    "notes": "both teams had shooter robots but neither where very good.",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "4 - Pretty good",
+    "red3_pilot_rating": "4 - Pretty good",
+    "red_control": [
+        2,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        2,
+        3,
+        3
+    ],
+    "red_torque": [
+        3,
+        2,
+        2
+    ],
+    "scout_name": "Philip Hicks"
+}

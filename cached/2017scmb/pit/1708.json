@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427187727,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 4,
+    "drive_train": "6 wheel drop center",
+    "height": 0,
+    "last_modified": 1488479547240,
+    "length": 34,
+    "max_hopper_load": 23,
+    "notes": "can take a hit and accurate shooter",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "scout_name": "Knox Crichton",
     "team_number": 1708,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 100,
+    "width": 27
 }

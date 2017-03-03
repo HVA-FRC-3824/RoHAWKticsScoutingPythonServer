@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427221915,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Mecanum. \n",
+    "height": 24,
+    "last_modified": 1488481705785,
+    "length": 36,
+    "max_hopper_load": 30,
+    "notes": "all modular",
+    "programming_language": "Labview ",
+    "robot_image_default": 0,
+    "scout_name": "Liam Schenk",
     "team_number": 4073,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 97,
+    "width": 23.5
 }

@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427135879,
-    "length": 0.0,
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 0,
+    "drive_train": "",
+    "height": 0,
+    "last_modified": 1488494121672,
+    "length": 0,
+    "max_hopper_load": 0,
     "notes": "",
     "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "robot_image_default": 0,
+    "scout_name": "Neil Patel",
     "team_number": 329,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 0,
+    "width": 0
 }

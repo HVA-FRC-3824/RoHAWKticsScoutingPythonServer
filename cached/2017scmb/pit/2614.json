@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427199531,
-    "length": 0.0,
-    "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "6 wheel\n",
+    "height": 24,
+    "last_modified": 1488482680300,
+    "length": 36,
+    "max_hopper_load": 40,
+    "notes": "climbed in 1st practice. shoot in front of boiler for rebound.",
+    "programming_language": "Labview",
+    "robot_image_default": 0,
+    "scout_name": "Austin Curlee",
     "team_number": 2614,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 119,
+    "width": 40
 }

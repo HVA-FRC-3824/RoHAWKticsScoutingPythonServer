@@ -195,6 +195,8 @@ class Server(Looper):
                     if self.report_crash:
                         logger.error("Reporting crash")
                         self.messenger.send_message("Server Crash!!!", traceback.format_exc())
+        else:
+            self.led_manager.internet_connected()
         if not self.running:
             return
 

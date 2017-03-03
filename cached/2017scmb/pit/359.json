@@ -1,14 +1,16 @@
 {
-    "height": 0.0,
-    "last_modified": 1488427143063,
-    "length": 0.0,
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 0,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1488494503235,
+    "length": 36,
+    "max_hopper_load": 42,
     "notes": "",
-    "programming_language": "",
-    "robot_image_default": -1,
-    "robot_image_filepaths": [],
-    "robot_image_urls": [],
-    "scout_name": "",
+    "programming_language": "Labview",
+    "robot_image_default": 0,
+    "scout_name": "Neil Patel",
     "team_number": 359,
-    "weight": 0.0,
-    "width": 0.0
+    "weight": 119.5,
+    "width": 40
 }

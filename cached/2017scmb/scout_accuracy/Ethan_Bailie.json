@@ -1,0 +1,21 @@
+{
+    "auto_mobility_error": 10,
+    "auto_rotor_error": 0,
+    "endgame_error": 50,
+    "last_modified": 1488554477619,
+    "name": "Ethan Bailie",
+    "scouted_matches": {
+        "M8": {
+            "alliance_color": "blue",
+            "alliance_number": 2,
+            "auto_mobility_error": 10,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 8,
+            "teleop_rotor_error": 0,
+            "total_error": 60
+        }
+    },
+    "teleop_rotor_error": 0,
+    "total_error": 60
+}

@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "3 - Competent",
+    "blue2_pilot_rating": "0 - Not a pilot in this match",
+    "blue3_pilot_rating": "4 - Pretty good",
+    "blue_control": [
+        3,
+        2,
+        2
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        2,
+        3,
+        2
+    ],
+    "blue_torque": [
+        3,
+        2,
+        2
+    ],
+    "last_modified": 1488561222486,
+    "match_number": 15,
+    "notes": "4020 stuck there hand out",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "3 - Competent",
+    "red3_pilot_rating": "1 - Not paying attention/Slow/Clumsy",
+    "red_control": [
+        3,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        2,
+        2,
+        1
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Philip Hicks"
+}
