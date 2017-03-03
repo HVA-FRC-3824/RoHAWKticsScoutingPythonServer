@@ -2,7 +2,7 @@
 	"event_key" : "2017scmb",
     "socket": false,
     "bluetooth": false,
-    "setup": "teams",
+    "setup": "matches",
 	"matches_only": false,
     "log_level": "debug",
     "time_between_cycles": 600,

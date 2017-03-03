@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "0 - Not a pilot in this match",
+    "blue3_pilot_rating": "3 - Competent",
+    "blue_control": [
+        1,
+        1,
+        1
+    ],
+    "blue_defense": [
+        1,
+        1,
+        1
+    ],
+    "blue_speed": [
+        2,
+        2,
+        1
+    ],
+    "blue_torque": [
+        1,
+        1,
+        1
+    ],
+    "last_modified": 1487433009528,
+    "match_number": 8,
+    "notes": "",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "3 - Competent",
+    "red3_pilot_rating": "3 - Competent",
+    "red_control": [
+        1,
+        2,
+        2
+    ],
+    "red_defense": [
+        1,
+        1,
+        1
+    ],
+    "red_speed": [
+        1,
+        2,
+        2
+    ],
+    "red_torque": [
+        1,
+        1,
+        1
+    ],
+    "scout_name": "Abigail Bradfield"
+}

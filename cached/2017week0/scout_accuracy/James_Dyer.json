@@ -1,0 +1,61 @@
+{
+    "auto_mobility_error": 5,
+    "auto_rotor_error": 60,
+    "endgame_error": 200,
+    "last_modified": 1488346218919,
+    "name": "James Dyer",
+    "scouted_matches": {
+        "M10": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 10,
+            "teleop_rotor_error": 40,
+            "total_error": 10
+        },
+        "M6": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 5,
+            "auto_rotor_error": 0,
+            "endgame_error": 100,
+            "match_number": 6,
+            "teleop_rotor_error": 0,
+            "total_error": 95
+        },
+        "M7": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 60,
+            "endgame_error": 0,
+            "match_number": 7,
+            "teleop_rotor_error": 0,
+            "total_error": 60
+        },
+        "M8": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 8,
+            "teleop_rotor_error": 0,
+            "total_error": 50
+        },
+        "M9": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 9,
+            "teleop_rotor_error": 40,
+            "total_error": 40
+        }
+    },
+    "teleop_rotor_error": 80,
+    "total_error": 255
+}
