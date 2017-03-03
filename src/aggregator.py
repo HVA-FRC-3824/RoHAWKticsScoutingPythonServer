@@ -543,7 +543,7 @@ class Aggregator:
 
             # First Pick
             team.first_pick.pick_ability = tc.first_pick_ability()
-            if(team.pit.robot_image_default > -1):
+            if(team.pit.robot_image_default > -1 and team.pit.robot_image_default < len(team.pit.robot_image_filepaths)):
                 team.first_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.first_pick.yellow_card = team.calc.yellow_card.total > 0
             team.first_pick.red_card = team.calc.red_card.total > 0
@@ -564,7 +564,7 @@ class Aggregator:
 
             # Second Pick
             team.second_pick.pick_ability = tc.second_pick_ability()
-            if(team.pit.robot_image_default > -1):
+            if(team.pit.robot_image_default > -1 and team.pit.robot_image_default < len(team.pit.robot_image_filepaths)):
                 team.second_pick.robot_picture_filepath = team.pit.robot_image_filepaths[team.pit.robot_image_default]
             team.second_pick.yellow_card = team.calc.yellow_card.total > 0
             team.second_pick.red_card = team.calc.red_card.total > 0
