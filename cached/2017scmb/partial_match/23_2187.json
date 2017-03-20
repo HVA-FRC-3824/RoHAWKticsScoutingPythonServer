@@ -2,6 +2,7 @@
     "alliance_color": "Red",
     "alliance_number": 3,
     "auto_baseline": false,
+    "auto_gears": [],
     "auto_high_goal_correction": 0,
     "auto_high_goal_made": 0,
     "auto_high_goal_missed": 0,
@@ -16,7 +17,7 @@
     "endgame_climb_time": "N/A",
     "endgame_points": 0,
     "fouls": 0,
-    "last_modified": 1488568226023,
+    "last_modified": 1488651410877,
     "match_number": 23,
     "no_show": false,
     "notes": "had trouble moving their robot it got stuck in the middle for a while",
@@ -46,7 +47,7 @@
     "teleop_low_goal_made": 0,
     "teleop_low_goal_missed": 0,
     "teleop_picked_up_gears": 0,
-    "teleop_points": 0,
-    "total_points": 0,
+    "teleop_points": 40,
+    "total_points": 40,
     "yellow_card": false
 }

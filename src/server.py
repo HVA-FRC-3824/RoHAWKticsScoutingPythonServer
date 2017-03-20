@@ -12,10 +12,10 @@ from threading import Event
 from aggregator import Aggregator
 from the_blue_alliance import TheBlueAlliance
 from scout_analysis import ScoutAnalysis
-from constants import Constants
 from messenger import Messenger
 from message_handler import MessageHandler
 from led_manager import LedManager
+from relay_socket import RelaySocket
 
 from ourlogging import setup_logging
 
@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 class Server:
     '''Main server class that interprets the config file and starts various threads'''
 
-    PING_TIMEOUT = 5 # 5 seconds
+    PING_TIMEOUT = 5  # 5 seconds
     HEARTBEAT_TIME = 60 * 30  # 30 minutes
-    LOOP_TIME = 60 * 10 # 10 minutes
+    LOOP_TIME = 60 * 10  # 10 minutes
 
     def __init__(self, **kwargs):
         ''' Initialization of all the server components based on the config
@@ -36,7 +36,6 @@ class Server:
         Kwargs:
             The config json converted to a `dict`
         '''
-        Looper.__init__(self)
         self.event_key = kwargs.get('event_key', "")
         if self.event_key == "":
             logger.critical("No event key")
@@ -60,12 +59,10 @@ class Server:
         if kwargs.get('scout_analysis', False):
             self.scout_analysis = ScoutAnalysis(**kwargs)
 
-
     def start(self):
         '''Starts the main thread loop'''
+        self.socket.wait_for_connection()
         self.socket.start()
-        while not self.socket.is_connected():
-            pass
         self.led_manager.start_up_complete()
         self.event = None
         self.running = True
@@ -76,7 +73,7 @@ class Server:
             # Heartbeat
             if last_heartbeat is None or time.time() > last_heartbeat + self.HEARTBEAT_TIME:
                 # Check Internet connection
-                if self.tba.is_down():
+                if self.tba.event_down():
                     try:
                         urlopen('http://216.58.192.142', timeout=1)
                         self.led_manager.tba_down()
@@ -104,9 +101,9 @@ class Server:
             # Alert admin if there are any matches that have timed out waiting on all tmds to come in
             # Probably means someone didn't hit save
             for match_number, team_number_list in self.message_handler.get_partial_matches_timeout():
-                self.messenger.send_message("Match {} missing tmd".format(match_number), "Teams received {}".format(team_number_list))
+                self.messenger.send_message("Match {} missing tmd".format(match_number),
+                                            "Teams received {}".format(team_number_list))
 
-            
             end_time = time.time()
             iteration += 1
             if self.running and end_time - start_time < self.LOOP_TIME:

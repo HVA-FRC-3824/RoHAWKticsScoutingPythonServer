@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "4 - Pretty good",
+    "blue_control": [
+        3,
+        2,
+        2
+    ],
+    "blue_defense": [
+        2,
+        2,
+        3
+    ],
+    "blue_speed": [
+        3,
+        2,
+        2
+    ],
+    "blue_torque": [
+        2,
+        2,
+        3
+    ],
+    "last_modified": 1488570541198,
+    "match_number": 27,
+    "notes": "1102 very good shooting accuracy,. but not fast enough to be relevant\n1051 pilot good at giving cues to rest of drive team",
+    "red1_pilot_rating": "3 - Competent",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "3 - Competent",
+    "red_control": [
+        3,
+        3,
+        1
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        1,
+        2
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Abigail Bradfield"
+}

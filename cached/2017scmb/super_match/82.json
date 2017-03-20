@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "3 - Competent",
+    "blue2_pilot_rating": "0 - Not a pilot in this match",
+    "blue3_pilot_rating": "3 - Competent",
+    "blue_control": [
+        2,
+        2,
+        1
+    ],
+    "blue_defense": [
+        3,
+        2,
+        1
+    ],
+    "blue_speed": [
+        2,
+        3,
+        1
+    ],
+    "blue_torque": [
+        3,
+        2,
+        2
+    ],
+    "last_modified": 1488648177877,
+    "match_number": 82,
+    "notes": "5777 pilot only just barely missed the auto gear placement, but only had 4 seconds to do that",
+    "red1_pilot_rating": "3 - Competent",
+    "red2_pilot_rating": "4 - Pretty good",
+    "red3_pilot_rating": "0 - Not a pilot in this match",
+    "red_control": [
+        3,
+        3,
+        1
+    ],
+    "red_defense": [
+        3,
+        3,
+        1
+    ],
+    "red_speed": [
+        3,
+        3,
+        1
+    ],
+    "red_torque": [
+        3,
+        3,
+        1
+    ],
+    "scout_name": "Abigail Bradfield"
+}

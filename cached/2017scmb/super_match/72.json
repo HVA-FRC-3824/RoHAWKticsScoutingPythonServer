@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "3 - Competent",
+    "blue_control": [
+        2,
+        3,
+        1
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        3,
+        2,
+        1
+    ],
+    "blue_torque": [
+        2,
+        3,
+        1
+    ],
+    "last_modified": 1488642954665,
+    "match_number": 72,
+    "notes": "Blue alliance had difficulty in almost every aspect of the match",
+    "red1_pilot_rating": "5 - Hauling ass",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "5 - Hauling ass",
+    "red_control": [
+        1,
+        3,
+        2
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        1,
+        3,
+        2
+    ],
+    "red_torque": [
+        1,
+        3,
+        2
+    ],
+    "scout_name": "Steven Busby"
+}

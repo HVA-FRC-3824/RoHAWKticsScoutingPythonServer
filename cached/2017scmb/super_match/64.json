@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "4 - Pretty good",
+    "blue3_pilot_rating": "5 - Hauling ass",
+    "blue_control": [
+        3,
+        3,
+        3
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        3,
+        1,
+        2
+    ],
+    "blue_torque": [
+        3,
+        3,
+        2
+    ],
+    "last_modified": 1488638649966,
+    "match_number": 64,
+    "notes": "2 really good pilots that worked well together on the blue alliance.",
+    "red1_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red_control": [
+        3,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        2
+    ],
+    "red_speed": [
+        2,
+        3,
+        3
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Philip Hicks"
+}

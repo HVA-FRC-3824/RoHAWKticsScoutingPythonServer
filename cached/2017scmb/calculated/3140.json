@@ -1,24 +1,24 @@
 {
     "auto_baseline": {
-        "average": 0.5,
+        "average": 0.75,
         "max": 1.0,
         "min": 0.0,
-        "std": 0.5,
-        "total": 1.0
+        "std": 0.4330127018922193,
+        "total": 6.0
     },
     "auto_center_gears_dropped": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.125,
+        "max": 1,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.33071891388307384,
+        "total": 1
     },
     "auto_center_gears_placed": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.25,
+        "max": 1,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.4330127018922193,
+        "total": 2
     },
     "auto_far_gears_dropped": {
         "average": 0.0,
@@ -28,10 +28,10 @@
         "total": 0
     },
     "auto_far_gears_placed": {
-        "average": 0.5,
+        "average": 0.125,
         "max": 1,
         "min": 0,
-        "std": 0.5,
+        "std": 0.33071891388307384,
         "total": 1
     },
     "auto_high_goal_made": {
@@ -84,25 +84,25 @@
         "total": 0
     },
     "auto_points": {
-        "average": 2.5,
+        "average": 3.75,
         "max": 5,
         "min": 0,
-        "std": 2.5,
-        "total": 5
+        "std": 2.165063509461097,
+        "total": 30
     },
     "auto_total_gears_dropped": {
-        "average": 0.0,
-        "max": 0,
-        "min": 0,
-        "std": 0.0,
-        "total": 0
-    },
-    "auto_total_gears_placed": {
-        "average": 0.5,
+        "average": 0.125,
         "max": 1,
         "min": 0,
-        "std": 0.5,
+        "std": 0.33071891388307384,
         "total": 1
+    },
+    "auto_total_gears_placed": {
+        "average": 0.375,
+        "max": 1,
+        "min": 0,
+        "std": 0.4841229182759271,
+        "total": 3
     },
     "dq": {
         "average": 0.0,
@@ -119,39 +119,39 @@
         "total": 0
     },
     "endgame_climb_did_not_finish_in_time": {
-        "average": 0.5,
+        "average": 0.25,
         "max": 1,
         "min": 0,
-        "std": 0.5,
-        "total": 1
+        "std": 0.4330127018922193,
+        "total": 2
     },
     "endgame_climb_no_attempt": {
-        "average": 0.0,
-        "max": 0,
-        "min": 0,
-        "std": 0.0,
-        "total": 0
-    },
-    "endgame_climb_robot_fell": {
-        "average": 0.5,
+        "average": 0.125,
         "max": 1,
         "min": 0,
-        "std": 0.5,
+        "std": 0.33071891388307384,
+        "total": 1
+    },
+    "endgame_climb_robot_fell": {
+        "average": 0.125,
+        "max": 1,
+        "min": 0,
+        "std": 0.33071891388307384,
         "total": 1
     },
     "endgame_climb_successful": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.5,
+        "max": 1,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.5,
+        "total": 4
     },
     "endgame_climb_time": {
-        "average": 0,
-        "max": 0,
-        "min": 0,
-        "std": 0,
-        "total": 0
+        "average": 10.0,
+        "max": 20,
+        "min": 5,
+        "std": 6.123724356957945,
+        "total": 40
     },
     "endgame_points": {
         "average": 0.0,
@@ -161,13 +161,13 @@
         "total": 0
     },
     "fouls": {
-        "average": 0.5,
+        "average": 0.125,
         "max": 1,
         "min": 0,
-        "std": 0.5,
+        "std": 0.33071891388307384,
         "total": 1
     },
-    "last_modified": 1488568397154,
+    "last_modified": 1488651832950,
     "last_modified_matches": 0,
     "last_modified_super": 0,
     "no_show": {
@@ -177,17 +177,10 @@
         "std": 0.0,
         "total": 0
     },
-    "pilot_rating": {
-        "average": 3.0,
-        "max": 4,
-        "min": 2,
-        "std": 1.0,
-        "total": 6
-    },
-    "rank_control": 8,
-    "rank_defense": 7,
-    "rank_speed": 11,
-    "rank_torque": 7,
+    "rank_control": -1,
+    "rank_defense": -1,
+    "rank_speed": -1,
+    "rank_torque": -1,
     "red_card": {
         "average": 0.0,
         "max": 0.0,
@@ -211,31 +204,31 @@
         "total": 0
     },
     "teleop_center_gears_dropped": {
-        "average": 0.5,
+        "average": 0.25,
         "max": 1,
         "min": 0,
-        "std": 0.5,
-        "total": 1
+        "std": 0.4330127018922193,
+        "total": 2
     },
     "teleop_center_gears_placed": {
-        "average": 0.5,
-        "max": 1,
+        "average": 0.625,
+        "max": 3,
         "min": 0,
-        "std": 0.5,
-        "total": 1
+        "std": 0.9921567416492215,
+        "total": 5
     },
     "teleop_far_gears_dropped": {
-        "average": 0.0,
-        "max": 0,
-        "min": 0,
-        "std": 0.0,
-        "total": 0
-    },
-    "teleop_far_gears_placed": {
-        "average": 0.5,
+        "average": 0.125,
         "max": 1,
         "min": 0,
-        "std": 0.5,
+        "std": 0.33071891388307384,
+        "total": 1
+    },
+    "teleop_far_gears_placed": {
+        "average": 0.125,
+        "max": 1,
+        "min": 0,
+        "std": 0.33071891388307384,
         "total": 1
     },
     "teleop_high_goal_made": {
@@ -246,11 +239,11 @@
         "total": 0
     },
     "teleop_high_goal_missed": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.125,
+        "max": 1,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.33071891388307384,
+        "total": 1
     },
     "teleop_hoppers": {
         "average": 0.0,
@@ -274,18 +267,18 @@
         "total": 0
     },
     "teleop_near_gears_dropped": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.125,
+        "max": 1,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.33071891388307384,
+        "total": 1
     },
     "teleop_near_gears_placed": {
         "average": 0.5,
-        "max": 1,
+        "max": 2,
         "min": 0,
-        "std": 0.5,
-        "total": 1
+        "std": 0.7071067811865476,
+        "total": 4
     },
     "teleop_picked_up_gears": {
         "average": 0.0,
@@ -295,32 +288,32 @@
         "total": 0
     },
     "teleop_points": {
-        "average": 80.0,
+        "average": 60.0,
         "max": 80,
-        "min": 80,
-        "std": 0.0,
-        "total": 160
+        "min": 40,
+        "std": 20.0,
+        "total": 480
     },
     "teleop_total_gears_dropped": {
         "average": 0.5,
-        "max": 1,
+        "max": 2,
         "min": 0,
-        "std": 0.5,
-        "total": 1
+        "std": 0.7071067811865476,
+        "total": 4
     },
     "teleop_total_gears_placed": {
-        "average": 1.5,
-        "max": 2,
-        "min": 1,
-        "std": 0.5,
-        "total": 3
+        "average": 1.25,
+        "max": 3,
+        "min": 0,
+        "std": 1.1989578808281798,
+        "total": 10
     },
     "total_points": {
-        "average": 82.5,
+        "average": 63.75,
         "max": 85,
-        "min": 80,
-        "std": 2.5,
-        "total": 165
+        "min": 40,
+        "std": 20.116846174288852,
+        "total": 510
     },
     "yellow_card": {
         "average": 0.0,
@@ -329,8 +322,8 @@
         "std": 0.0,
         "total": 0
     },
-    "zscore_control": 1.1005386600392868,
-    "zscore_defense": 2.055793262418571,
-    "zscore_speed": 0.947780592232148,
-    "zscore_torque": 1.3960635770073366
+    "zscore_control": 0.0,
+    "zscore_defense": 0.0,
+    "zscore_speed": 0.0,
+    "zscore_torque": 0.0
 }

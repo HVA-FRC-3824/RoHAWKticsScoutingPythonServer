@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "blue3_pilot_rating": "3 - Competent",
+    "blue_control": [
+        3,
+        3,
+        3
+    ],
+    "blue_defense": [
+        3,
+        3,
+        2
+    ],
+    "blue_speed": [
+        3,
+        2,
+        3
+    ],
+    "blue_torque": [
+        3,
+        3,
+        3
+    ],
+    "last_modified": 1488572275595,
+    "match_number": 30,
+    "notes": "5180 could be a good 3 pick if we need defense",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "3 - Competent",
+    "red3_pilot_rating": "3 - Competent",
+    "red_control": [
+        3,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        3,
+        3
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Philip Hicks"
+}

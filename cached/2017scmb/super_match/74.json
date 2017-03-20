@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "4 - Pretty good",
+    "blue2_pilot_rating": "4 - Pretty good",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        2,
+        1,
+        2
+    ],
+    "blue_defense": [
+        1,
+        1,
+        1
+    ],
+    "blue_speed": [
+        2,
+        1,
+        3
+    ],
+    "blue_torque": [
+        1,
+        3,
+        3
+    ],
+    "last_modified": 1488643954377,
+    "match_number": 74,
+    "notes": "4504 and 3008 could not start their last rotor in time, but should have been able to",
+    "red1_pilot_rating": "3 - Competent",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "3 - Competent",
+    "red_control": [
+        1,
+        1,
+        1
+    ],
+    "red_defense": [
+        1,
+        1,
+        1
+    ],
+    "red_speed": [
+        1,
+        2,
+        3
+    ],
+    "red_torque": [
+        1,
+        1,
+        3
+    ],
+    "scout_name": "Abigail Bradfield"
+}

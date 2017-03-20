@@ -1,4 +1,13 @@
 from looper import Looper
+import logging
+import select
+import time
+import hashlib
+
+from ourlogging import setup_logging
+setup_logging(__file__)
+logger = logging.getLogger(__name__)
+
 
 class SocketConnection(Looper):
     '''A single socket connection for reading and writing'''
@@ -76,7 +85,7 @@ class SocketConnection(Looper):
         Returns:
             bool. Whether the message was successfully sent
         '''
-        logger.info("SCT writing {}".format(message))
+        logger.info("Socket writing {}".format(message))
         try:
             self.socket.write(self.HEADER_MSB)
             self.socket.write(self.HEADER_LSB)
@@ -108,7 +117,7 @@ class SocketConnection(Looper):
                         logger.error("Written message digest does not match")
                         return False
         except:
-            logger.error("TimeoutExcpetion on write")
+            logger.error("TimeoutException on write")
             return False
 
     def bytearray_to_int(self, b):

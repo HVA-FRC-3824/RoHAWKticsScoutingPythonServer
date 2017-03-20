@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "3 - Competent",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        1,
+        1,
+        2
+    ],
+    "blue_defense": [
+        1,
+        1,
+        1
+    ],
+    "blue_speed": [
+        2,
+        3,
+        1
+    ],
+    "blue_torque": [
+        1,
+        2,
+        3
+    ],
+    "last_modified": 1488645493230,
+    "match_number": 77,
+    "notes": "5317 and 383 could have placed gear in auto but weren't really paying attention, improved a bit throughout the match, but still not great",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red3_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red_control": [
+        3,
+        3,
+        1
+    ],
+    "red_defense": [
+        2,
+        2,
+        1
+    ],
+    "red_speed": [
+        3,
+        3,
+        1
+    ],
+    "red_torque": [
+        2,
+        2,
+        3
+    ],
+    "scout_name": "Abigail Bradfield"
+}
