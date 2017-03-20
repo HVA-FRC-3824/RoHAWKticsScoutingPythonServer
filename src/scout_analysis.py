@@ -44,7 +44,7 @@ class ScoutAnalysis:
         self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
             self.tba = TheBlueAlliance()
-            self.firebase = FirebaseCom()
+            self.database = Database()
             self.last_match = -1
 
             config = kwargs.get('scout_accuracy_config', None)
@@ -86,7 +86,7 @@ class ScoutAnalysis:
             for color in ['blue', 'red']:
                 team_numbers = [int(team_key[3:]) for team_key in tba_match['alliances'][color]['team_keys']]
 
-                tmds = [self.firebase.get_team_match_data(team_number=team_number, match_number=match_number)
+                tmds = [self.database.get_team_match_data(team_number=team_number, match_number=match_number)
                         for team_number in team_numbers]
 
                 # Get score without correction
@@ -94,23 +94,7 @@ class ScoutAnalysis:
 
                 if scout_scores is None:
                     continue
-                '''
-                latest_last_modified = -1
-                for tmd in tmds:
-                    if tmd.last_modified > latest_last_modified:
-                        latest_last_modified = tmd.last_modified
-
-                # If nothing has changed then no need for calculation
-                nothing_new = True
-                for tmd in tmds:
-                    sa = self.firebase.get_scout_accuracy(tmd.scout_name)
-                    if sa is None or sa.last_modified < latest_last_modified:
-                        nothing_new = False
-                        break
-
-                if nothing_new:
-                    continue
-                '''
+                
                 score_breakdown = tba_match['score_breakdown'][color]
 
                 # Data Correction

@@ -8,15 +8,13 @@ import sys
 import json
 from urllib.request import urlopen
 from threading import Event
-from looper import Looper
 
 from aggregator import Aggregator
-from firebase_com import FirebaseCom
 from the_blue_alliance import TheBlueAlliance
-from socket_server import SocketServer
 from scout_analysis import ScoutAnalysis
 from constants import Constants
 from messenger import Messenger
+from message_handler import MessageHandler
 from led_manager import LedManager
 
 from ourlogging import setup_logging
@@ -25,10 +23,12 @@ setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
 
-class Server(Looper):
+class Server:
     '''Main server class that interprets the config file and starts various threads'''
-    DEFAULT_TIME_BETWEEN_CYCLES = 60 * 4  # 4 minutes
-    DEFAULT_TIME_BETWEEN_CACHES = 60 * 60 * 1  # 1 hour
+
+    PING_TIMEOUT = 5 # 5 seconds
+    HEARTBEAT_TIME = 60 * 30  # 30 minutes
+    LOOP_TIME = 60 * 10 # 10 minutes
 
     def __init__(self, **kwargs):
         ''' Initialization of all the server components based on the config
@@ -46,225 +46,105 @@ class Server(Looper):
         self.led_manager = LedManager()
         self.led_manager.starting_up()
 
-        self.firebase = FirebaseCom(self.event_key)
         self.tba = TheBlueAlliance(self.event_key)
 
         # event for threading not FIRST event
         self.event = None
 
-        self.aggregate = kwargs.get('aggregate', False)
-
-        # if kwargs.get('messenger', False):
         self.messenger = Messenger(**kwargs)
 
-        self.report_crash = kwargs.get('report_crash', False)
-        self.cache_firebase = kwargs.get('cache_firebase', False)
-        if self.cache_firebase:
-            self.time_between_caches = kwargs.get('time_between_caches', self.DEFAULT_TIME_BETWEEN_CACHES)
+        self.message_handler = MessageHandler()
 
-        self.time_between_cycles = kwargs.get('time_between_cycles', self.DEFAULT_TIME_BETWEEN_CYCLES)
-
-        self.set_loop_time(self.time_between_cycles)
-
-        if kwargs.get('bluetooth', False):
-            from bluetooth_server import BluetoothServer
-            self.bluetooth = BluetoothServer()
-
-        if kwargs.get('socket', False):
-            self.socket = SocketServer()
+        self.socket = RelaySocket()
 
         if kwargs.get('scout_analysis', False):
             self.scout_analysis = ScoutAnalysis(**kwargs)
 
-        setup = kwargs.get('setup', None)
-
-        if setup is not None and setup != "none":
-            logger.info("Setting up database...")
-
-            if self.tba.event_down():
-                while True:
-                    response = input("Event is down. Exit? (y/n)").lower()
-                    if response in ['y', 'yes']:
-                        sys.exit()
-                    elif response in ['n', 'no']:
-                        return
-            if setup == "teams":
-                event_teams = self.tba.get_event_teams()
-                team_numbers = Aggregator.set_teams(self.firebase, event_teams)
-                logger.info("Added teams to Firebase")
-
-                with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
-                          self.event_key + "/event_extras.json", 'w') as f:
-                    json_dict = {}
-                    json_dict['team_numbers'] = team_numbers
-                    f.write(json.dumps(json_dict, sort_keys=True, indent=4))
-
-            elif setup == "matches":
-                event_matches = self.tba.get_event_matches()
-                team_matches, team_surrogate_matches, num_matches = Aggregator.set_matches(self.firebase, event_matches)
-                logger.info("Added matches to Firebase")
-                with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
-                          self.event_key + "/event_extras.json") as f:
-                    json_dict = json.loads(f.read())
-                team_numbers = json_dict['team_numbers']
-                Aggregator.set_teams(self.firebase, team_numbers, team_matches, team_surrogate_matches)
-                with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
-                          self.event_key + "/event_extras.json", 'w') as f:
-                    json_dict = json.loads(f.read())
-                    json_dict['number_of_matches'] = num_matches
-                    f.write(json.dumps(json_dict, sort_keys=True, indent=4))
-
-            event_rankings = self.tba.get_event_rankings()
-            Aggregator.set_rankings(self.firebase, event_rankings)
-            logger.info("Added rankings to Firebase")
-
-            logger.info("Exiting...")
-            os._exit(0)
-        else:
-            with open(os.path.dirname(os.path.abspath(__file__)) + "/../cached/" +
-                      self.event_key + "/event_extras.json") as f:
-                json_dict = json.loads(f.read())
-                # Constants is a singleton
-                Constants().team_numbers = json_dict['team_numbers']
-                Constants().number_of_matches = json_dict['number_of_matches']
 
     def start(self):
         '''Starts the main thread loop'''
+        self.socket.start()
+        while not self.socket.is_connected():
+            pass
         self.led_manager.start_up_complete()
         self.event = None
         self.running = True
-        self.on_tstart()
         iteration = 1
+        last_heartbeat = None
         while self.running:
-            logger.info("Iteration {0:d}".format(iteration))
             start_time = time.time()
-            self.on_tloop()
+            # Heartbeat
+            if last_heartbeat is None or time.time() > last_heartbeat + self.HEARTBEAT_TIME:
+                # Check Internet connection
+                if self.tba.is_down():
+                    try:
+                        urlopen('http://216.58.192.142', timeout=1)
+                        self.led_manager.tba_down()
+                        logger.warning("The Blue Alliance is down (possibly just for this event)")
+                        self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")
+                    except:
+                        self.led_manager.internet_connection_down()
+                        logger.warning("Internet connection is down")
+
+                # Ping phone
+                self.message_handler.pong = False
+                self.socket.ping()
+                ping_start = time.time()
+                while not self.message_handler.pong and time.time() - ping_start < self.PING_TIMEOUT:
+                    pass
+                if not self.message_handler.pong:
+                    self.led_manager.error()
+                    logger.error("Heartbeat error: No pong received")
+                last_heartbeat = time.time()
+
+            while self.message_handler.updates_available():
+                update = self.message_handler.get_next_update()
+                self.handle_update(update)
+
+            # Alert admin if there are any matches that have timed out waiting on all tmds to come in
+            # Probably means someone didn't hit save
+            for match_number, team_number_list in self.message_handler.get_partial_matches_timeout():
+                self.messenger.send_message("Match {} missing tmd".format(match_number), "Teams received {}".format(team_number_list))
+
+            
             end_time = time.time()
-            delta_time = end_time - start_time
-            logger.info("Iteration Ended")
-            logger.info("Time taken: {0:f}s".format(delta_time))
             iteration += 1
-            if self.loop_time - delta_time > 0 and self.running:
+            if self.running and end_time - start_time < self.LOOP_TIME:
                 # Event is used, so that we can stop the loop early if quitting
                 self.event = Event()
-                self.event.wait(timeout=self.loop_time - delta_time)
+                self.event.wait(timeout=self.LOOP_TIME - (end_time - start_time))
                 self.event = None
 
-    def on_tstart(self):
-        '''Runs before the main loop and starts the threads for :class:`BluetoothServer`,
-           :class:`SocketServer`, and :class:`ScouterAnalysis` based on the config. Also,
-           caches the firebase data.
-        '''
-        # initial run cache
-        if self.cache_firebase:
-            self.firebase.cache()
-            self.time_since_last_cache = 0
+    def handle_update(self, update):
+        if update['update_type'] == 'match':
+            # scout analysis failure mean tba hasn't been updated with this match
+            # After 3 we assume something is up with tba
+            if not self.scout_analysis.analyze(update['match_number']) and update['update_attempt'] < 3:
+                if self.tba.is_down():
+                    update['update_attempt'] += 1
+                    self.message_handler.updates_queue.append(update)
+                elif self.tba.is_behind():
+                    update['update_attempt'] += 1
+                    self.message_handler.updates_queue.append(update)
+                else:
+                    update['update_attempt'] += 1
+                    self.message_handler.updates_queue.append(update)
 
-        if hasattr(self, 'bluetooth'):
-            self.bluetooth.start()
-
-        if hasattr(self, 'socket'):
-            self.socket.start()
-
-    def on_tloop(self):
-        '''Runs on each iteration of the main loop and aggregates the data.'''
-
-        if self.cache_firebase and self.time_between_caches < self.time_since_last_cache:
-            self.firebase.cache()
-            self.time_since_last_cache = 0
-
-        if self.tba.event_down():
-            try:
-                urlopen('http://216.58.192.142', timeout=1)
-                self.led_manager.tba_down()
-                logger.warning("The Blue Alliance is down (possibly just for this event)")
-                self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")
-            except:
-                self.led_manager.internet_connection_down()
-                logger.warning("Internet connection is down")
-        elif hasattr(self, 'scout_analysis'):
-            self.led_manager.internet_connected()
-            try:
-                logger.info("Analyzing scouts")
-                self.scout_analysis.analyze_scouts()
-            except:
-                self.led_manager.error()
-                if self.running:
-                    logger.error("Crash")
-                    logger.error(traceback.format_exc())
-                    if self.report_crash:
-                        logger.error("Reporting crash")
-                        self.messenger.send_message("Server Crash!!!", traceback.format_exc())
+            Aggregator.match_calc(update['match_number'])
+        elif update['update_type'] == 'super':
+            Aggregator.super_calc()
+        elif update['update_type'] == 'pilot':
+            Aggregator.pilot_calc(update['match_number'])
         else:
-            self.led_manager.internet_connected()
-        if not self.running:
-            return
-
-        if self.aggregate:
-            logger.info("Aggregating")
-            try:
-                logger.info("Making match calculations")
-                Aggregator.make_team_calculations(self.firebase)
-
-                if not self.running:
-                    return
-
-                logger.info("Making super match calculations")
-                Aggregator.make_super_calculations(self.firebase)
-
-                if not self.running:
-                    return
-
-                logger.info("Making pick list calculations")
-                Aggregator.make_pick_list_calculations(self.firebase)
-
-                if not self.running:
-                    return
-            except:
-                self.led_manager.error()
-                if self.running:
-                    logger.error("Crash")
-                    logger.error(traceback.format_exc())
-                    if self.report_crash:
-                        logger.error("Reporting crash")
-                        self.messenger.send_message("Server Crash!!!", traceback.format_exc())
-
-            if not self.running:
-                return
-
-            if self.tba.event_down():
-                try:
-                    urlopen('http://216.58.192.142', timeout=1)
-                    self.led_manager.tba_down()
-                    logger.warning("The Blue Alliance is down (possibly just for this event)")
-                    self.messenger.send_message("The Blue Alliance is down (possibly just for this event)")
-                except:
-                    self.led_manager.internet_connection_down()
-                    logger.warning("Internet connection is down")
-            else:
-                try:
-                    logger.info("Making ranking calculations")
-                    Aggregator.make_ranking_calculations(self.firebase, self.tba)
-                except:
-                    self.led_manager.error()
-                    if self.running:
-                        logger.error("Crash")
-                        logger.error(traceback.format_exc())
-                        if self.report_crash:
-                            logger.error("Reporting crash")
-                            self.messenger.send_message("Server Crash!!!", traceback.format_exc())
-
-        if self.cache_firebase:
-            self.time_since_last_cache += self.time_between_cycles
+            logger.error("Unknown update type")
 
     def stop(self):
         '''Stops all threads'''
-        if hasattr(self, 'bluetooth'):
-            self.bluetooth.stop()
-        if hasattr(self, 'socket'):
-            self.socket.stop()
+        self.running = False
+        self.socket.stop()
+        if self.event is not None:
+            self.event.set()
         self.led_manager.stop()
-        Looper.stop(self)
 
 
 if __name__ == "__main__":

@@ -1,22 +1,16 @@
 {
-	"event_key" : "2016cars",
-    "socket": false,
-    "bluetooth": false,
-    "setup": false,
+	"event_key" : "2017week0",
     "log_level": "debug",
     "time_between_cycles": 600,
-		"cache_firebase": false,
-    "time_between_caches": 3600,
     "report_crash": true,
-    "aggregate": false,
-    "scout_analysis": true,
+    "scout_analysis": false,
     "scout_analysis_config": {
-		"total_threshold": 10,
+		"total_threshold": 20,
 	    "auto_threshold": 10,
 	    "teleop_threshold": 10,
-	    "endgame_threshold": 10
+	    "endgame_threshold": 0
 	},
-	"logins_file": "../logins.json",
+	"logins_file": "../../logins.json",
 	"use_email": true,
 	"emails": [
 		"akmessing1@yahoo.com"
