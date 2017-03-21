@@ -7,4 +7,4 @@ class TBAAlliances(DataModel):
         self.blue = TBAAlliance()
         self.red = TBAAlliance()
         if d is not None:
-        	self.set(d)
+            self.set(d)

@@ -7,4 +7,4 @@ class TBARecord(DataModel):
         self.ties = 0
         self.losses = 0
         if d is not None:
-        	self.set(d)
+            self.set(d)

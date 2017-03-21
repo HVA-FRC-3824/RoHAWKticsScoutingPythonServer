@@ -3,20 +3,20 @@ from .goal_results import GoalResults
 
 
 class ShootingResults(DataModel):
-	def __init__(self, d=None):
-		DataModel.__init__(self)
+    def __init__(self, d=None):
+        DataModel.__init__(self)
 
-		self.high = GoalResults()
-		self.low = GoalResults()
+        self.high = GoalResults()
+        self.low = GoalResults()
 
-		if d is not None:
-			self.set(d)
+        if d is not None:
+            self.set(d)
 
-	@staticmethod
-	def from_lists(high_made, high_missed, low_made, low_missed):
-		rv = ShootingResults()
+    @staticmethod
+    def from_lists(high_made, high_missed, low_made, low_missed):
+        rv = ShootingResults()
 
-		self.high = GoalResults.from_lists(high_made, high_missed)
-		self.low = GoalResults.from_lists(low_made, low_missed)
+        rv.high = GoalResults.from_lists(high_made, high_missed)
+        rv.low = GoalResults.from_lists(low_made, low_missed)
 
-		return rv
+        return rv

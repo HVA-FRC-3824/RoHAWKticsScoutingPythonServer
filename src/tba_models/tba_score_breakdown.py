@@ -7,4 +7,4 @@ class TBAScoreBreakdown(DataModel):
         self.blue = TBAIndividualScoreBreakdown()
         self.red = TBAIndividualScoreBreakdown()
         if d is not None:
-        	self.set(d)
+            self.set(d)

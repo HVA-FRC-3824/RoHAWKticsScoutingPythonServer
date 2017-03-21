@@ -224,14 +224,15 @@ class AllianceCalculator:
         teleop_high_squared = 0
         teleop_low_squared = 0
         for team_number in self.team_numbers:
-            auto_high += t.auto_shooting.high.made.average * 9
-            auto_high_squared += (t.auto_shooting.high.made.average * 9)**2
-            auto_low += t.auto_shooting.low.made.average * 3
-            auto_low_squared += (t.auto_shooting.low.made.average * 3)**2
-            teleop_high += t.teleop_shooting.high.made.average * 3
-            teleop_high_squared += (t.teleop_shooting.high.made.average * 3)**2
-            teleop_low += t.teleop_shooting.low.made.average
-            teleop_low_squared += (t.teleop_shooting.low.made.average)**2
+            team = self.database.get_team_calculated_data(team_number)
+            auto_high += team.auto_shooting.high.made.average * 9
+            auto_high_squared += (team.auto_shooting.high.made.average * 9)**2
+            auto_low += team.auto_shooting.low.made.average * 3
+            auto_low_squared += (team.auto_shooting.low.made.average * 3)**2
+            teleop_high += team.teleop_shooting.high.made.average * 3
+            teleop_high_squared += (team.teleop_shooting.high.made.average * 3)**2
+            teleop_low += team.teleop_shooting.low.made.average
+            teleop_low_squared += (team.teleop_shooting.low.made.average)**2
         mu = auto_high + auto_low + teleop_high + teleop_low
         sigma = math.sqrt(auto_high_squared + auto_low_squared + teleop_high_squared + teleop_low_squared)
         return Calculator.probability_density(x, mu, sigma)
@@ -255,7 +256,8 @@ class AllianceCalculator:
         mu = 0
         sigma = 0
         for team_number in self.team_numbers:
-            mu += t.auto_gears.total.placed.average + t.teleop_gears.total.placed.average
-            sigma += t.auto_gear.total.placed.average**2 + t.teleop_gears.total.placed.average**2
+            team = self.database.get_team_calculated_data(team_number)
+            mu += team.auto_gears.total.placed.average + team.teleop_gears.total.placed.average
+            sigma += team.auto_gear.total.placed.average**2 + team.teleop_gears.total.placed.average**2
         sigma = math.sqrt(sigma)
         return Calculator.probability_density(x, mu, sigma)

@@ -25,9 +25,9 @@ class TeamPilotData(DataModel):
         for mtpd in mtpds:
             rating = int(mtpd.rating[0])
             if rating != 0:
-             rating_list.append(rating)
+                rating_list.append(rating)
             lifts_list.append(mtpd.lifts)
-            drops.append(mtpd.drops)
+            drops_list.append(mtpd.drops)
 
         rv.rating = LowLevelStats.from_list(rating_list)
         rv.lifts = LowLevelStats.from_list(lifts_list)

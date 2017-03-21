@@ -1,5 +1,14 @@
+import logging
+
 from .data_model import DataModel
 from .low_level_stats import LowLevelStats
+from .gear_results import GearResults
+from .shooting_results import ShootingResults
+from .climb_results import ClimbResults
+
+from ourlogging import setup_logging
+setup_logging(__file__)
+logger = logging.getLogger(__name__)
 
 
 class TeamCalculatedData(DataModel):
@@ -96,9 +105,9 @@ class TeamCalculatedData(DataModel):
 
             auto_baseline_list.append(tmd.auto_baseline)
             auto_gears_list.append(tmd.auto_gears)
-            auto_high_made.append(tmd.auto_high_made + auto_high_correction)
+            auto_high_made.append(tmd.auto_high_made + tmd.auto_high_correction)
             auto_high_missed.append(tmd.auto_high_missed)
-            auto_low_made.append(tmd.auto_low_made + auto_low_correction)
+            auto_low_made.append(tmd.auto_low_made + tmd.auto_low_correction)
             auto_low_missed.append(tmd.auto_low_missed)
             auto_hoppers_list.append(tmd.auto_hoppers)
             auto_points_list.append(tmd.auto_points)
@@ -116,7 +125,7 @@ class TeamCalculatedData(DataModel):
             endgame_points_list.append(tmd.endgame_points)
 
             no_show_list.append(tmd.no_show)
-            stopped_moving_list.append(stopped_moving)
+            stopped_moving_list.append(tmd.stopped_moving)
             dq_list.append(tmd.dq)
 
             fouls_list.append(tmd.fouls)
@@ -126,12 +135,14 @@ class TeamCalculatedData(DataModel):
 
         rv.auto_baseline = LowLevelStats.from_list(auto_baseline_list)
         rv.auto_gears = GearResults.from_list(auto_gears_list)
-        rv.auto_shooting = ShootingResults.from_lists(auto_high_made, auto_high_missed, auto_low_made, auto_low_missed)
+        rv.auto_shooting = ShootingResults.from_lists(auto_high_made, auto_high_missed,
+                                                      auto_low_made, auto_low_missed)
         rv.auto_hoppers = LowLevelStats.from_list(auto_hoppers_list)
         rv.auto_points = LowLevelStats.from_list(auto_points_list)
 
         rv.teleop_gears = GearResults.from_list(teleop_gears_list)
-        rv.teleop_shooting = ShootingResults.from_lists(teleop_high_made, teleop_high_missed, teleop_low_made, teleop_low_missed)
+        rv.teleop_shooting = ShootingResults.from_lists(teleop_high_made, teleop_high_missed,
+                                                        teleop_low_made, teleop_low_missed)
         rv.teleop_hoppers = LowLevelStats.from_list(teleop_hoppers_list)
         rv.teleop_picked_up_gears = LowLevelStats.from_list(teleop_picked_up_gears_list)
         rv.teleop_points = LowLevelStats.from_list(teleop_points_list)

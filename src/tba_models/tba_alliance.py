@@ -7,4 +7,4 @@ class TBAAlliance(DataModel):
         self.surrogate_team_keys = []
         self.team_keys = []
         if d is not None:
-        	self.set(d)
+            self.set(d)

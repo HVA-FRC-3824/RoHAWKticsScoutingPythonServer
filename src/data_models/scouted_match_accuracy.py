@@ -9,11 +9,10 @@ class ScoutedMatchAccuracy(DataModel):
         self.alliance_color = ""
         self.alliance_number = -1
 
-        self.total_error = 0
         self.auto_mobility_error = 0
-        self.auto_rotor_error = 0
-        self.teleop_rotor_error = 0
-        self.endgame_error = 0
+        self.auto_gear_error = 0
+        self.teleop_gear_error = 0
+        self.climb_error = 0
 
         if d is not None:
             self.set(d)

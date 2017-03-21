@@ -38,7 +38,7 @@ class DataModel:
         for a, b in iter(d.items()):
 
             if isinstance(b, (list, tuple)):
-                #TODO: figure out how to use original data model constructor
+                # TODO: figure out how to use original data model constructor
                 setattr(self, a, [obj(x) if isinstance(x, dict) else x for x in b])
             elif isinstance(b, dict):
                 if isinstance(self.__dict__[a], DataModel):

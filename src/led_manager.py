@@ -1,5 +1,8 @@
 from looper import Looper
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    GPIO = None
 import time
 import logging
 
@@ -17,19 +20,25 @@ class LedManager(Looper):
     SOLID = "solid"
     NONE = "none"
 
+    shared_state = {}
+
     def __init__(self):
-        Looper.__init__(self)
+        self.__dict__ = self.shared_state
 
-        self.led_status = {self.GREEN: self.NONE, self.YELLOW: self.NONE, self.RED: self.NONE}
-        self.led_pins = {self.GREEN: 40, self.YELLOW: 38, self.RED: 36}
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BOARD)
+        if not hasattr(self, 'instance'):
+            Looper.__init__(self)
 
-        # setup pins
-        GPIO.setup(list(self.led_pins.values()), GPIO.OUT, initial=GPIO.LOW)
+            self.led_status = {self.GREEN: self.NONE, self.YELLOW: self.NONE, self.RED: self.NONE}
+            self.led_pins = {self.GREEN: 40, self.YELLOW: 38, self.RED: 36}
+            if GPIO is not None:
+                GPIO.setwarnings(False)
+                GPIO.setmode(GPIO.BOARD)
 
-        self.pstart()
-        # self.tstart()
+                # setup pins
+                GPIO.setup(list(self.led_pins.values()), GPIO.OUT, initial=GPIO.LOW)
+
+            self.pstart()
+            self.instance = True
 
     def on_pstart(self):
         self.tstart()
@@ -55,27 +64,30 @@ class LedManager(Looper):
         self.iteration = 0
 
     def on_tloop(self):
-        for color, status in self.led_status.items():
-            # logger.info("color: {} status: {}".format(color, status))
-            if status == self.SOLID:
-                GPIO.output(self.led_pins[color], 1)
-            elif status == self.NONE:
-                GPIO.output(self.led_pins[color], 0)
-            else:
-                GPIO.output(self.led_pins[color], self.iteration % 2)
+        if GPIO is not None:
+            for color, status in self.led_status.items():
+                # logger.info("color: {} status: {}".format(color, status))
+                if status == self.SOLID:
+                    GPIO.output(self.led_pins[color], 1)
+                elif status == self.NONE:
+                    GPIO.output(self.led_pins[color], 0)
+                else:
+                    GPIO.output(self.led_pins[color], self.iteration % 2)
         self.iteration += 1
 
         time.sleep(.25)
 
     def on_pend(self):
-        # clean up green and yellow pins, but leave red on if error
-        GPIO.output(self.led_pins[self.GREEN], 0)
-        GPIO.output(self.led_pins[self.YELLOW], 0)
+        if GPIO is not None:
+            # clean up green and yellow pins, but leave red on if error
+            GPIO.output(self.led_pins[self.GREEN], 0)
+            GPIO.output(self.led_pins[self.YELLOW], 0)
 
     def on_tend(self):
-        # clean up green and yellow pins, but leave red on if error
-        GPIO.output(self.led_pins[self.GREEN], 0)
-        GPIO.output(self.led_pins[self.YELLOW], 0)
+        if GPIO is not None:
+            # clean up green and yellow pins, but leave red on if error
+            GPIO.output(self.led_pins[self.GREEN], 0)
+            GPIO.output(self.led_pins[self.YELLOW], 0)
 
     def starting_up(self):
         self.pipe.send("starting_up")

@@ -10,11 +10,10 @@ class ScoutAccuracy(DataModel):
         self.name = ""
         self.scouted_matches = {}
 
-        self.total_error = 0
         self.auto_mobility_error = 0
-        self.auto_rotor_error = 0
-        self.teleop_rotor_error = 0
-        self.endgame_error = 0
+        self.auto_gear_error = 0
+        self.teleop_gear_error = 0
+        self.climb_error = 0
 
         if d is not None:
             self.set(d)
@@ -26,15 +25,13 @@ class ScoutAccuracy(DataModel):
 
     def total(self):
         '''Tallies the error from each individual match scouted'''
-        self.total_error = 0
         self.auto_mobility_error = 0
-        self.auto_rotor_error = 0
-        self.teleop_rotor_error = 0
-        self.endgame_error = 0
+        self.auto_gear_error = 0
+        self.teleop_gear_error = 0
+        self.climb_error = 0
 
         for match in self.scouted_matches.values():
-            self.total_error += match.total_error
             self.auto_mobility_error += match.auto_mobility_error
-            self.auto_rotor_error += match.auto_rotor_error
-            self.teleop_rotor_error += match.teleop_rotor_error
-            self.endgame_error += match.endgame_error
+            self.auto_gear_error += match.auto_rotor_error
+            self.teleop_gear_error += match.teleop_rotor_error
+            self.climb_error += match.endgame_error

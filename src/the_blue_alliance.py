@@ -44,7 +44,6 @@ class WebHook(BaseHTTPRequestHandler):
                     logger.info("Rankings updated")
 
 
-
 class TheBlueAlliance:
     '''Singleton for collecting information from `The Blue Alliance <thebluealliance.com>`_
 

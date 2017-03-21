@@ -18,6 +18,7 @@ from data_models.super_match_data import SuperMatchData
 from data_models.team_qualitative_data import TeamQualitativeData
 from data_models.team_pilot_data import TeamPilotData
 from data_models.match_pilot_data import MatchPilotData
+from data_models.scout_accuracy import ScoutAccuracy
 
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
@@ -95,6 +96,14 @@ class Database:
             return None
         return TeamMatchData(response)
 
+    def set_team_match_data(self, tmd):
+        if isinstance(tmd, TeamMatchData):
+            self.set_team_match_data(tmd.to_dict())
+        elif isinstance(tmd, dict):
+            self.put_in_firebase("partial_match/", "{0:d}_{1:d}".format(tmd.match_number, tmd.team_number), tmd)
+        else:
+            logger.error("tmd is not of type TeamMatchData or dict")
+
     def set_team_calculated_data(self, tcd):
         if isinstance(tcd, TeamCalculatedData):
             self.set_team_calculated_data(tcd.to_dict())
@@ -133,7 +142,7 @@ class Database:
 
     def get_team_ranking_data(self, team_number, ranking_type):
         response = self.get_from_firebase("rankings/{0:s}/".format(ranking_type), str(team_number))
-        if response is not None:
+        if response is None:
             return None
         return response
 
@@ -152,6 +161,20 @@ class Database:
             self.put_in_firebase("pick/{0:s}/".format(pick_type), tpa['team_number'], tpa)
         else:
             logger.error("tpa is not of type TeamPickAbility or dict")
+
+    def get_scout_accuracy(self, scout_name):
+        response = self.get_from_firebase("scout_accuracy/", scout_name)
+        if response is not None:
+            return None
+        return ScoutAccuracy(response)
+
+    def set_scout_accuracy(self, sa):
+        if isinstance(sa, ScoutAccuracy):
+            self.set_scout_accuracy(sa.to_dict())
+        elif isinstance(sa, dict):
+            self.put_in_firebase("scout_accuracy/", sa['name'], sa)
+        else:
+            logger.error("sa is not of type ScoutAccuracy or dict")
 
     def get_from_firebase(self, location, key):
         '''Grabs the specified location from firebase. If data has not been updated then local
