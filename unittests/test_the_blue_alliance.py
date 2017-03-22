@@ -28,5 +28,6 @@ class TBATests(unittest.TestCase):
         event_down = self.tba.event_down()
         self.assertFalse(event_down)
 
+
 if __name__ == "__main__":
     unittest.main()

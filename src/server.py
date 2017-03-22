@@ -7,7 +7,6 @@ import json
 import subprocess
 import re
 import platform
-from threading import Thread
 
 from socketserver import TCPServer, ThreadingMixIn
 

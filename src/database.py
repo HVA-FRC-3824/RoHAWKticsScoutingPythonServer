@@ -128,15 +128,14 @@ class Database:
             if smd is None:
                 nones += 1
             else:
-                super_match[match_number] = smd
+                super_matches[match_number] = smd
 
             if nones >= 3:
-                break 
+                break
 
             match_number += 1
 
         return super_matches
-
 
     def set_team_qualitative_data(self, tqd):
         if isinstance(tqd, TeamQualitativeData):

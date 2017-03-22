@@ -219,6 +219,7 @@ class TheBlueAlliance:
         while self.running:
             server.handle_request()
 
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("-e", "--event_key", required=True, help="Event key used by the blue alliance")
