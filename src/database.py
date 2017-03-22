@@ -118,6 +118,26 @@ class Database:
             return None
         return SuperMatchData(response)
 
+    def get_all_super_match_data(self):
+        match_number = 1
+        super_matches = {}
+        nones = 0
+        while True:
+            smd = self.get_super_match_data(match_number)
+
+            if smd is None:
+                nones += 1
+            else:
+                super_match[match_number] = smd
+
+            if nones >= 3:
+                break 
+
+            match_number += 1
+
+        return super_matches
+
+
     def set_team_qualitative_data(self, tqd):
         if isinstance(tqd, TeamQualitativeData):
             self.set_team_qualitative_data(tqd.to_dict)
