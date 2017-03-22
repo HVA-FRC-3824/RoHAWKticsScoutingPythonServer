@@ -22,6 +22,9 @@ if __name__ == '__main__':
     team_surrogate_matches = {}
 
     for match in matches:
+        if match.comp_level != "qm":
+            continue
+
         team_numbers = []
         for team_key in match.alliances.blue.team_keys:
             team_number = int(team_key[3:])

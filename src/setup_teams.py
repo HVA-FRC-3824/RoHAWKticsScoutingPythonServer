@@ -2,6 +2,7 @@ import argparse
 from the_blue_alliance import TheBlueAlliance
 from database import Database
 from data_models.team_logistics import TeamLogistics
+from data_models.team_pick_ability import TeamPickAbility
 import logging
 from ourlogging import setup_logging
 setup_logging(__file__)
@@ -23,3 +24,8 @@ if __name__ == '__main__':
         t = TeamLogistics(d)
         logger.info("Adding team {}".format(team.team_number))
         database.set_team_logistics(t)
+
+        t = TeamPickAbility(d)
+        database.set_team_pick_ability(t, Database.FIRST_PICK)
+        database.set_team_pick_ability(t, Database.SECOND_PICK)
+        database.set_team_pick_ability(t, Database.THIRD_PICK)
