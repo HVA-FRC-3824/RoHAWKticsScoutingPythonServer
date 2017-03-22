@@ -15,7 +15,7 @@
             "lng": -121.9814354,
             "location_name": null,
             "motto": "",
-            "name": "EMC Corporation / Robin Fall / San Ramon Valley High School PTSA / San Ramon Valley Education Foundation & San Ramon Valley High",
+            "name": "Apple/Google/Omron Adept/AOL/San Ramon Valley High School Site Council/San Ramon Valley High School Academic Boosters/Parents of Team 1280&San Ramon Valley High",
             "nickname": "Ragin' C- Biscuits of San Ramon Valley High",
             "postal_code": "94526",
             "rookie_year": 2004,
@@ -61,7 +61,7 @@
             "lng": -122.1575745,
             "location_name": null,
             "motto": "Women Learning, Women Leading",
-            "name": "Google/Qualcomm/Brin Wojcicki Foundation/Roboterra/BAE Systems/IDEO/SolidWorks/OnShape/Il Fornaio & Castilleja School",
+            "name": "Lightspeed Ventures/Google/IDEO/Brin Wojcicki Foundation/Il Fornaio/SolidWorks/OnShape/Anonymous&Castilleja School",
             "nickname": "Gatorbotics",
             "postal_code": "94301",
             "rookie_year": 2005,
@@ -153,7 +153,7 @@
             "lng": -121.9160211,
             "location_name": null,
             "motto": "Delicious and nutritious!",
-            "name": "NASA Ames Research Center/Apple/Google/AMEX Plating/Brin Wojcicki Foundation/Innovation First International/Orange Vise Company/BAE Systems/Qualcomm/Cisco/World Metal Finishing/Applied Welding/West Coast Products/Dropbox/HP/Vivid-Hosting&Bellarmine College Preparatory",
+            "name": "NASA Ames Research Center/Apple/Google/Innovation First International/Analog Devices/AMEX Plating/BAE Systems/The Wong Family/Brin Wojcicki Foundation/Lockheed Martin/West Coast Products/Qualcomm/Intuitive Surgical/Cisco/Gilbert Spray Coat/Applied Welding/Dropbox/Orange Vise Company/Four-D Metal Finishing/Vivid-Hosting&Bellarmine College Preparatory",
             "nickname": "The Cheesy Poofs",
             "postal_code": "95126",
             "rookie_year": 1999,
@@ -291,13 +291,13 @@
             "lng": -122.2824021,
             "location_name": null,
             "motto": null,
-            "name": "Abbott Fund/Brin Wojcicki Foundation/Intuitive Surgical/Nvidia/Alameda Education Foundation/Alameda Municipal Power/Mr. Plastics/Pagano's Hardware/Wood Middle School PTA&Alameda Science and Technology Institute&Encinal High&Will C. Wood Middle",
+            "name": "Abbott Fund/Brin Wojcicki Foundation/Intuitive Surgical/Nvidia/Alameda Education Foundation/Alameda Municipal Power/Mr. Plastics/Pagano's Hardware/SpeedPro Imaging Alameda/Wood Middle School PTA&Alameda Science and Technology Institute&Encinal High&Will C. Wood Middle",
             "nickname": "Alameda Aztechs",
             "postal_code": "94501",
             "rookie_year": 2012,
             "state_prov": "CA",
             "team_number": 4186,
-            "website": "http://www.islandcityrobotics.com/   &   https://www.facebook.com/FRC4186/"
+            "website": "http://islandcityrobotics.com/index.html"
         },
         {
             "address": "Honolulu, HI 96816, USA",
@@ -452,7 +452,7 @@
             "lng": -122.367428,
             "location_name": null,
             "motto": "student-built, student-run",
-            "name": "2014 FRC Rookie Grant/Brin Wojcicki Foundation/BAE/Intuitive Surgical/San Mateo Union High School Gate Parents Group/Iron Panther Families/Lockheed Martin/United Health Credit Union/SRI/OSIsoft&Burlingame High",
+            "name": "Brin Wojcicki Foundation/BAE/Intuitive Surgical/Datron/OSIsoft/Solidworks/San Mateo Union High School Gate Parents Group/Iron Panther Families & Burlingame High",
             "nickname": "Iron Panthers",
             "postal_code": "94010",
             "rookie_year": 2014,
@@ -475,7 +475,7 @@
             "lng": -122.2682245,
             "location_name": null,
             "motto": null,
-            "name": "Google&StemPunk Kids",
+            "name": "Google/Heather Bowden, Bowden Family Foundation /Brin Wojckicki Foundation /Berkeley High School Development Group/Hass Family/Berkeley Public Schools Fund/Berkeley High School &StemPunk Kids",
             "nickname": "Natural Disasters",
             "postal_code": "94704",
             "rookie_year": 2015,
@@ -521,7 +521,7 @@
             "lng": -122.2682245,
             "location_name": null,
             "motto": "honestly",
-            "name": "Lakireddy Family/Alberts Family Foundation/Gorilla Metals/Berkeley Screen Printing Company/SolidWorks/HSC Electronic Supply&Berkeley High",
+            "name": "Lakireddy Family/Alberts Family Foundation/Google/Gorilla Metals/Berkeley Screen Printing Company/SolidWorks/HSC Electronic Supply&Berkeley High",
             "nickname": "Bay Orangutans",
             "postal_code": "94704",
             "rookie_year": 2015,
@@ -659,7 +659,7 @@
             "lng": -122.1235054,
             "location_name": null,
             "motto": null,
-            "name": "Apple/Argosy Foundation/BAE Systems/Verizon/Genentech&Palo Alto Youth Robotics Association",
+            "name": "Apple/Argosy Foundation/BAE Systems/Verizon/Genentech/Qualcomm/The Brin Wojcicki Fund/Microsoft/BS Solidworks/Slack/Github&Palo Alto Youth Robotics Association",
             "nickname": "Peninsula Robotics",
             "postal_code": "94306",
             "rookie_year": 2016,
@@ -944,5 +944,5 @@
             "website": "http://frc971.org"
         }
     ],
-    "last_modified": 1489960527.0
+    "last_modified": 1490192510.0
 }
