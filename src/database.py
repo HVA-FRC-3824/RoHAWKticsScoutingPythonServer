@@ -11,6 +11,7 @@ from ourlogging import setup_logging
 from data_models.match import Match
 from data_models.team_logistics import TeamLogistics
 from data_models.team_calculated_data import TeamCalculatedData
+from data_models.team_pit_data import TeamPitData
 from data_models.team_ranking_data import TeamRankingData
 from data_models.team_pick_ability import TeamPickAbility
 from data_models.team_match_data import TeamMatchData
@@ -104,6 +105,12 @@ class Database:
         else:
             logger.error("tmd is not of type TeamMatchData or dict")
 
+    def get_team_pit_data(self, team_number):
+        response = self.get_from_firebase("pit/", str(team_number))
+        if response is None:
+            return None
+        return TeamPitData(response)
+
     def set_team_calculated_data(self, tcd):
         if isinstance(tcd, TeamCalculatedData):
             self.set_team_calculated_data(tcd.to_dict())
@@ -111,6 +118,12 @@ class Database:
             self.put_in_firebase("calculated/", str(tcd['team_number']), tcd)
         else:
             logger.error("tcd is not of type TeamCalculatedData or dict")
+
+    def get_team_calculated_data(self, team_number):
+        response = self.get_from_firebase("calculated/", str(team_number))
+        if response is None:
+            return None
+        return TeamCalculatedData(response)
 
     def get_super_match_data(self, match_number):
         response = self.get_from_firebase("super/", str(match_number))
@@ -144,6 +157,12 @@ class Database:
             self.put_in_firebase("qualitative/", str(tqd['team_number']), tqd)
         else:
             logger.error("tqd is not of type TeamQualitativeData or dict")
+
+    def get_team_qualitative_data(self, team_number):
+        response = self.get_from_firebase("qualitative/", str(team_number))
+        if response is None:
+            return None
+        return TeamQualitativeData(response)
 
     def get_match_pilot_data(self, match_number):
         response = self.get_from_firebase("pilot/match/", str(match_number))

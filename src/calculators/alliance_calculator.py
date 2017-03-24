@@ -36,9 +36,9 @@ class AllianceCalculator:
         for team_number in self.team_numbers:
             team = self.database.get_team_calculated_data()
             p_score += (team.auto_shooting.high.made.average +
-                        team.calc.auto_shooting.low.made.average / 3 +
-                        team.calc.teleop_shooting.high.made.average / 3 +
-                        team.calc.teleop_shooting.low.made.average / 9)
+                        team.auto_shooting.low.made.average / 3 +
+                        team.teleop_shooting.high.made.average / 3 +
+                        team.teleop_shooting.low.made.average / 9)
             # Add climbing points
             p_score += 50 * team.climb.success_percentage
             auto_gears += team.auto_gears.total.placed.average

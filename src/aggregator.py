@@ -8,6 +8,7 @@ from data_models.team_ranking_data import TeamRankingData
 from data_models.team_calculated_data import TeamCalculatedData
 from data_models.team_qualitative_data import TeamQualitativeData
 from data_models.team_pilot_data import TeamPilotData
+from data_models.team_pick_ability import TeamPickAbility
 
 from ourlogging import setup_logging
 
@@ -52,6 +53,16 @@ class Aggregator:
             logger.info("Updating team ranking prediction for {}".format(team_number))
             trd = TeamRankingData.update_prediction(team_number)
             database.set_team_ranking_data(trd, database.PREDICTED)
+
+        # update team pick ability
+        for team_number in match_number.team_numbers:
+            logger.info("Updating team pick ability for {}".format(team_number))
+            tpa = TeamPickAbility.calculate_first_pick_ability(team_number)
+            database.set_team_pick_ability(tpa, Database.FIRST_PICK)
+            tpa = TeamPickAbility.calculate_second_pick_ability(team_number)
+            database.set_team_pick_ability(tpa, Database.SECOND_PICK)
+            # tpa = TeamPickAbility.calculate_third_pick_ability(team_number)
+            # database.set_team_pick_ability(tpa, Database.THIRD_PICK)
 
     @staticmethod
     def super_calc():
