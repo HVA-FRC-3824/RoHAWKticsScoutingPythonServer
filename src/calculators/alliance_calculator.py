@@ -21,7 +21,7 @@ class AllianceCalculator:
         self.team_numbers = team_numbers
         self.team_calculators = []
         for team_number in self.team_numbers:
-            self.team_calculators.append(TeamCalculator(team_number))
+            self.team_calculators.append(TeamCalculator(team_number, self.database))
 
     def predicted_score(self, elimination=False):
         '''Predicted Score
@@ -34,7 +34,9 @@ class AllianceCalculator:
         teleop_gears = 0
 
         for team_number in self.team_numbers:
-            team = self.database.get_team_calculated_data()
+            team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
             p_score += (team.auto_shooting.high.made.average +
                         team.auto_shooting.low.made.average / 3 +
                         team.teleop_shooting.high.made.average / 3 +
@@ -73,6 +75,8 @@ class AllianceCalculator:
         auto_gears = 0
         for team_number in self.team_numbers:
             team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
             p_auto_score += (team.auto_shooting.high.made.average + team.auto_shooting.low.made.average / 3)
             p_auto_score += (team.auto_baseline.average * 5)
             auto_gears += team.auto_gears.total.placed.average
@@ -98,7 +102,8 @@ class AllianceCalculator:
 
         for team_number in self.team_numbers:
             team = self.database.get_team_calculated_data(team_number)
-
+            if team is None:
+                continue
             auto_gears += team.auto_gears.total.placed.average
             teleop_gears += team.teleop_gears.total.placed.average
 
@@ -225,6 +230,8 @@ class AllianceCalculator:
         teleop_low_squared = 0
         for team_number in self.team_numbers:
             team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
             auto_high += team.auto_shooting.high.made.average * 9
             auto_high_squared += (team.auto_shooting.high.made.average * 9)**2
             auto_low += team.auto_shooting.low.made.average * 3
@@ -257,6 +264,8 @@ class AllianceCalculator:
         sigma = 0
         for team_number in self.team_numbers:
             team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
             mu += team.auto_gears.total.placed.average + team.teleop_gears.total.placed.average
             sigma += team.auto_gear.total.placed.average**2 + team.teleop_gears.total.placed.average**2
         sigma = math.sqrt(sigma)

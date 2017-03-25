@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1490290611012,
+    "length": 36,
+    "max_hopper_load": 12,
+    "notes": "high goal; cimbs",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/3984_0.jpg",
+            "url": ""
+        }
+    ],
+    "scout_name": "Seth Maxwell",
+    "team_number": 3984,
+    "weight": 90,
+    "width": 40
+}

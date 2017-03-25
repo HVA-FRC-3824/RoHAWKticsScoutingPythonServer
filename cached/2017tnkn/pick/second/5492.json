@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1490203070854,
+    "fourth_line": "Weight: 114.00 lbs, PL: Labview",
+    "last_modified": 1490405649946,
     "manual_ranking": -1,
-    "nickname": "Winner's Circle Robo Jockeys",
-    "pick_ability": 0.0,
+    "nickname": "",
+    "pick_ability": 68.125,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.38, Teleop 2.00",
     "stopped_moving": false,
     "team_number": 5492,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 87.50%, Time 7.14s",
+    "top_line": "PA: 68.12 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

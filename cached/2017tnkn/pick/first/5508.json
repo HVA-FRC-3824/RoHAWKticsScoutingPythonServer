@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1490203071682,
+    "fourth_line": "",
+    "last_modified": 1490405665108,
     "manual_ranking": -1,
-    "nickname": "Wolfbots",
-    "pick_ability": 0.0,
+    "nickname": "",
+    "pick_ability": 220.20634920634922,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.86, Teleop 1.57",
     "stopped_moving": false,
     "team_number": 5508,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 57.14%, Time 6.25s",
+    "top_line": "PA: 220.21 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 7,
+    "drive_train": "belt drive",
+    "height": 35,
+    "last_modified": 1490290328703,
+    "length": 24,
+    "max_hopper_load": 10,
+    "notes": "",
+    "programming_language": "",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/6219_0.jpg",
+            "url": ""
+        }
+    ],
+    "scout_name": "Abigail Bradfield",
+    "team_number": 6219,
+    "weight": 0,
+    "width": 22
+}

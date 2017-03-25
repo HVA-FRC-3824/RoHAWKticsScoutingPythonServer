@@ -58,8 +58,8 @@ class TeamCalculatedData(DataModel):
     @staticmethod
     def from_list(tmds):
         rv = TeamCalculatedData()
-
-        rv.team_number = tmds[0].team_number
+        if len(tmds) > 0:
+            rv.team_number = tmds[0].team_number
 
         auto_baseline_list = []
         auto_gears_list = []
@@ -105,17 +105,18 @@ class TeamCalculatedData(DataModel):
 
             auto_baseline_list.append(tmd.auto_baseline)
             auto_gears_list.append(tmd.auto_gears)
-            auto_high_made.append(tmd.auto_high_made + tmd.auto_high_correction)
-            auto_high_missed.append(tmd.auto_high_missed)
-            auto_low_made.append(tmd.auto_low_made + tmd.auto_low_correction)
-            auto_low_missed.append(tmd.auto_low_missed)
+            auto_high_made.append(tmd.auto_high_goal_made + tmd.auto_high_goal_correction)
+            auto_high_missed.append(tmd.auto_high_goal_missed)
+            auto_low_made.append(tmd.auto_low_goal_made + tmd.auto_low_goal_correction)
+            auto_low_missed.append(tmd.auto_low_goal_missed)
             auto_hoppers_list.append(tmd.auto_hoppers)
             auto_points_list.append(tmd.auto_points)
 
-            teleop_high_made.append(tmd.teleop_high_made + tmd.teleop_high_correction)
-            teleop_high_missed.append(tmd.teleop_high_missed)
-            teleop_low_made.append(tmd.teleop_low_made + tmd.teleop_low_correction)
-            teleop_low_missed.append(tmd.teleop_low_missed)
+            teleop_high_made.append(tmd.teleop_high_goal_made + tmd.teleop_high_goal_correction)
+            teleop_high_missed.append(tmd.teleop_high_goal_missed)
+            teleop_low_made.append(tmd.teleop_low_goal_made + tmd.teleop_low_goal_correction)
+            teleop_gears_list.append(tmd.teleop_gears)
+            teleop_low_missed.append(tmd.teleop_low_goal_missed)
             teleop_hoppers_list.append(tmd.teleop_hoppers)
             teleop_picked_up_gears_list.append(tmd.teleop_picked_up_gears)
             teleop_points_list.append(tmd.teleop_points)
@@ -156,7 +157,7 @@ class TeamCalculatedData(DataModel):
 
         rv.fouls = LowLevelStats.from_list(fouls_list)
         rv.tech_fouls = LowLevelStats.from_list(tech_fouls_list)
-        rv.yellow_cards = LowLevelStats.from_list(yellow_cards_list)
-        rv.red_cards = LowLevelStats.from_list(red_cards_list)
+        rv.yellow_card = LowLevelStats.from_list(yellow_cards_list)
+        rv.red_card = LowLevelStats.from_list(red_cards_list)
 
         return rv

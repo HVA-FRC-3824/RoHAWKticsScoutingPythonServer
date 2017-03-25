@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "4020": 2,
+        "4264": 2,
+        "4462": 2
+    },
+    "blue_defense": {
+        "4020": 3,
+        "4264": 3,
+        "4462": 3
+    },
+    "blue_speed": {
+        "4020": 1,
+        "4264": 2,
+        "4462": 2
+    },
+    "blue_torque": {
+        "4020": 1,
+        "4264": 2,
+        "4462": 2
+    },
+    "last_modified": 1490377253468,
+    "match_number": 27,
+    "notes": "6654 played some effective defense by driving in the way, but they can't push hard.",
+    "red_control": {
+        "5492": 2,
+        "6654": 2,
+        "744": 2
+    },
+    "red_defense": {
+        "5492": 3,
+        "6654": 1,
+        "744": 3
+    },
+    "red_speed": {
+        "5492": 2,
+        "6654": 2,
+        "744": 2
+    },
+    "red_torque": {
+        "5492": 2,
+        "6654": 3,
+        "744": 2
+    },
+    "scout_name": "Philip Hicks"
+}

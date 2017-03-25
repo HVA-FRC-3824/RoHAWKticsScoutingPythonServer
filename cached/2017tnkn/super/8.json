@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "4521": 3,
+        "5022": 2,
+        "5508": 1
+    },
+    "blue_defense": {
+        "4521": 2,
+        "5022": 2,
+        "5508": 1
+    },
+    "blue_speed": {
+        "4521": 3,
+        "5022": 2,
+        "5508": 1
+    },
+    "blue_torque": {
+        "4521": 2,
+        "5022": 2,
+        "5508": 2
+    },
+    "last_modified": 1490364376212,
+    "match_number": 8,
+    "notes": "5022 got yellow card, reaching straight out for the gear",
+    "red_control": {
+        "3843": 2,
+        "48": 1,
+        "5744": 3
+    },
+    "red_defense": {
+        "3843": 1,
+        "48": 2,
+        "5744": 3
+    },
+    "red_speed": {
+        "3843": 2,
+        "48": 1,
+        "5744": 3
+    },
+    "red_torque": {
+        "3843": 1,
+        "48": 2,
+        "5744": 3
+    },
+    "scout_name": "Abigail Bradfield"
+}

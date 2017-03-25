@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 23.5,
+    "last_modified": 1490288718052,
+    "length": 27,
+    "max_hopper_load": 15,
+    "notes": "",
+    "programming_language": "C++",
+    "robot_picture_default": 0,
+    "scout_name": "Philip Hicks",
+    "team_number": 4630,
+    "weight": 89,
+    "width": 28
+}

@@ -56,4 +56,6 @@ class ClimbResults(DataModel):
 
         rv.time = LowLevelStats.from_list(time_list)
 
+        rv.success_percentage = rv.success / rv.total
+
         return rv

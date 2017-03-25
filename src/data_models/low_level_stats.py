@@ -27,7 +27,7 @@ class LowLevelStats(DataModel):
             the low level statistics
         '''
         if len(list_) == 0:
-            return
+            return LowLevelStats()
 
         if isinstance(list_[0], bool):
             return LowLevelStats.from_boolean(list_)

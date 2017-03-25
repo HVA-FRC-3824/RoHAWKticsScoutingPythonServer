@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1490291349277,
+    "length": 32,
+    "max_hopper_load": 0,
+    "notes": "",
+    "programming_language": "c++ and java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/5816_0.jpg",
+            "url": "/v0/b/rohawktics-scouting-2017.appspot.com/o/2017tnkn/images/robots/5816_0.jpg"
+        }
+    ],
+    "scout_name": "Abigail Bradfield",
+    "team_number": 5816,
+    "weight": 120,
+    "width": 28
+}

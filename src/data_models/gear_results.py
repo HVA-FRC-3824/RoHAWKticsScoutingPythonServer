@@ -13,7 +13,7 @@ class GearResults(DataModel):
             self.set(d)
 
     @staticmethod
-    def from_lists(gears_list):
+    def from_list(gears_list):
         rv = GearResults()
 
         total_list = []

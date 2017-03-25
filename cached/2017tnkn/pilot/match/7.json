@@ -1,0 +1,42 @@
+{
+    "last_modified": 1490363869157,
+    "match_number": 7,
+    "teams": [
+        {
+            "drops": 0,
+            "lifts": 4,
+            "rating": "2 - Wouldn't pick them as pilot for us",
+            "team_number": 108
+        },
+        {
+            "drops": 0,
+            "lifts": 5,
+            "rating": "2 - Wouldn't pick them as pilot for us",
+            "team_number": 4265
+        },
+        {
+            "drops": 0,
+            "lifts": 0,
+            "rating": "0 - Not a pilot in this match",
+            "team_number": 3844
+        },
+        {
+            "drops": 0,
+            "lifts": 2,
+            "rating": "3 - Competent",
+            "team_number": 6654
+        },
+        {
+            "drops": 0,
+            "lifts": 0,
+            "rating": "0 - Not a pilot in this match",
+            "team_number": 6105
+        },
+        {
+            "drops": 0,
+            "lifts": 3,
+            "rating": "3 - Competent",
+            "team_number": 4462
+        }
+    ]
+}

@@ -54,7 +54,7 @@ class Database:
             self.instance = True
 
     def setup_folders(self):
-        for ext in ["schedule", "partial_match", "pit", "super_match", "pilot/match", "pilot/team",
+        for ext in ["schedule", "partial_match", "pit", "super", "pilot/match", "pilot/team",
                     "rankings/predicted", "rankings/current", "logistics", "calculated", "qualitative",
                     "pick/first", "pick/second", "pick/third", "scout_accuracy"]:
             os.makedirs(self.base_filepath + ext, 0o777, True)

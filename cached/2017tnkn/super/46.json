@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "4576": 2,
+        "5508": 3,
+        "5816": 2
+    },
+    "blue_defense": {
+        "4576": 3,
+        "5508": 3,
+        "5816": 3
+    },
+    "blue_speed": {
+        "4576": 1,
+        "5508": 2,
+        "5816": 1
+    },
+    "blue_torque": {
+        "4576": 2,
+        "5508": 3,
+        "5816": 2
+    },
+    "last_modified": 1490386545402,
+    "match_number": 46,
+    "notes": "4576 repeatedly ran into its alliance partners",
+    "red_control": {
+        "108": 3,
+        "1466": 1,
+        "3489": 1
+    },
+    "red_defense": {
+        "108": 3,
+        "1466": 3,
+        "3489": 3
+    },
+    "red_speed": {
+        "108": 3,
+        "1466": 1,
+        "3489": 1
+    },
+    "red_torque": {
+        "108": 3,
+        "1466": 1,
+        "3489": 1
+    },
+    "scout_name": "Steven Busby"
+}

@@ -66,7 +66,7 @@ class TheBlueAlliance:
             self.instance = True
 
             self.base_url = "http://www.thebluealliance.com/api/v3/"
-            self.headers = {"X-TBA-Auth-Key": "T17kbsiAc8dNL9EGuxIN9EyjP2XCJKVeN5hg5ILqxYF6CW1MFm0WehgsRsicdRYW"}
+            self.headers = {"X-TBA-Auth-Key": "z85XbFohPU0NxV9UWah9lzvQKuGFSZ7vLRWAPAT7V01siaClZGvg1gqi9NG3xef2"}
 
             self.dt_format = "%a, %d %b %Y %H:%M:%S %Z"
 
@@ -227,4 +227,9 @@ if __name__ == "__main__":
 
     tba = TheBlueAlliance(args['event_key'])
     database = Database(args['event_key'])
+    matches = tba.get_event_matches()
+    for match in matches:
+        if match.comp_level == "qm" and match.score_breakdown is not None:
+            logger.info("Getting score breakdown from match {}".format(match.match_number))
+            tba.update_firebase_match(match)
     tba.webhook_handler()

@@ -1,0 +1,66 @@
+{
+    "alliance_color": "Blue",
+    "alliance_number": 2,
+    "auto_baseline": true,
+    "auto_high_goal_correction": 0,
+    "auto_high_goal_made": 1,
+    "auto_high_goal_missed": 0,
+    "auto_hoppers": 0,
+    "auto_low_goal_correction": 0,
+    "auto_low_goal_made": 0,
+    "auto_low_goal_missed": 0,
+    "auto_points": 0,
+    "auto_start_position": "Near",
+    "dq": false,
+    "endgame_climb": "Successful",
+    "endgame_climb_time": "< 5s",
+    "endgame_points": 0,
+    "fouls": 0,
+    "match_number": 18,
+    "no_show": false,
+    "notes": "Lost two pieces from bumping into robots.",
+    "red_card": false,
+    "scout_name": "Christopher Howard",
+    "stopped_moving": false,
+    "tags_blocked_shots": false,
+    "tags_broke": true,
+    "tags_defended_airship": false,
+    "tags_defended_loading_station": false,
+    "tags_dumped_all_hoppers": false,
+    "tags_pinned_robot": false,
+    "team_number": 342,
+    "tech_fouls": 0,
+    "teleop_gears": [
+        {
+            "dropped": false,
+            "location": "far",
+            "placed": true
+        },
+        {
+            "dropped": false,
+            "location": "far",
+            "placed": true
+        },
+        {
+            "dropped": false,
+            "location": "far",
+            "placed": true
+        },
+        {
+            "dropped": false,
+            "location": "far",
+            "placed": true
+        }
+    ],
+    "teleop_high_goal_correction": 0,
+    "teleop_high_goal_made": 0,
+    "teleop_high_goal_missed": 0,
+    "teleop_hoppers": 0,
+    "teleop_low_goal_correction": 0,
+    "teleop_low_goal_made": 0,
+    "teleop_low_goal_missed": 0,
+    "teleop_picked_up_gears": 0,
+    "teleop_points": 0,
+    "total_points": 0,
+    "yellow_card": false
+}

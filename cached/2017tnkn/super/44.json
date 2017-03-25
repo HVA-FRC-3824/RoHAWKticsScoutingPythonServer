@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "337": 1,
+        "3821": 2,
+        "3843": 2
+    },
+    "blue_defense": {
+        "337": 3,
+        "3821": 3,
+        "3843": 2
+    },
+    "blue_speed": {
+        "337": 2,
+        "3821": 2,
+        "3843": 2
+    },
+    "blue_torque": {
+        "337": 3,
+        "3821": 2,
+        "3843": 1
+    },
+    "last_modified": 1490385444871,
+    "match_number": 44,
+    "notes": "Tons of gears in the blue alliance's loading station.",
+    "red_control": {
+        "3259": 2,
+        "4462": 3,
+        "5492": 2
+    },
+    "red_defense": {
+        "3259": 3,
+        "4462": 3,
+        "5492": 3
+    },
+    "red_speed": {
+        "3259": 2,
+        "4462": 2,
+        "5492": 1
+    },
+    "red_torque": {
+        "3259": 2,
+        "4462": 2,
+        "5492": 2
+    },
+    "scout_name": "Philip Hicks"
+}

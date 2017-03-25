@@ -1,11 +1,11 @@
 import json
-import time
+# import time
 import logging
 from socketserver import StreamRequestHandler
-from urllib.request import urlopen
+# from urllib.request import urlopen
 
 from the_blue_alliance import TheBlueAlliance
-from scout_analysis import ScoutAnalysis
+# from scout_analysis import ScoutAnalysis
 from led_manager import LedManager
 from aggregator import Aggregator
 
@@ -15,13 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 class SocketHandler(StreamRequestHandler):
-    partial_match_updates = {}
-    partial_match_time = {}
+    # partial_match_updates = {}
+    # partial_match_time = {}
 
-    queued_matches = []
+    # queued_matches = []
 
     tba = TheBlueAlliance()
-    scout_analysis = ScoutAnalysis()
+    # scout_analysis = ScoutAnalysis()
     led_manager = LedManager()
 
     def handle(self):
@@ -49,7 +49,8 @@ class SocketHandler(StreamRequestHandler):
             elif data['type'] == 'match':
                 match_number = data['data']['match_number']
                 team_number = data['data']['team_number']
-
+                Aggregator.team_calc(team_number)
+                '''
                 # Create the list of teams if it does not exist
                 if match_number not in self.partial_match_updates:
                     self.partial_match_updates[match_number] = []
@@ -83,7 +84,7 @@ class SocketHandler(StreamRequestHandler):
                     else:
                         # Aggregate team match data
                         Aggregator.match_calc(match_number)
-
+                '''
             # Super Match Data Update
             elif data['type'] == 'super':
                 # Aggregate super match data
@@ -92,7 +93,7 @@ class SocketHandler(StreamRequestHandler):
                 # Aggregate pilot data
                 match_number = data['data']['match_number']
                 Aggregator.pilot_calc(match_number)
-
+            '''
             # run through queue
             temp = self.queued_matches
             self.queued_matches = []
@@ -112,4 +113,5 @@ class SocketHandler(StreamRequestHandler):
                     self.queued_matches.append((match_number, attempt + 1))
                 else:
                     Aggregator.match_calc(match_number)
+            '''
         logger.info("Client lost: {}".format(self.client_address[0]))

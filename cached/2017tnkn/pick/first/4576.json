@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1490203060651,
+    "fourth_line": "",
+    "last_modified": 1490405504747,
     "manual_ranking": -1,
-    "nickname": "Red Nation Robotics",
-    "pick_ability": 0.0,
+    "nickname": "",
+    "pick_ability": 166.47619047619048,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 1.57",
     "stopped_moving": false,
     "team_number": 4576,
-    "third_line": "",
-    "top_line": "",
-    "yellow_card": false
+    "third_line": "Climb: Success Percentage 71.43%, Time 8.00s",
+    "top_line": "PA: 166.48 Average High Goal Balls: Auto 0.00, Teleop 0.00",
+    "yellow_card": true
 }

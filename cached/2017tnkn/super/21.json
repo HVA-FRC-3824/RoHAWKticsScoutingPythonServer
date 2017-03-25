@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "3140": 2,
+        "3259": 2,
+        "5022": 2
+    },
+    "blue_defense": {
+        "3140": 3,
+        "3259": 3,
+        "5022": 3
+    },
+    "blue_speed": {
+        "3140": 2,
+        "3259": 2,
+        "5022": 2
+    },
+    "blue_torque": {
+        "3140": 2,
+        "3259": 2,
+        "5022": 2
+    },
+    "last_modified": 1490370748246,
+    "match_number": 21,
+    "notes": "Flagship had a lot of trouble with gears at the loading station being in the way.",
+    "red_control": {
+        "2393": 2,
+        "4020": 2,
+        "801": 2
+    },
+    "red_defense": {
+        "2393": 3,
+        "4020": 3,
+        "801": 3
+    },
+    "red_speed": {
+        "2393": 1,
+        "4020": 1,
+        "801": 2
+    },
+    "red_torque": {
+        "2393": 2,
+        "4020": 2,
+        "801": 3
+    },
+    "scout_name": "Philip Hicks"
+}

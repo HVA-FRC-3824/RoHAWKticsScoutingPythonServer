@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 6,
+    "drive_train": "Tank (4 wheel)",
+    "height": 0,
+    "last_modified": 1490292135066,
+    "length": 0,
+    "max_hopper_load": 0,
+    "notes": "can cross base line and can pick up gears off ground.",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/4521_0.jpg",
+            "url": "/v0/b/rohawktics-scouting-2017.appspot.com/o/2017tnkn/images/robots/4521_0.jpg"
+        }
+    ],
+    "scout_name": "Liam Schenk",
+    "team_number": 4521,
+    "weight": 75,
+    "width": 0
+}

@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 27,
+    "last_modified": 1490289323906,
+    "length": 22,
+    "max_hopper_load": 0,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Philip Hicks",
+    "team_number": 5186,
+    "weight": 109,
+    "width": 26
+}

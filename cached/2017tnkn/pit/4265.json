@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)\n",
+    "height": 0,
+    "last_modified": 1490326995823,
+    "length": 0,
+    "max_hopper_load": 50,
+    "notes": "shooting auto and base line and can place gears on side pegs.",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/4265_0.jpg",
+            "url": "/v0/b/rohawktics-scouting-2017.appspot.com/o/2017tnkn/images/robots/4265_0.jpg"
+        }
+    ],
+    "scout_name": "Liam Schenk",
+    "team_number": 4265,
+    "weight": 120,
+    "width": 0
+}

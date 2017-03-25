@@ -1,12 +1,12 @@
 from calculators.alliance_calculator import AllianceCalculator
-from database import Database
 from constants import Constants
 
 
 class TeamCalculator:
     '''Makes all the higher level calculations for a specific team'''
-    def __init__(self, team_number):
+    def __init__(self, team_number, database):
         self.team_number = team_number
+        self.database = database
 
     def num_completed_matches(self):
         '''Number of matches completed by this team'''
@@ -20,10 +20,10 @@ class TeamCalculator:
 
         - predicted_score(A) predicted score of alliance A (this team and our team)
         '''
-        if Constants.OUR_TEAM_NUMBER in Constants().team_numbers:
-            alliance = [self.team_number, Constants.OUR_TEAM_NUMBER]
-        else:
-            alliance = [self.team_number]
+        # if Constants.OUR_TEAM_NUMBER in Constants().team_numbers:
+        alliance = [self.team_number, Constants.OUR_TEAM_NUMBER]
+        # else:
+        #    alliance = [self.team_number]
         ac = AllianceCalculator(alliance)
         return ac.predicted_score()
 
@@ -35,21 +35,21 @@ class TeamCalculator:
         '''
         functional_percentage = (1 - self.dysfunctional_percentage())
 
-        tcd = Database().get_team_calculated_data(self.team_number)
+        tcd = self.database.get_team_calculated_data(self.team_number)
         average_baseline_points = tcd.auto_baseline.average * 5
         average_climb_points = tcd.climb.success_percentage * 50
         auto_gear_contribution = tcd.auto_gears.total.placed.average * 60
 
         # TODO: multipliers will be correctly determined later
-        tqd = Database().get_team_qualitative_data(self.team_number)
-        defense_contribution = tqd.defense.zscore * 1
-        speed_contribution = tqd.speed.zscore * 1
-        control_contribution = tqd.control.zscore * 1
-        torque_contribution = tqd.torque.zscore * 1
+        # tqd = self.database.get_team_qualitative_data(self.team_number)
+        # defense_contribution = tqd.defense.zscore * 1
+        # speed_contribution = tqd.speed.zscore * 1
+        # control_contribution = tqd.control.zscore * 1
+        # torque_contribution = tqd.torque.zscore * 1
 
         spa = functional_percentage * (average_baseline_points + auto_gear_contribution +
-                                       defense_contribution + speed_contribution +
-                                       control_contribution + torque_contribution +
+                                       # defense_contribution + speed_contribution +
+                                       # control_contribution + torque_contribution +
                                        average_climb_points)
         return spa
 
@@ -62,9 +62,9 @@ class TeamCalculator:
         '''Calculates the percentage of matches in which the robot was either
         not there or stopped moving
         '''
-        tcd = Database().get_team_calculated_data(self.team_number)
+        tcd = self.database.get_team_calculated_data(self.team_number)
         dysfunctional_matches = (tcd.dq.total + tcd.no_show.total
                                  + tcd.stopped_moving.total)
-        logistics = Database().get_team_logistics(self.team_number)
+        logistics = self.database.get_team_logistics(self.team_number)
         total_matches = len(logistics.match_numbers)
         return (dysfunctional_matches / total_matches)

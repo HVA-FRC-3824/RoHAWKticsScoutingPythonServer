@@ -1,5 +1,4 @@
 from .data_model import DataModel
-from database import Database
 from calculators.team_calculator import TeamCalculator
 
 
@@ -31,13 +30,11 @@ class TeamPickAbility(DataModel):
             self.set(d)
 
     @staticmethod
-    def calculate_first_pick_ability(team_number):
+    def calculate_first_pick_ability(team_number, database):
         tpa = TeamPickAbility()
         tpa.team_number = team_number
 
-        database = Database()
-
-        tc = TeamCalculator(team_number)
+        tc = TeamCalculator(team_number, database)
 
         tpa.pick_ability = tc.first_pick_ability()
 
@@ -57,18 +54,16 @@ class TeamPickAbility(DataModel):
                            .format(calc.auto_gears.total.placed.average,
                                    calc.teleop_gears.total.placed.average))
         tpa.third_line = ("Climb: Success Percentage {0:0.2f}%, Time {1:0.2f}s"
-                          .format(calc.climb.success_percentage, calc.climb.time.average))
+                          .format(calc.climb.success_percentage * 100, calc.climb.time.average))
         tpa.fourth_line = ""
         return tpa
 
     @staticmethod
-    def calculate_second_pick_ability(team_number):
+    def calculate_second_pick_ability(team_number, database):
         tpa = TeamPickAbility()
         tpa.team_number = team_number
 
-        database = Database()
-
-        tc = TeamCalculator(team_number)
+        tc = TeamCalculator(team_number, database)
 
         tpa.pick_ability = tc.second_pick_ability()
 
@@ -82,31 +77,33 @@ class TeamPickAbility(DataModel):
         tpa.red_card = calc.red_card.total > 0
         tpa.stopped_moving = calc.stopped_moving.total > 1
 
-        qual = database.get_team_qualitative_data(team_number)
-
+        # qual = database.get_team_qualitative_data(team_number)
+        tpa.top_line = ("PA: {0:0.2f} Average High Goal Balls: Auto {1:0.2f}, Teleop {2:0.2f}"
+                        .format(tpa.pick_ability, calc.auto_shooting.high.made.average,
+                                calc.teleop_shooting.high.made.average))
+        '''
         tpa.top_line = ("PA: {0:0.2f} Defense: {1:d} Control: {2:d} Speed: {3:d} Torque: {3:d}"
                         .format(tpa.pick_ability,
                                 qual.defense.rank,
                                 qual.control.rank,
                                 qual.speed.rank,
                                 qual.torque.rank))
+        '''
         tpa.second_line = ("Average Gears: Auto {0:0.2f}, Teleop {1:0.2f}"
                            .format(calc.auto_gears.total.placed.average,
                                    calc.teleop_gears.total.placed.average))
         tpa.third_line = ("Climb: Success Percentage {0:0.2f}%, Time {1:0.2f}s"
-                          .format(calc.climb.success_percentage, calc.climb.time.average))
+                          .format(calc.climb.success_percentage * 100, calc.climb.time.average))
         tpa.fourth_line = ("Weight: {0:0.2f} lbs, PL: {1:s}"
                            .format(pit.weight, pit.programming_language))
         return tpa
 
     @staticmethod
-    def calculate_third_pick_ability(team_number):
+    def calculate_third_pick_ability(team_number, database):
         tpa = TeamPickAbility()
         tpa.team_number = team_number
 
-        database = Database()
-
-        tc = TeamCalculator(team_number)
+        tc = TeamCalculator(team_number, database)
 
         tpa.pick_ability = tc.third_pick_ability()
 
@@ -126,7 +123,7 @@ class TeamPickAbility(DataModel):
                            .format(calc.auto_gears.total.placed.average,
                                    calc.teleop_gears.total.placed.average))
         tpa.third_line = ("Climb: Success Percentage {0:0.2f}%, Time {1:0.2f}s"
-                          .format(calc.climb.success_percentage, calc.climb.time.average))
+                          .format(calc.climb.success_percentage * 100, calc.climb.time.average))
         tpa.fourth_line = ("Weight: {0:0.2f} lbs, PL: {1:s}"
                            .format(pit.weight, pit.programming_language))
         return tpa

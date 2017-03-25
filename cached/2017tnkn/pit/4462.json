@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 7,
+    "drive_train": "Mecanum",
+    "height": 0,
+    "last_modified": 1490289622897,
+    "length": 0,
+    "max_hopper_load": 35,
+    "notes": "gear can be placed in auto targeting software for auto ",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/4462_0.jpg",
+            "url": "/v0/b/rohawktics-scouting-2017.appspot.com/o/2017tnkn/images/robots/4462_0.jpg"
+        }
+    ],
+    "scout_name": "Liam Schenk",
+    "team_number": 4462,
+    "weight": 110,
+    "width": 0
+}

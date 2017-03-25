@@ -3,7 +3,6 @@ import scipy.stats as stats
 
 
 from database import Database
-from data_models.match import Match
 from data_models.team_ranking_data import TeamRankingData
 from data_models.team_calculated_data import TeamCalculatedData
 from data_models.team_qualitative_data import TeamQualitativeData
@@ -17,6 +16,28 @@ logger = logging.getLogger(__name__)
 
 
 class Aggregator:
+    @staticmethod
+    def team_calc(team_number):
+        logger.info("Updating team {}".format(team_number))
+        database = Database()
+
+        logger.info("Updating team calculated data for {}".format(team_number))
+
+        team_info = database.get_team_logistics(team_number)
+        tmds = []
+        for match_number in team_info.match_numbers:
+            tmd = database.get_team_match_data(team_number=team_number, match_number=match_number)
+            if tmd is not None:
+                tmds.append(tmd)
+        tcd = TeamCalculatedData.from_list(tmds)
+        database.set_team_calculated_data(tcd)
+
+        logger.info("Updating team pick ability for {}".format(team_number))
+        tpa = TeamPickAbility.calculate_first_pick_ability(team_number, database)
+        database.set_team_pick_ability(tpa, Database.FIRST_PICK)
+        tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
+        database.set_team_pick_ability(tpa, Database.SECOND_PICK)
+
     @staticmethod
     def match_calc(current_match_number):
         logger.info("Updating match {}".format(current_match_number))
@@ -45,7 +66,8 @@ class Aggregator:
         # update match predictions
         for match_number in update_match_numbers:
             logger.info("Updating match prediction for {}".format(match_number))
-            m = Match.update_prediction(match_number)
+            m = database.get_match(match_number)
+            m.update_prediction()
             database.set_match(m)
 
         # update team ranking data
@@ -57,9 +79,9 @@ class Aggregator:
         # update team pick ability
         for team_number in match_number.team_numbers:
             logger.info("Updating team pick ability for {}".format(team_number))
-            tpa = TeamPickAbility.calculate_first_pick_ability(team_number)
+            tpa = TeamPickAbility.calculate_first_pick_ability(team_number, database)
             database.set_team_pick_ability(tpa, Database.FIRST_PICK)
-            tpa = TeamPickAbility.calculate_second_pick_ability(team_number)
+            tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
             database.set_team_pick_ability(tpa, Database.SECOND_PICK)
             # tpa = TeamPickAbility.calculate_third_pick_ability(team_number)
             # database.set_team_pick_ability(tpa, Database.THIRD_PICK)

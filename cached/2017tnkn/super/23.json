@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "4265": 1,
+        "4576": 2,
+        "6517": 3
+    },
+    "blue_defense": {
+        "4265": 3,
+        "4576": 3,
+        "6517": 1
+    },
+    "blue_speed": {
+        "4265": 1,
+        "4576": 2,
+        "6517": 3
+    },
+    "blue_torque": {
+        "4265": 1,
+        "4576": 3,
+        "6517": 2
+    },
+    "last_modified": 1490375276047,
+    "match_number": 23,
+    "notes": "279's pilot never spun one of the rotors",
+    "red_control": {
+        "279": 1,
+        "337": 3,
+        "4264": 2
+    },
+    "red_defense": {
+        "279": 3,
+        "337": 3,
+        "4264": 3
+    },
+    "red_speed": {
+        "279": 1,
+        "337": 2,
+        "4264": 3
+    },
+    "red_torque": {
+        "279": 2,
+        "337": 3,
+        "4264": 3
+    },
+    "scout_name": "Steven Busby"
+}

@@ -9,9 +9,8 @@ class TeamPitData(DataModel):
         self.team_number = -1
         self.scout_name = ""
 
-        self.robot_image_default = -1
-        self.robot_image_filepaths = []
-        self.robot_image_urls = []
+        self.robot_picture_default = ""
+        self.robot_pictures = []
 
         self.weight = 0.0
         self.width = 0.0

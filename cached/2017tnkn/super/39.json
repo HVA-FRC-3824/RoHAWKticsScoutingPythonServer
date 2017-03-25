@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "3843": 2,
+        "4098": 2,
+        "6219": 2
+    },
+    "blue_defense": {
+        "3843": 3,
+        "4098": 3,
+        "6219": 3
+    },
+    "blue_speed": {
+        "3843": 2,
+        "4098": 2,
+        "6219": 3
+    },
+    "blue_torque": {
+        "3843": 2,
+        "4098": 2,
+        "6219": 2
+    },
+    "last_modified": 1490383062048,
+    "match_number": 39,
+    "notes": "red team had 4 rotors worth of gears but didn't have enough time to spin it 3 times.",
+    "red_control": {
+        "3489": 1,
+        "4265": 2,
+        "801": 3
+    },
+    "red_defense": {
+        "3489": 3,
+        "4265": 3,
+        "801": 3
+    },
+    "red_speed": {
+        "3489": 2,
+        "4265": 1,
+        "801": 2
+    },
+    "red_torque": {
+        "3489": 2,
+        "4265": 2,
+        "801": 2
+    },
+    "scout_name": "Philip Hicks"
+}

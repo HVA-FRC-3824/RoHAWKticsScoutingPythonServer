@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1490326953457,
+    "length": 36,
+    "max_hopper_load": 49,
+    "notes": "Pick up fuel, push gear onto peg",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/279_0.jpg",
+            "url": "/v0/b/rohawktics-scouting-2017.appspot.com/o/2017tnkn/images/robots/279_0.jpg"
+        }
+    ],
+    "scout_name": "Neil Patel",
+    "team_number": 279,
+    "weight": 105,
+    "width": 40
+}
