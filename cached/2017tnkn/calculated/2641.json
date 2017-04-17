@@ -1,10 +1,10 @@
 {
     "auto_baseline": {
-        "average": 0.42857142857142855,
+        "average": 0.5,
         "max": 1.0,
         "min": 0.0,
-        "std": 0.49487165930539345,
-        "total": 3.0
+        "std": 0.5,
+        "total": 5.0
     },
     "auto_gears": {
         "center": {
@@ -17,11 +17,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.2857142857142857,
+                "average": 0.3,
                 "max": 1,
                 "min": 0,
-                "std": 0.45175395145262565,
-                "total": 2
+                "std": 0.45825756949558394,
+                "total": 3
             }
         },
         "far": {
@@ -34,11 +34,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.1,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.30000000000000004,
+                "total": 1
             }
         },
         "near": {
@@ -68,11 +68,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.2857142857142857,
+                "average": 0.4,
                 "max": 1,
                 "min": 0,
-                "std": 0.45175395145262565,
-                "total": 2
+                "std": 0.4898979485566356,
+                "total": 4
             }
         }
     },
@@ -112,10 +112,10 @@
         "low": {
             "last_modified": 0,
             "made": {
-                "average": 4.285714285714286,
+                "average": 3.0,
                 "max": 10,
                 "min": 0,
-                "std": 4.948716593053935,
+                "std": 4.58257569495584,
                 "total": 30
             },
             "missed": {
@@ -127,25 +127,25 @@
             }
         }
     },
-    "auto_start_position_center": 3,
+    "auto_start_position_center": 5,
     "auto_start_position_far": 0,
-    "auto_start_position_near": 4,
+    "auto_start_position_near": 5,
     "climb": {
         "failed": 1,
         "fell": 0,
         "foul_credit": 1,
         "last_modified": 0,
         "no_attempt": 1,
-        "success": 4,
-        "success_percentage": 0.5714285714285714,
+        "success": 7,
+        "success_percentage": 0.7,
         "time": {
-            "average": 8.333333333333334,
-            "max": 10,
+            "average": 10.833333333333334,
+            "max": 15,
             "min": 5,
-            "std": 2.357022603955158,
-            "total": 25
+            "std": 3.435921354681384,
+            "total": 65
         },
-        "total": 7
+        "total": 10
     },
     "dq": {
         "average": 0.0,
@@ -168,7 +168,7 @@
         "std": 0.0,
         "total": 0
     },
-    "last_modified": 1490405061541,
+    "last_modified": 1492457740271,
     "no_show": {
         "average": 0.0,
         "max": 0.0,
@@ -209,11 +209,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.5714285714285714,
+                "average": 0.5,
                 "max": 2,
                 "min": 0,
-                "std": 0.7284313590846835,
-                "total": 4
+                "std": 0.6708203932499369,
+                "total": 5
             }
         },
         "far": {
@@ -226,11 +226,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 1.0,
+                "average": 1.3,
                 "max": 3,
                 "min": 0,
-                "std": 1.0690449676496976,
-                "total": 7
+                "std": 1.268857754044952,
+                "total": 13
             }
         },
         "near": {
@@ -243,11 +243,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.42857142857142855,
+                "average": 0.4,
                 "max": 2,
                 "min": 0,
-                "std": 0.7284313590846835,
-                "total": 3
+                "std": 0.66332495807108,
+                "total": 4
             }
         },
         "total": {
@@ -260,11 +260,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 2.0,
+                "average": 2.2,
                 "max": 3,
                 "min": 1,
-                "std": 0.5345224838248488,
-                "total": 14
+                "std": 0.6,
+                "total": 22
             }
         }
     },

@@ -1,17 +1,17 @@
 {
     "dnp": false,
-    "fourth_line": "",
-    "last_modified": 1490405665108,
+    "fourth_line": "Weight: 119.10 lbs, PL: Labview",
+    "last_modified": 1490460737371,
     "manual_ranking": -1,
     "nickname": "",
-    "pick_ability": 220.20634920634922,
+    "pick_ability": 150.7,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "Average Gears: Auto 0.86, Teleop 1.57",
+    "second_line": "Average Gears: Auto 0.80, Teleop 1.60",
     "stopped_moving": false,
     "team_number": 5508,
-    "third_line": "Climb: Success Percentage 57.14%, Time 6.25s",
-    "top_line": "PA: 220.21 Average High Goal Balls: Auto 0.00, Teleop 0.00",
+    "third_line": "Climb: Success Percentage 60.00%, Time 7.50s",
+    "top_line": "PA: 150.70 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

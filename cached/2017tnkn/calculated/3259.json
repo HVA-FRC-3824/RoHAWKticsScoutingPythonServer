@@ -1,10 +1,10 @@
 {
     "auto_baseline": {
-        "average": 0.8571428571428571,
+        "average": 0.9,
         "max": 1.0,
         "min": 0.0,
-        "std": 0.3499271061118826,
-        "total": 6.0
+        "std": 0.3,
+        "total": 9.0
     },
     "auto_gears": {
         "center": {
@@ -127,25 +127,25 @@
             }
         }
     },
-    "auto_start_position_center": 0,
-    "auto_start_position_far": 3,
-    "auto_start_position_near": 4,
+    "auto_start_position_center": 1,
+    "auto_start_position_far": 4,
+    "auto_start_position_near": 5,
     "climb": {
         "failed": 3,
-        "fell": 1,
+        "fell": 2,
         "foul_credit": 0,
         "last_modified": 0,
         "no_attempt": 2,
-        "success": 1,
-        "success_percentage": 0.14285714285714285,
+        "success": 3,
+        "success_percentage": 0.3,
         "time": {
             "average": 10.0,
-            "max": 10,
-            "min": 10,
-            "std": 0.0,
-            "total": 10
+            "max": 15,
+            "min": 5,
+            "std": 4.08248290463863,
+            "total": 30
         },
-        "total": 7
+        "total": 10
     },
     "dq": {
         "average": 0.0,
@@ -168,7 +168,7 @@
         "std": 0.0,
         "total": 0
     },
-    "last_modified": 1490405136974,
+    "last_modified": 1492457806759,
     "no_show": {
         "average": 0.0,
         "max": 0.0,
@@ -218,61 +218,61 @@
         },
         "far": {
             "dropped": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.4,
+                "max": 2,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.8,
+                "total": 4
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.2857142857142857,
-                "max": 1,
+                "average": 0.5,
+                "max": 2,
                 "min": 0,
-                "std": 0.45175395145262565,
-                "total": 2
+                "std": 0.6708203932499369,
+                "total": 5
             }
         },
         "near": {
             "dropped": {
-                "average": 0.14285714285714285,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.3499271061118826,
+                "std": 0.30000000000000004,
                 "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.2857142857142857,
+                "average": 0.2,
                 "max": 1,
                 "min": 0,
-                "std": 0.45175395145262565,
+                "std": 0.4000000000000001,
                 "total": 2
             }
         },
         "total": {
             "dropped": {
-                "average": 0.14285714285714285,
-                "max": 1,
+                "average": 0.5,
+                "max": 2,
                 "min": 0,
-                "std": 0.3499271061118826,
-                "total": 1
+                "std": 0.806225774829855,
+                "total": 5
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.5714285714285714,
-                "max": 1,
+                "average": 0.7,
+                "max": 2,
                 "min": 0,
-                "std": 0.4948716593053935,
-                "total": 4
+                "std": 0.6403124237432849,
+                "total": 7
             }
         }
     },
     "teleop_hoppers": {
-        "average": 0.42857142857142855,
+        "average": 0.3,
         "max": 1,
         "min": 0,
-        "std": 0.49487165930539345,
+        "std": 0.45825756949558405,
         "total": 3
     },
     "teleop_picked_up_gears": {

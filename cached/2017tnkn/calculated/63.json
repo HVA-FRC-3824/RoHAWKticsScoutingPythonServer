@@ -1,10 +1,10 @@
 {
     "auto_baseline": {
-        "average": 0.625,
+        "average": 0.7,
         "max": 1.0,
         "min": 0.0,
-        "std": 0.4841229182759271,
-        "total": 5.0
+        "std": 0.45825756949558405,
+        "total": 7.0
     },
     "auto_gears": {
         "center": {
@@ -112,11 +112,11 @@
         "low": {
             "last_modified": 0,
             "made": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.5,
+                "max": 5,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 1.5,
+                "total": 5
             },
             "missed": {
                 "average": 0.0,
@@ -128,24 +128,24 @@
         }
     },
     "auto_start_position_center": 1,
-    "auto_start_position_far": 4,
-    "auto_start_position_near": 3,
+    "auto_start_position_far": 5,
+    "auto_start_position_near": 4,
     "climb": {
         "failed": 2,
         "fell": 0,
         "foul_credit": 0,
         "last_modified": 0,
         "no_attempt": 2,
-        "success": 4,
-        "success_percentage": 0.5,
+        "success": 6,
+        "success_percentage": 0.6,
         "time": {
-            "average": 11.25,
+            "average": 10.833333333333334,
             "max": 15,
-            "min": 10,
-            "std": 2.165063509461097,
-            "total": 45
+            "min": 5,
+            "std": 3.435921354681384,
+            "total": 65
         },
-        "total": 8
+        "total": 10
     },
     "dq": {
         "average": 0.0,
@@ -168,7 +168,7 @@
         "std": 0.0,
         "total": 0
     },
-    "last_modified": 1490405785790,
+    "last_modified": 1492458418551,
     "no_show": {
         "average": 0.0,
         "max": 0.0,
@@ -209,62 +209,62 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.625,
+                "average": 0.5,
                 "max": 2,
                 "min": 0,
-                "std": 0.8569568250501305,
+                "std": 0.806225774829855,
                 "total": 5
             }
         },
         "far": {
             "dropped": {
-                "average": 0.125,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.33071891388307384,
+                "std": 0.30000000000000004,
                 "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.75,
+                "average": 0.8,
                 "max": 2,
                 "min": 0,
-                "std": 0.82915619758885,
-                "total": 6
+                "std": 0.7483314773547883,
+                "total": 8
             }
         },
         "near": {
             "dropped": {
-                "average": 0.375,
+                "average": 0.3,
                 "max": 1,
                 "min": 0,
-                "std": 0.4841229182759271,
+                "std": 0.45825756949558405,
                 "total": 3
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.375,
+                "average": 0.3,
                 "max": 2,
                 "min": 0,
-                "std": 0.6959705453537527,
+                "std": 0.6403124237432848,
                 "total": 3
             }
         },
         "total": {
             "dropped": {
-                "average": 0.5,
+                "average": 0.4,
                 "max": 1,
                 "min": 0,
-                "std": 0.5,
+                "std": 0.48989794855663565,
                 "total": 4
             },
             "last_modified": 0,
             "placed": {
-                "average": 1.75,
+                "average": 1.6,
                 "max": 3,
                 "min": 0,
-                "std": 0.82915619758885,
-                "total": 14
+                "std": 0.8000000000000002,
+                "total": 16
             }
         }
     },
@@ -311,18 +311,18 @@
         "low": {
             "last_modified": 0,
             "made": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.9,
+                "max": 9,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 2.7,
+                "total": 9
             },
             "missed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 1.1,
+                "max": 10,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 2.981610303175115,
+                "total": 11
             }
         }
     },

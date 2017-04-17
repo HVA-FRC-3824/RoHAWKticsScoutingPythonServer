@@ -1,10 +1,10 @@
 {
     "auto_baseline": {
-        "average": 0.2857142857142857,
+        "average": 0.3,
         "max": 1.0,
         "min": 0.0,
-        "std": 0.4517539514526256,
-        "total": 2.0
+        "std": 0.45825756949558405,
+        "total": 3.0
     },
     "auto_gears": {
         "center": {
@@ -128,16 +128,16 @@
         }
     },
     "auto_start_position_center": 1,
-    "auto_start_position_far": 3,
-    "auto_start_position_near": 3,
+    "auto_start_position_far": 4,
+    "auto_start_position_near": 5,
     "climb": {
-        "failed": 0,
+        "failed": 3,
         "fell": 1,
         "foul_credit": 0,
         "last_modified": 0,
         "no_attempt": 5,
         "success": 1,
-        "success_percentage": 0.14285714285714285,
+        "success_percentage": 0.1,
         "time": {
             "average": 5.0,
             "max": 5,
@@ -145,7 +145,7 @@
             "std": 0.0,
             "total": 5
         },
-        "total": 7
+        "total": 10
     },
     "dq": {
         "average": 0.0,
@@ -168,7 +168,7 @@
         "std": 0.0,
         "total": 0
     },
-    "last_modified": 1490405455183,
+    "last_modified": 1492458107187,
     "no_show": {
         "average": 0.0,
         "max": 0.0,
@@ -192,10 +192,10 @@
     },
     "team_number": 4521,
     "tech_fouls": {
-        "average": 0.2857142857142857,
+        "average": 0.2,
         "max": 2,
         "min": 0,
-        "std": 0.6998542122237653,
+        "std": 0.6000000000000001,
         "total": 2
     },
     "teleop_gears": {
@@ -209,28 +209,28 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.1,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.30000000000000004,
+                "total": 1
             }
         },
         "far": {
             "dropped": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.2,
+                "max": 2,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.6000000000000001,
+                "total": 2
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.14285714285714285,
+                "average": 0.3,
                 "max": 1,
                 "min": 0,
-                "std": 0.34992710611188266,
-                "total": 1
+                "std": 0.45825756949558394,
+                "total": 3
             }
         },
         "near": {
@@ -243,28 +243,28 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.14285714285714285,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.3499271061118826,
+                "std": 0.30000000000000004,
                 "total": 1
             }
         },
         "total": {
             "dropped": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.2,
+                "max": 2,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.6000000000000001,
+                "total": 2
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.2857142857142857,
+                "average": 0.5,
                 "max": 1,
                 "min": 0,
-                "std": 0.45175395145262565,
-                "total": 2
+                "std": 0.5,
+                "total": 5
             }
         }
     },
@@ -276,11 +276,11 @@
         "total": 0
     },
     "teleop_picked_up_gears": {
-        "average": 0.2857142857142857,
-        "max": 1,
+        "average": 0.4,
+        "max": 2,
         "min": 0,
-        "std": 0.45175395145262565,
-        "total": 2
+        "std": 0.66332495807108,
+        "total": 4
     },
     "teleop_points": {
         "average": 0.0,

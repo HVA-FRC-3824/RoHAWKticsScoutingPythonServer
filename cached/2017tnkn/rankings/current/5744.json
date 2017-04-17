@@ -1,12 +1,12 @@
 {
-    "RPs": 0.57,
-    "first_tie_breaker": 1026.0,
-    "last_modified": 1490393141245,
-    "losses": 5,
-    "played": 7,
+    "RPs": 0.6,
+    "first_tie_breaker": 1772.0,
+    "last_modified": 1490458671596,
+    "losses": 7,
+    "played": 10,
     "rank": 0,
-    "second_tie_breaker": 371.0,
+    "second_tie_breaker": 601.0,
     "team_number": 5744,
     "ties": 0,
-    "wins": 2
+    "wins": 3
 }

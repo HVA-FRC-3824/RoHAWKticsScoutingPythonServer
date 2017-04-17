@@ -1,0 +1,25 @@
+{
+    "drops": {
+        "average": 0.3,
+        "max": 2,
+        "min": 0,
+        "std": 0.6403124237432849,
+        "total": 3
+    },
+    "last_modified": 1492457993410,
+    "lifts": {
+        "average": 3.3,
+        "max": 6,
+        "min": 0,
+        "std": 1.6155494421403513,
+        "total": 33
+    },
+    "rating": {
+        "average": 4.222222222222222,
+        "max": 5,
+        "min": 3,
+        "std": 0.9162456945817024,
+        "total": 38
+    },
+    "team_number": 4020
+}

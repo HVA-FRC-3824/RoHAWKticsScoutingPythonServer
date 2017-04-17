@@ -18,6 +18,9 @@ class TeamPilotData(DataModel):
     def from_list(mtpds):
         rv = TeamPilotData()
 
+        if len(mtpds) > 0:
+            rv.team_number = mtpds[0].team_number
+
         rating_list = []
         lifts_list = []
         drops_list = []

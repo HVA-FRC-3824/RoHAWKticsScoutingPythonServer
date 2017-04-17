@@ -24,6 +24,8 @@ class Aggregator:
         logger.info("Updating team calculated data for {}".format(team_number))
 
         team_info = database.get_team_logistics(team_number)
+        if team_info is None:
+            return
         tmds = []
         for match_number in team_info.match_numbers:
             tmd = database.get_team_match_data(team_number=team_number, match_number=match_number)
@@ -46,12 +48,13 @@ class Aggregator:
         database = Database()
 
         match = database.get_match(current_match_number)
-
+        if match is None:
+            return
         # update_match_numbers = []
 
         # Update the team calculated data
         for team_number in match.team_numbers:
-            logger.info("Updating team calculated data for {}".format(team_number))
+            # logger.info("Updating team calculated data for {}".format(team_number))
 
             Aggregator.team_calc(team_number)
         '''
@@ -165,6 +168,9 @@ class Aggregator:
         database = Database()
         match = database.get_match(current_match_number)
 
+        if match is None:
+            return
+
         for team_number in match.team_numbers:
             Aggregator.team_pilot_calc(team_number)
 
@@ -173,6 +179,9 @@ class Aggregator:
         database = Database()
         logger.info("Updating pilot data for team {}".format(team_number))
         team_info = database.get_team_logistics(team_number)
+        if team_info is None:
+            return
+
         mtpds = []
         for match_number in team_info.match_numbers:
             mpd = database.get_match_pilot_data(match_number)

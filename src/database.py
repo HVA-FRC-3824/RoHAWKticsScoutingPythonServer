@@ -182,7 +182,7 @@ class Database:
         response = self.get_from_firebase("rankings/{0:s}/".format(ranking_type), str(team_number))
         if response is None:
             return None
-        return response
+        return TeamRankingData(response)
 
     def set_team_ranking_data(self, trd, ranking_type):
         if isinstance(trd, TeamRankingData):
@@ -191,6 +191,12 @@ class Database:
             self.put_in_firebase("rankings/{0:s}/".format(ranking_type), trd['team_number'], trd)
         else:
             logger.error("trd is not of type TeamRankingData or dict")
+
+    def get_team_pick_ability(self, team_number, pick_type):
+        response = self.get_from_firebase("pick/{0:s}/".format(pick_type), str(team_number))
+        if response is None:
+            return None
+        return TeamPickAbility(response)
 
     def set_team_pick_ability(self, tpa, pick_type):
         if isinstance(tpa, TeamPickAbility):

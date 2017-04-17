@@ -31,7 +31,7 @@ class TeamPickAbility(DataModel):
 
     @staticmethod
     def calculate_first_pick_ability(team_number, database):
-        tpa = TeamPickAbility()
+        tpa = database.get_team_pick_ability(team_number, database.FIRST_PICK)
         tpa.team_number = team_number
 
         tc = TeamCalculator(team_number, database)
@@ -55,7 +55,8 @@ class TeamPickAbility(DataModel):
                                    calc.teleop_gears.total.placed.average))
         tpa.third_line = ("Climb: Success Percentage {0:0.2f}%, Time {1:0.2f}s"
                           .format(calc.climb.success_percentage * 100, calc.climb.time.average))
-        tpa.fourth_line = ""
+        tpa.fourth_line = ("Weight: {0:0.2f} lbs, PL: {1:s}"
+                           .format(pit.weight, pit.programming_language))
         return tpa
 
     @staticmethod

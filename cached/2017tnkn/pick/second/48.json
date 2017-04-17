@@ -1,17 +1,17 @@
 {
     "dnp": false,
     "fourth_line": "Weight: 115.80 lbs, PL: C++",
-    "last_modified": 1490405546773,
+    "last_modified": 1490460558452,
     "manual_ranking": -1,
     "nickname": "",
-    "pick_ability": 59.166666666666664,
+    "pick_ability": 71.11111111111111,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/48_0.jpg",
-    "second_line": "Average Gears: Auto 0.50, Teleop 3.00",
+    "second_line": "Average Gears: Auto 0.56, Teleop 2.56",
     "stopped_moving": false,
     "team_number": 48,
-    "third_line": "Climb: Success Percentage 50.00%, Time 11.67s",
-    "top_line": "PA: 59.17 Average High Goal Balls: Auto 0.67, Teleop 0.00",
+    "third_line": "Climb: Success Percentage 66.67%, Time 9.17s",
+    "top_line": "PA: 71.11 Average High Goal Balls: Auto 0.78, Teleop 0.00",
     "yellow_card": false
 }

@@ -1,5 +1,3 @@
-from calculators.alliance_calculator import AllianceCalculator
-from constants import Constants
 
 
 class TeamCalculator:
@@ -20,12 +18,24 @@ class TeamCalculator:
 
         - predicted_score(A) predicted score of alliance A (this team and our team)
         '''
-        # if Constants.OUR_TEAM_NUMBER in Constants().team_numbers:
-        alliance = [self.team_number, Constants.OUR_TEAM_NUMBER]
-        # else:
-        #    alliance = [self.team_number]
-        ac = AllianceCalculator(alliance)
-        return ac.predicted_score()
+        team = self.database.get_team_calculated_data(self.team_number)
+        p_score = 0
+        p_score += (team.auto_shooting.high.made.average +
+                    team.auto_shooting.low.made.average / 3 +
+                    team.teleop_shooting.high.made.average / 3 +
+                    team.teleop_shooting.low.made.average / 9)
+        p_score += 50 * team.climb.success_percentage
+        p_score += 60 * team.auto_gears.total.placed.average
+        if team.teleop_gears.total.placed.average >= 12:
+            p_score += 160
+        elif team.teleop_gears.total.placed.average >= 6:
+            p_score += 120 + 40 * (team.teleop_gears.total.placed.average - 6) / 6
+        elif team.teleop_gears.total.placed.average >= 2:
+            p_score += 80 + 40 * (team.teleop_gears.total.placed.average - 2) / 4
+        else:
+            p_score += 40 + 40 * (team.teleop_gears.total.placed.average) / 2
+
+        return p_score
 
     def second_pick_ability(self):
         '''Calculate the second pick ability

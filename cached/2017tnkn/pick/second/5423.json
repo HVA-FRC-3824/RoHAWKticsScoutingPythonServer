@@ -1,17 +1,17 @@
 {
     "dnp": false,
     "fourth_line": "Weight: 0.00 lbs, PL: \u00e7++",
-    "last_modified": 1490405629828,
+    "last_modified": 1490460679342,
     "manual_ranking": -1,
     "nickname": "",
-    "pick_ability": 3.5,
+    "pick_ability": 3.15,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "Average Gears: Auto 0.00, Teleop 2.25",
+    "second_line": "Average Gears: Auto 0.00, Teleop 2.10",
     "stopped_moving": true,
     "team_number": 5423,
     "third_line": "Climb: Success Percentage 0.00%, Time 0.00s",
-    "top_line": "PA: 3.50 Average High Goal Balls: Auto 0.00, Teleop 0.00",
+    "top_line": "PA: 3.15 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

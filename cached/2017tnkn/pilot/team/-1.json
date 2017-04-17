@@ -1,25 +1,25 @@
 {
     "drops": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.14285714285714285,
+        "max": 1,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.3499271061118826,
+        "total": 1
     },
-    "last_modified": 1490407910032,
+    "last_modified": 1490445888572,
     "lifts": {
-        "average": 0.7142857142857143,
-        "max": 3,
+        "average": 1.8571428571428572,
+        "max": 4,
         "min": 0,
-        "std": 1.0301575072754254,
-        "total": 5
+        "std": 1.4568627181693672,
+        "total": 13
     },
     "rating": {
-        "average": 2.5,
+        "average": 3.6,
         "max": 4,
-        "min": 1,
-        "std": 1.118033988749895,
-        "total": 10
+        "min": 3,
+        "std": 0.4898979485566356,
+        "total": 18
     },
     "team_number": -1
 }

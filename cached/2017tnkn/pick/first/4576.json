@@ -1,17 +1,17 @@
 {
     "dnp": false,
-    "fourth_line": "",
-    "last_modified": 1490405504747,
+    "fourth_line": "Weight: 115.00 lbs, PL: Java",
+    "last_modified": 1492458407991,
     "manual_ranking": -1,
     "nickname": "",
-    "pick_ability": 166.47619047619048,
+    "pick_ability": 107.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "Average Gears: Auto 0.00, Teleop 1.57",
+    "second_line": "Average Gears: Auto 0.10, Teleop 1.30",
     "stopped_moving": false,
     "team_number": 4576,
-    "third_line": "Climb: Success Percentage 71.43%, Time 8.00s",
-    "top_line": "PA: 166.48 Average High Goal Balls: Auto 0.00, Teleop 0.00",
+    "third_line": "Climb: Success Percentage 70.00%, Time 7.86s",
+    "top_line": "PA: 107.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": true
 }

@@ -7,6 +7,8 @@ import json
 import subprocess
 import re
 import platform
+import socket
+from threading import Thread
 
 from socketserver import TCPServer, ThreadingMixIn
 
@@ -53,6 +55,7 @@ class Server:
         self.setup_adb_bridge()
 
         self.socket_server = ThreadedTCPServer(('localhost', 38240), SocketHandler)
+        self.socket_server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def setup_adb_bridge(self):
         '''Sets up reverse port forward for attached android device running DatabaseRelay via the
@@ -121,7 +124,9 @@ if __name__ == "__main__":
     def signal_handler(signal, frame):
         '''Catches control-c and cleanly shuts down the server'''
         logging.info("Control-C caught. Cleanly shutting down the server.")
-        server.stop()
+        t = Thread(target=server.stop())
+        t.start()
+        t.join(timeout=5)
         sys.exit()
     signal.signal(signal.SIGINT, signal_handler)
     server.start()

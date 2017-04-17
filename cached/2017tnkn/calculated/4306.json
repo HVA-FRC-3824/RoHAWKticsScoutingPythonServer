@@ -1,27 +1,27 @@
 {
     "auto_baseline": {
-        "average": 0.8571428571428571,
+        "average": 0.7,
         "max": 1.0,
         "min": 0.0,
-        "std": 0.3499271061118826,
-        "total": 6.0
+        "std": 0.45825756949558405,
+        "total": 7.0
     },
     "auto_gears": {
         "center": {
             "dropped": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.1,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.30000000000000004,
+                "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.2,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.4,
+                "total": 2
             }
         },
         "far": {
@@ -60,19 +60,19 @@
         },
         "total": {
             "dropped": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.1,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.30000000000000004,
+                "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.2,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.4,
+                "total": 2
             }
         }
     },
@@ -127,7 +127,7 @@
             }
         }
     },
-    "auto_start_position_center": 2,
+    "auto_start_position_center": 5,
     "auto_start_position_far": 4,
     "auto_start_position_near": 1,
     "climb": {
@@ -135,17 +135,17 @@
         "fell": 0,
         "foul_credit": 0,
         "last_modified": 0,
-        "no_attempt": 4,
-        "success": 0,
-        "success_percentage": 0.0,
+        "no_attempt": 6,
+        "success": 1,
+        "success_percentage": 0.1,
         "time": {
-            "average": 0,
-            "max": 0,
-            "min": 0,
-            "std": 0,
-            "total": 0
+            "average": 15.0,
+            "max": 15,
+            "min": 15,
+            "std": 0.0,
+            "total": 15
         },
-        "total": 7
+        "total": 10
     },
     "dq": {
         "average": 0.0,
@@ -168,7 +168,7 @@
         "std": 0.0,
         "total": 0
     },
-    "last_modified": 1490405400188,
+    "last_modified": 1492458054991,
     "no_show": {
         "average": 0.0,
         "max": 0.0,
@@ -184,11 +184,11 @@
         "total": 0
     },
     "stopped_moving": {
-        "average": 0.0,
-        "max": 0.0,
+        "average": 0.1,
+        "max": 1.0,
         "min": 0.0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.30000000000000004,
+        "total": 1.0
     },
     "team_number": 4306,
     "tech_fouls": {
@@ -209,27 +209,27 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.5714285714285714,
-                "max": 2,
+                "average": 0.8,
+                "max": 3,
                 "min": 0,
-                "std": 0.9035079029052512,
-                "total": 4
+                "std": 1.077032961426901,
+                "total": 8
             }
         },
         "far": {
             "dropped": {
-                "average": 0.14285714285714285,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.34992710611188266,
+                "std": 0.30000000000000004,
                 "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.8571428571428571,
+                "average": 0.6,
                 "max": 3,
                 "min": 0,
-                "std": 0.9897433186107869,
+                "std": 0.9165151389911681,
                 "total": 6
             }
         },
@@ -243,36 +243,36 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.7142857142857143,
-                "max": 2,
+                "average": 0.8,
+                "max": 3,
                 "min": 0,
-                "std": 0.8806305718527109,
-                "total": 5
+                "std": 1.077032961426901,
+                "total": 8
             }
         },
         "total": {
             "dropped": {
-                "average": 0.14285714285714285,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.34992710611188266,
+                "std": 0.30000000000000004,
                 "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 2.142857142857143,
-                "max": 3,
-                "min": 1,
-                "std": 0.6388765649999398,
-                "total": 15
+                "average": 2.2,
+                "max": 6,
+                "min": 0,
+                "std": 1.5362291495737217,
+                "total": 22
             }
         }
     },
     "teleop_hoppers": {
-        "average": 0.14285714285714285,
+        "average": 0.1,
         "max": 1,
         "min": 0,
-        "std": 0.3499271061118826,
+        "std": 0.30000000000000004,
         "total": 1
     },
     "teleop_picked_up_gears": {
@@ -300,10 +300,10 @@
                 "total": 0
             },
             "missed": {
-                "average": 0.7142857142857143,
+                "average": 0.5,
                 "max": 5,
                 "min": 0,
-                "std": 1.749635530559413,
+                "std": 1.5,
                 "total": 5
             }
         },

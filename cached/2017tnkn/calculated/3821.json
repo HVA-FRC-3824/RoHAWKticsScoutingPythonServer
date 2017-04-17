@@ -4,7 +4,7 @@
         "max": 1.0,
         "min": 1.0,
         "std": 0.0,
-        "total": 7.0
+        "total": 10.0
     },
     "auto_gears": {
         "center": {
@@ -34,11 +34,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.1,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.30000000000000004,
+                "total": 1
             }
         },
         "near": {
@@ -68,11 +68,11 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.0,
-                "max": 0,
+                "average": 0.1,
+                "max": 1,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 0.30000000000000004,
+                "total": 1
             }
         }
     },
@@ -112,11 +112,11 @@
         "low": {
             "last_modified": 0,
             "made": {
-                "average": 0.0,
-                "max": 0,
+                "average": 1.0,
+                "max": 10,
                 "min": 0,
-                "std": 0.0,
-                "total": 0
+                "std": 3.0,
+                "total": 10
             },
             "missed": {
                 "average": 0.0,
@@ -128,24 +128,24 @@
         }
     },
     "auto_start_position_center": 0,
-    "auto_start_position_far": 4,
-    "auto_start_position_near": 3,
+    "auto_start_position_far": 6,
+    "auto_start_position_near": 4,
     "climb": {
-        "failed": 4,
+        "failed": 5,
         "fell": 0,
         "foul_credit": 0,
         "last_modified": 0,
         "no_attempt": 1,
-        "success": 2,
-        "success_percentage": 0.2857142857142857,
+        "success": 4,
+        "success_percentage": 0.4,
         "time": {
-            "average": 20.0,
+            "average": 15.0,
             "max": 25,
-            "min": 15,
-            "std": 5.0,
-            "total": 40
+            "min": 5,
+            "std": 7.0710678118654755,
+            "total": 60
         },
-        "total": 7
+        "total": 10
     },
     "dq": {
         "average": 0.0,
@@ -162,13 +162,13 @@
         "total": 0
     },
     "fouls": {
-        "average": 0.0,
-        "max": 0,
+        "average": 0.2,
+        "max": 2,
         "min": 0,
-        "std": 0.0,
-        "total": 0
+        "std": 0.6000000000000001,
+        "total": 2
     },
-    "last_modified": 1490405213781,
+    "last_modified": 1492457876990,
     "no_show": {
         "average": 0.0,
         "max": 0.0,
@@ -209,62 +209,62 @@
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.14285714285714285,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.34992710611188266,
+                "std": 0.30000000000000004,
                 "total": 1
             }
         },
         "far": {
             "dropped": {
-                "average": 0.42857142857142855,
+                "average": 0.4,
                 "max": 2,
                 "min": 0,
-                "std": 0.7284313590846835,
-                "total": 3
+                "std": 0.66332495807108,
+                "total": 4
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.2857142857142857,
+                "average": 0.3,
                 "max": 1,
                 "min": 0,
-                "std": 0.4517539514526256,
-                "total": 2
+                "std": 0.45825756949558394,
+                "total": 3
             }
         },
         "near": {
             "dropped": {
-                "average": 0.14285714285714285,
+                "average": 0.1,
                 "max": 1,
                 "min": 0,
-                "std": 0.34992710611188266,
+                "std": 0.30000000000000004,
                 "total": 1
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.14285714285714285,
+                "average": 0.2,
                 "max": 1,
                 "min": 0,
-                "std": 0.34992710611188266,
-                "total": 1
+                "std": 0.4000000000000001,
+                "total": 2
             }
         },
         "total": {
             "dropped": {
-                "average": 0.5714285714285714,
+                "average": 0.5,
                 "max": 2,
                 "min": 0,
-                "std": 0.9035079029052513,
-                "total": 4
+                "std": 0.806225774829855,
+                "total": 5
             },
             "last_modified": 0,
             "placed": {
-                "average": 0.5714285714285714,
-                "max": 1,
+                "average": 0.6,
+                "max": 2,
                 "min": 0,
-                "std": 0.4948716593053935,
-                "total": 4
+                "std": 0.66332495807108,
+                "total": 6
             }
         }
     },
@@ -300,10 +300,10 @@
                 "total": 0
             },
             "missed": {
-                "average": 0.2857142857142857,
+                "average": 0.2,
                 "max": 1,
                 "min": 0,
-                "std": 0.4517539514526256,
+                "std": 0.4000000000000001,
                 "total": 2
             }
         },

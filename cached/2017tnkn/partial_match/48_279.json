@@ -66,7 +66,7 @@
     ],
     "teleop_high_goal_correction": 0,
     "teleop_high_goal_made": 0,
-    "teleop_high_goal_missed": 6,
+    "teleop_high_goal_missed": 0,
     "teleop_hoppers": 0,
     "teleop_low_goal_correction": 0,
     "teleop_low_goal_made": 0,

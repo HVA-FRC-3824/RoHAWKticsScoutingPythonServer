@@ -8,6 +8,7 @@ class GearResults(DataModel):
         self.near = GearLocationResults()
         self.center = GearLocationResults()
         self.far = GearLocationResults()
+        self.loading_station = GearLocationResults()
 
         if d is not None:
             self.set(d)
@@ -20,6 +21,7 @@ class GearResults(DataModel):
         near_list = []
         center_list = []
         far_list = []
+        loading_station_list = []
 
         # seperate locations
         for gears in gears_list:
@@ -27,6 +29,7 @@ class GearResults(DataModel):
             nears = [0, 0]
             centers = [0, 0]
             fars = [0, 0]
+            loading_station = [0, 0]
             for gear in gears:
                 if gear.location == 'near':
                     if gear.placed:
@@ -49,14 +52,20 @@ class GearResults(DataModel):
                     else:
                         totals[1] += 1
                         fars[1] += 1
+                elif gear.location == 'loading station':
+                    # Can't place in the loading station
+                    totals[1] += 1
+                    loading_station[1] += 1
             total_list.append(totals)
             near_list.append(nears)
             center_list.append(centers)
             far_list.append(fars)
+            loading_station_list.append(loading_station)
 
         rv.total = GearLocationResults.from_list(total_list)
         rv.near = GearLocationResults.from_list(near_list)
         rv.center = GearLocationResults.from_list(center_list)
         rv.far = GearLocationResults.from_list(far_list)
+        rv.loading_station = GearLocationResults.from_list(loading_station_list)
 
         return rv

@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "4020": 1,
+        "5744": 3,
+        "6302": 3
+    },
+    "blue_defense": {
+        "4020": 3,
+        "5744": 3,
+        "6302": 3
+    },
+    "blue_speed": {
+        "4020": 1,
+        "5744": 2,
+        "6302": 2
+    },
+    "blue_torque": {
+        "4020": 3,
+        "5744": 2,
+        "6302": 3
+    },
+    "last_modified": 1490447509175,
+    "match_number": 61,
+    "notes": "5744 ran into a lot of things, including an opponent while climbing",
+    "red_control": {
+        "279": 1,
+        "5002": 2,
+        "6219": 3
+    },
+    "red_defense": {
+        "279": 3,
+        "5002": 3,
+        "6219": 3
+    },
+    "red_speed": {
+        "279": 2,
+        "5002": 1,
+        "6219": 3
+    },
+    "red_torque": {
+        "279": 3,
+        "5002": 3,
+        "6219": 3
+    },
+    "scout_name": "Steven Busby"
+}

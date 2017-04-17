@@ -19,9 +19,6 @@ if __name__ == '__main__':
     for team in tba.get_event_teams():
         print("Team number: {}".format(team.team_number))
         Aggregator.team_calc(team.team_number)
-
-    for match in tba.get_event_matches():
-        print("Match number: {}".format(match.match_number))
-        Aggregator.pilot_calc(match.match_number)
-    print("super")
-    Aggregator.super_calc()
+        Aggregator.team_pilot_calc(team.team_number)
+    # print("super")
+    # Aggregator.super_calc()

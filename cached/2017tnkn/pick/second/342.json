@@ -1,17 +1,17 @@
 {
     "dnp": false,
     "fourth_line": "Weight: 110.00 lbs, PL: Java",
-    "last_modified": 1490405182302,
+    "last_modified": 1490459980954,
     "manual_ranking": -1,
     "nickname": "",
-    "pick_ability": 53.57142857142857,
+    "pick_ability": 49.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/342_0.jpg",
-    "second_line": "Average Gears: Auto 0.00, Teleop 3.14",
+    "second_line": "Average Gears: Auto 0.00, Teleop 3.00",
     "stopped_moving": false,
     "team_number": 342,
-    "third_line": "Climb: Success Percentage 100.00%, Time 15.00s",
-    "top_line": "PA: 53.57 Average High Goal Balls: Auto 1.14, Teleop 0.00",
+    "third_line": "Climb: Success Percentage 90.00%, Time 15.56s",
+    "top_line": "PA: 49.00 Average High Goal Balls: Auto 0.80, Teleop 0.00",
     "yellow_card": false
 }
