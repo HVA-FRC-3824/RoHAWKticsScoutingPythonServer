@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "3259": 3,
+        "3843": 2,
+        "4576": 1
+    },
+    "blue_defense": {
+        "3259": 3,
+        "3843": 2,
+        "4576": 2
+    },
+    "blue_speed": {
+        "3259": 3,
+        "3843": 2,
+        "4576": 1
+    },
+    "blue_torque": {
+        "3259": 1,
+        "3843": 3,
+        "4576": 2
+    },
+    "last_modified": 1490366998791,
+    "match_number": 13,
+    "notes": "5744 didn't use their reserve gear, 5185 didn't send a team rep",
+    "red_control": {
+        "5186": 3,
+        "5744": 1,
+        "6105": 3
+    },
+    "red_defense": {
+        "5186": 3,
+        "5744": 1,
+        "6105": 3
+    },
+    "red_speed": {
+        "5186": 3,
+        "5744": 1,
+        "6105": 3
+    },
+    "red_torque": {
+        "5186": 3,
+        "5744": 1,
+        "6105": 3
+    },
+    "scout_name": "Abigail Bradfield"
+}

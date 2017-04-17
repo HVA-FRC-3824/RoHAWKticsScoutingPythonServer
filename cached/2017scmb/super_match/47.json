@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "3 - Competent",
+    "blue_control": [
+        3,
+        3,
+        3
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        3,
+        2,
+        3
+    ],
+    "blue_torque": [
+        3,
+        3,
+        3
+    ],
+    "last_modified": 1488582909835,
+    "match_number": 47,
+    "notes": "6366 with tech foul",
+    "red1_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red2_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red3_pilot_rating": "0 - Not a pilot in this match",
+    "red_control": [
+        3,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        2,
+        3
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Philip Hicks"
+}

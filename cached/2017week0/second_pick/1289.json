@@ -1,0 +1,17 @@
+{
+    "dnp": false,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345834253,
+    "manual_ranking": -1,
+    "nickname": "Gearheadz",
+    "pick_ability": 29.84252884712435,
+    "picked": false,
+    "red_card": false,
+    "robot_picture_filepath": "",
+    "second_line": "Average Gears: Auto 0.50, Teleop 0.50",
+    "stopped_moving": false,
+    "team_number": 1289,
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 29.84 Defense: 15 Control: 14 Speed: 15 Torque: 15",
+    "yellow_card": true
+}

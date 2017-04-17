@@ -1,0 +1,24 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 2,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1488480762619,
+    "length": 36,
+    "max_hopper_load": 15,
+    "notes": "can place gear in any lift during auto; climbs; shoots high goal",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/2815_0.jpg",
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/2815_1.jpg"
+    ],
+    "robot_image_urls": [
+        "",
+        ""
+    ],
+    "scout_name": "Seth Maxwell",
+    "team_number": 2815,
+    "weight": 0,
+    "width": 40
+}

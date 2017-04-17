@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "1 - Not paying attention/Slow/Clumsy",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        1,
+        1,
+        1
+    ],
+    "blue_defense": [
+        1,
+        1,
+        1
+    ],
+    "blue_speed": [
+        2,
+        2,
+        1
+    ],
+    "blue_torque": [
+        1,
+        1,
+        1
+    ],
+    "last_modified": 1488584557030,
+    "match_number": 50,
+    "notes": "1758 reached their hand out again",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "2 - Wouldn't pick them as pilot for us",
+    "red3_pilot_rating": "3 - Competent",
+    "red_control": [
+        1,
+        1,
+        1
+    ],
+    "red_defense": [
+        1,
+        1,
+        1
+    ],
+    "red_speed": [
+        3,
+        3,
+        1
+    ],
+    "red_torque": [
+        1,
+        1,
+        1
+    ],
+    "scout_name": "Philip Hicks"
+}

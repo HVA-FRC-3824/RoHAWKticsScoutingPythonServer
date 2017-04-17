@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 2,
+    "drive_train": "Tank (6 wheel)",
+    "height": 0,
+    "last_modified": 1488482497145,
+    "length": 0,
+    "max_hopper_load": 0,
+    "notes": "gears and climbing",
+    "programming_language": "Labview",
+    "robot_image_default": 0,
+    "scout_name": "Liam Schenk",
+    "team_number": 3976,
+    "weight": 50,
+    "width": 0
+}

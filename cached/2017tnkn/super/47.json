@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "342": 3,
+        "5022": 2,
+        "63": 1
+    },
+    "blue_defense": {
+        "342": 3,
+        "5022": 3,
+        "63": 3
+    },
+    "blue_speed": {
+        "342": 1,
+        "5022": 3,
+        "63": 2
+    },
+    "blue_torque": {
+        "342": 3,
+        "5022": 3,
+        "63": 1
+    },
+    "last_modified": 1490387162477,
+    "match_number": 47,
+    "notes": "342,63, and 5022 lost the match entirely due to their auto gear being slow",
+    "red_control": {
+        "2641": 1,
+        "4264": 2,
+        "4265": 1
+    },
+    "red_defense": {
+        "2641": 3,
+        "4264": 3,
+        "4265": 1
+    },
+    "red_speed": {
+        "2641": 2,
+        "4264": 3,
+        "4265": 1
+    },
+    "red_torque": {
+        "2641": 2,
+        "4264": 3,
+        "4265": 1
+    },
+    "scout_name": "Steven Busby"
+}

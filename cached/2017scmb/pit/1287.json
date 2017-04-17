@@ -1,0 +1,20 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 8,
+    "drive_train": "Augnam",
+    "height": 0,
+    "last_modified": 1488494163088,
+    "length": 0,
+    "max_hopper_load": 50,
+    "notes": "climber works good",
+    "programming_language": "LabView",
+    "robot_image_default": 1,
+    "robot_image_urls": [
+        "",
+        ""
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 1287,
+    "weight": 0,
+    "width": 0
+}

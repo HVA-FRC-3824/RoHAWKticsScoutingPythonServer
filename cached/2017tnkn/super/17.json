@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "4098": 2,
+        "5816": 2,
+        "6105": 2
+    },
+    "blue_defense": {
+        "4098": 3,
+        "5816": 3,
+        "6105": 2
+    },
+    "blue_speed": {
+        "4098": 2,
+        "5816": 1,
+        "6105": 2
+    },
+    "blue_torque": {
+        "4098": 2,
+        "5816": 1,
+        "6105": 2
+    },
+    "last_modified": 1490368795274,
+    "match_number": 17,
+    "notes": "6105's robot almost completely fell apart. They lack the ability to place gears and climb.",
+    "red_control": {
+        "3984": 2,
+        "6157": 2,
+        "6302": 2
+    },
+    "red_defense": {
+        "3984": 3,
+        "6157": 3,
+        "6302": 3
+    },
+    "red_speed": {
+        "3984": 2,
+        "6157": 2,
+        "6302": 2
+    },
+    "red_torque": {
+        "3984": 2,
+        "6157": 2,
+        "6302": 2
+    },
+    "scout_name": "Philip Hicks"
+}

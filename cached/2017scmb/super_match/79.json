@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "3 - Competent",
+    "blue2_pilot_rating": "0 - Not a pilot in this match",
+    "blue3_pilot_rating": "3 - Competent",
+    "blue_control": [
+        2,
+        1,
+        1
+    ],
+    "blue_defense": [
+        3,
+        2,
+        2
+    ],
+    "blue_speed": [
+        3,
+        2,
+        1
+    ],
+    "blue_torque": [
+        2,
+        2,
+        2
+    ],
+    "last_modified": 1488646488409,
+    "match_number": 79,
+    "notes": "4020 and 4748 pilots both quick, but didn't work together to get the stuff done, ",
+    "red1_pilot_rating": "4 - Pretty good",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "4 - Pretty good",
+    "red_control": [
+        2,
+        1,
+        2
+    ],
+    "red_defense": [
+        2,
+        2,
+        3
+    ],
+    "red_speed": [
+        1,
+        2,
+        3
+    ],
+    "red_torque": [
+        1,
+        2,
+        3
+    ],
+    "scout_name": "Abigail Bradfield"
+}

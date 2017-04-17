@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 2,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1488481153172,
+    "length": 36,
+    "max_hopper_load": 35,
+    "notes": "good climber; picks up balls from ground",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "scout_name": "Seth Maxwell",
+    "team_number": 3140,
+    "weight": 119.5,
+    "width": 40
+}

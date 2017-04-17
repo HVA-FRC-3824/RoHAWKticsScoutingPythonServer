@@ -1,0 +1,19 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "West coast",
+    "height": 23,
+    "last_modified": 1488479391368,
+    "length": 36,
+    "max_hopper_load": 30,
+    "notes": "good at climbing and storing gears",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 1369,
+    "weight": 119,
+    "width": 40
+}

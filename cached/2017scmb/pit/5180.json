@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 16,
+    "last_modified": 1488482970613,
+    "length": 39,
+    "max_hopper_load": 0,
+    "notes": "deminsions was the long kop chasis",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/5180_0.jpg"
+    ],
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Abigail Bradfield",
+    "team_number": 5180,
+    "weight": 0,
+    "width": 32
+}

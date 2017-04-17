@@ -1,4 +1,3 @@
-
 def make_ascii_from_json(input):
     if isinstance(input, dict):
         return dict((make_ascii_from_json(k), make_ascii_from_json(v)) for (k, v) in iter(input.items()))

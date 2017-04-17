@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 4,
+    "drive_train": "6 wheel mix",
+    "height": 0,
+    "last_modified": 1490289276810,
+    "length": 0,
+    "max_hopper_load": 80,
+    "notes": "can pick up gears off of ground.",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Philip Hicks",
+    "team_number": 5508,
+    "weight": 119.1,
+    "width": 0
+}

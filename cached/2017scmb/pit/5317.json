@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "Tank (4 wheel)",
+    "height": 22,
+    "last_modified": 1488483317323,
+    "length": 39,
+    "max_hopper_load": 20,
+    "notes": "range was 15-20 for hopper",
+    "programming_language": "Labview",
+    "robot_image_default": -1,
+    "scout_name": "Abigail Bradfield",
+    "team_number": 5317,
+    "weight": 55,
+    "width": 36
+}

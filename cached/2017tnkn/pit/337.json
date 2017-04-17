@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 1,
+    "drive_train": "Mecanum",
+    "height": 34,
+    "last_modified": 1490291066685,
+    "length": 32,
+    "max_hopper_load": 10,
+    "notes": "Fast",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/337_0.jpg",
+            "url": ""
+        }
+    ],
+    "scout_name": "Neil Patel",
+    "team_number": 337,
+    "weight": 110,
+    "width": 30
+}

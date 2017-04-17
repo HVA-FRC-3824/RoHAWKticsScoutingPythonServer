@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "5 - Hauling ass",
+    "blue2_pilot_rating": "5 - Hauling ass",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        3,
+        2,
+        1
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        3,
+        1,
+        2
+    ],
+    "blue_torque": [
+        3,
+        2,
+        1
+    ],
+    "last_modified": 1488586760221,
+    "match_number": 54,
+    "notes": "Robots generally did not interact at all",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "3 - Competent",
+    "red3_pilot_rating": "3 - Competent",
+    "red_control": [
+        2,
+        3,
+        1
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        2,
+        1
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Steven Busby"
+}

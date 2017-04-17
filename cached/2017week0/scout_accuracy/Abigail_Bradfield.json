@@ -1,0 +1,61 @@
+{
+    "auto_mobility_error": 0,
+    "auto_rotor_error": 0,
+    "endgame_error": 50,
+    "last_modified": 1488346206835,
+    "name": "Abigail Bradfield",
+    "scouted_matches": {
+        "M1": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 1,
+            "teleop_rotor_error": 0,
+            "total_error": 0
+        },
+        "M2": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 2,
+            "teleop_rotor_error": 0,
+            "total_error": 0
+        },
+        "M3": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 3,
+            "teleop_rotor_error": 0,
+            "total_error": 0
+        },
+        "M4": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 4,
+            "teleop_rotor_error": 0,
+            "total_error": 0
+        },
+        "M5": {
+            "alliance_color": "red",
+            "alliance_number": 1,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 5,
+            "teleop_rotor_error": 0,
+            "total_error": 50
+        }
+    },
+    "teleop_rotor_error": 0,
+    "total_error": 50
+}

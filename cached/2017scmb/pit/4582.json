@@ -1,0 +1,19 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1488483136060,
+    "length": 33,
+    "max_hopper_load": 20,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_image_default": 0,
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Philip",
+    "team_number": 4582,
+    "weight": 110,
+    "width": 29
+}

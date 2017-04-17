@@ -1,16 +1,15 @@
 from .data_model import DataModel
-from .gear import Gear
 
 
 class TeamMatchData(DataModel):
     '''Data collected by a match scout about a specific robot in a specific match'''
-    def __init__(self, **kwargs):
+    def __init__(self, d=None):
         DataModel.__init__(self)
 
         self.team_number = -1
         self.match_number = -1
         self.alliance_color = ""
-        self.allaince_number = -1
+        self.alliance_number = -1
         self.scout_name = ""
         self.total_points = -1
 
@@ -18,7 +17,6 @@ class TeamMatchData(DataModel):
         self.auto_start_position = ""
         self.auto_baseline = False
         self.auto_gears = []
-        self._auto_gears_type = Gear()
         self.auto_high_goal_made = -1
         self.auto_high_goal_missed = -1
         self.auto_high_goal_correction = -1
@@ -30,7 +28,6 @@ class TeamMatchData(DataModel):
 
         # Teleop
         self.teleop_gears = []
-        self._teleop_gears_type = Gear()
         self.teleop_high_goal_made = -1
         self.teleop_high_goal_missed = -1
         self.teleop_high_goal_correction = -1
@@ -58,4 +55,5 @@ class TeamMatchData(DataModel):
         self.yellow_card = False
         self.red_card = False
 
-        self.set(**kwargs)
+        if d is not None:
+            self.set(d)

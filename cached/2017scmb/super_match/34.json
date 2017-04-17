@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "5 - Hauling ass",
+    "blue3_pilot_rating": "5 - Hauling ass",
+    "blue_control": [
+        3,
+        1,
+        2
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        1,
+        3,
+        2
+    ],
+    "blue_torque": [
+        1,
+        2,
+        2
+    ],
+    "last_modified": 1488575075752,
+    "match_number": 34,
+    "notes": "Robots crashed into their teammates often. ",
+    "red1_pilot_rating": "5 - Hauling ass",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "5 - Hauling ass",
+    "red_control": [
+        3,
+        2,
+        1
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        3,
+        1
+    ],
+    "red_torque": [
+        3,
+        1,
+        2
+    ],
+    "scout_name": "Steven Busby"
+}

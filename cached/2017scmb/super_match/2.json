@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "0 - Not a pilot in this match",
+    "blue2_pilot_rating": "4 - Pretty good",
+    "blue3_pilot_rating": "4 - Pretty good",
+    "blue_control": [
+        2,
+        2,
+        3
+    ],
+    "blue_defense": [
+        2,
+        2,
+        1
+    ],
+    "blue_speed": [
+        3,
+        2,
+        1
+    ],
+    "blue_torque": [
+        2,
+        2,
+        2
+    ],
+    "last_modified": 1488550373979,
+    "match_number": 2,
+    "notes": "4575 was incredibly effective at intercepting red alliance robots attempting gear cycles",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "5 - Hauling ass",
+    "red3_pilot_rating": "5 - Hauling ass",
+    "red_control": [
+        2,
+        3,
+        1
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        2,
+        3,
+        1
+    ],
+    "red_torque": [
+        3,
+        3,
+        1
+    ],
+    "scout_name": "Steven Busby"
+}

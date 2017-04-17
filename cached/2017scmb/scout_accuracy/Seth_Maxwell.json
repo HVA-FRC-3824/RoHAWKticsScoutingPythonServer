@@ -1,0 +1,81 @@
+{
+    "auto_mobility_error": 30,
+    "auto_rotor_error": 60,
+    "endgame_error": 300,
+    "last_modified": 1488556478885,
+    "name": "Seth Maxwell",
+    "scouted_matches": {
+        "M1": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 1,
+            "teleop_rotor_error": 0,
+            "total_error": 1
+        },
+        "M2": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 5,
+            "auto_rotor_error": 0,
+            "endgame_error": 100,
+            "match_number": 2,
+            "teleop_rotor_error": 40,
+            "total_error": 147
+        },
+        "M3": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 5,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 3,
+            "teleop_rotor_error": 0,
+            "total_error": 5
+        },
+        "M4": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 0,
+            "auto_rotor_error": 0,
+            "endgame_error": 0,
+            "match_number": 4,
+            "teleop_rotor_error": 40,
+            "total_error": 40
+        },
+        "M5": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 5,
+            "auto_rotor_error": 60,
+            "endgame_error": 100,
+            "match_number": 5,
+            "teleop_rotor_error": 0,
+            "total_error": 45
+        },
+        "M6": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 10,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 6,
+            "teleop_rotor_error": 0,
+            "total_error": 60
+        },
+        "M7": {
+            "alliance_color": "red",
+            "alliance_number": 3,
+            "auto_mobility_error": 5,
+            "auto_rotor_error": 0,
+            "endgame_error": 50,
+            "match_number": 7,
+            "teleop_rotor_error": 0,
+            "total_error": 55
+        }
+    },
+    "teleop_rotor_error": 80,
+    "total_error": 353
+}

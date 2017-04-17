@@ -1,0 +1,17 @@
+{
+    "dnp": false,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345849998,
+    "manual_ranking": -1,
+    "nickname": "The Riot Crew",
+    "pick_ability": 13.669807019391856,
+    "picked": false,
+    "red_card": false,
+    "robot_picture_filepath": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.50",
+    "stopped_moving": false,
+    "team_number": 58,
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 13.67 Defense: 23 Control: 12 Speed: 6 Torque: 6",
+    "yellow_card": false
+}

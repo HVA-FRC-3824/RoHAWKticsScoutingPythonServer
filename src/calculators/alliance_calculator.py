@@ -1,27 +1,27 @@
 import scipy.stats as stats
 import math
 
-from data_models.alliance import Alliance
-from firebase_com import FirebaseCom
 from calculators.calculator import Calculator
 
 
 class AllianceCalculator:
-    '''Makes calculation about an alliance
+    '''Makes calculation about an teams
 
     Args:
-        alliance (list): list of :class:`Team` objects that make up the :class:`alliance`
+        teams (list): list of :class:`Team` objects that make up the :class:`teams`
     '''
-    def __init__(self, alliance):
+    def __init__(self, team_numbers):
 
         # Solves cyclical dependency
-        from .team_calculation import TeamCalculator
+        from .team_calculator import TeamCalculator
+        from database import Database
 
-        self.alliance = alliance
-        self.teams = []
-        for team in self.alliance.teams:
-            self.teams.append(TeamCalculator(team))
-        self.firebase = FirebaseCom()
+        self.database = Database()
+
+        self.team_numbers = team_numbers
+        self.team_calculators = []
+        for team_number in self.team_numbers:
+            self.team_calculators.append(TeamCalculator(team_number, self.database))
 
     def predicted_score(self, elimination=False):
         '''Predicted Score
@@ -33,40 +33,36 @@ class AllianceCalculator:
         auto_gears = 0
         teleop_gears = 0
 
-        for team in self.teams:
-            p_score += (team.calc.auto_high_goal_made.average +
-                        team.calc.auto_low_goal_made / 3 +
-                        team.calc.teleop_high_goal_made.average / 3 +
-                        team.calc.teleop_low_goal_made.average / 9)
+        for team_number in self.team_numbers:
+            team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
+            p_score += (team.auto_shooting.high.made.average +
+                        team.auto_shooting.low.made.average / 3 +
+                        team.teleop_shooting.high.made.average / 3 +
+                        team.teleop_shooting.low.made.average / 9)
             # Add climbing points
-            p_score += 50 * team.calc.climb.average
-            auto_gears += team.calc.auto_gears_delivered.average
-            teleop_gears += team.calc.teleop_gears_delivered.average
+            p_score += 50 * team.climb.success_percentage
+            auto_gears += team.auto_gears.total.placed.average
+            teleop_gears += team.teleop_gears.total.placed.average
 
+        rotors = 0
         # Calculate points from gears
         if auto_gears >= 3:  # 2 rotors during auto
             p_score += 120
-            if teleop_gears >= 9:  # 2 rotors during teleop
-                p_score += 80
-            elif teleop_gears >= 3:  # 1 rotor during teleop
-                p_score += 40
+            rotors = 2
         elif auto_gears >= 1:  # 1 rotor during auto
             p_score += 60
-            if teleop_gears + auto_gears >= 12:  # 3 rotors during teleop
-                p_score += 120
-            elif teleop_gears + auto_gears >= 6:  # 2 rotors during teleop
-                p_score += 80
-            elif teleop_gears + auto_gears >= 2:  # 1 rotor during teleop
-                p_score += 40
+            rotors = 1
+
+        if auto_gears + teleop_gears >= 12:
+            p_score += (4 - rotors) * 40
+        elif auto_gears + teleop_gears >= 6:
+            p_score += (3 - rotors) * 40
+        elif auto_gears + teleop_gears >= 2:
+            p_score += (2 - rotors) * 40
         else:
-            if teleop_gears >= 12:  # 4 rotors
-                p_score += 160
-            elif teleop_gears >= 6:  # 3 rotors
-                p_score += 120
-            elif teleop_gears >= 2:  # 2 rotors
-                p_score += 80
-            else:  # Reserve Gear
-                p_score += 40
+            p_score += (1 - rotors) * 40
 
         if elimination:
             p_score += self.rotor_chance() * 100
@@ -74,21 +70,78 @@ class AllianceCalculator:
 
         return p_score
 
+    def predicted_auto_score(self, elimination=False):
+        p_auto_score = 0
+        auto_gears = 0
+        for team_number in self.team_numbers:
+            team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
+            p_auto_score += (team.auto_shooting.high.made.average + team.auto_shooting.low.made.average / 3)
+            p_auto_score += (team.auto_baseline.average * 5)
+            auto_gears += team.auto_gears.total.placed.average
+        if auto_gears >= 3:
+            p_auto_score += 120
+        elif auto_gears >= 1:
+            p_auto_score += 60
+        return int(p_auto_score + 0.5)
+
     def std_predicted_score(self, elimination=False):
         '''Standard Deviation of Predicted Score
 
         .. math:: std\_predicted\_score = \sqrt{\sum_{T \in A} std\_auto\_ability(T)^2}
         '''
         std_p_score = 0.0
-        for team in self.teams:
-            std_p_score += team.std_auto_ability() ** 2
-        std_p_score = std_p_score ** 0.5
+
+        p_auto_score = 0.0
+        p_teleop_score = 0.0
+        p_endgame_score = 0.0
+
+        auto_gears = 0
+        teleop_gears = 0
+
+        for team_number in self.team_numbers:
+            team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
+            auto_gears += team.auto_gears.total.placed.average
+            teleop_gears += team.teleop_gears.total.placed.average
+
+            p_auto_score += team.auto_shooting.high.made.average
+            p_auto_score += team.auto_shooting.low.made.average / 3
+            p_teleop_score += team.teleop_shooting.high.made.average / 3
+            p_teleop_score += team.teleop_shooting.low.made.average / 9
+            p_endgame_score += team.climb.success_percentage * 50
+
+        rotors = 0
+
+        if auto_gears >= 3:
+            p_auto_score += 120
+            rotors = 2
+        elif auto_gears >= 1:
+            p_auto_score += 60
+            rotors = 1
+
+        if auto_gears + teleop_gears >= 12:
+            p_teleop_score += (4 - rotors) * 40
+        elif auto_gears + teleop_gears >= 6:
+            p_teleop_score += (3 - rotors) * 40
+        elif auto_gears + teleop_gears >= 2:
+            p_teleop_score += (2 - rotors) * 40
+        else:
+            p_teleop_score += (1 - rotors) * 40
+
+        std_p_score += p_auto_score ** 2
+        std_p_score += p_teleop_score ** 2
+        std_p_score += p_endgame_score ** 2
+
+        std_p_score = math.sqrt(std_p_score)
         return std_p_score
 
     def win_probability_over(self, o):
         '''Win Probability
 
-        In order to determine the win probability of alliance A facing alliance O, `Welch's
+        In order to determine the win probability of teams A facing teams O, `Welch's
         t-test <https://en.wikipedia.org/wiki/Welch%27s_t-test>`_. This test is expressed
         using the formula
 
@@ -106,9 +159,9 @@ class AllianceCalculator:
         function <https://en.wikipedia.org/wiki/Cumulative_distribution_function>`_ for a
         t-distribution T(t|v).
 
-        In this case :math:`\\bar{X_1}` is the predicted score for alliance A, :math:`s_1` is the standard
-        deviation of the predicted score for alliance A, and :math:`N_1` is the average number of
-        completed matches for each of the teams on alliance A.
+        In this case :math:`\\bar{X_1}` is the predicted score for teams A, :math:`s_1` is the standard
+        deviation of the predicted score for teams A, and :math:`N_1` is the average number of
+        completed matches for each of the team_calculators on teams A.
 
         win_chance(A,O) = T(t|v)
 
@@ -122,7 +175,7 @@ class AllianceCalculator:
 
         where :math:`v_1 = N_1 - 1` (the degrees of freedom for the first variance) and :math:`v_2 = N_2 -1`
         '''
-        if isinstance(o, Alliance):
+        if isinstance(o, list):
             return self.win_probability_over(AllianceCalculator(o))
         else:
             s_1 = self.std_predicted_score()
@@ -130,18 +183,18 @@ class AllianceCalculator:
             N_1 = self.sample_size()
             N_2 = o.sample_size()
 
-            t = Calculator.welchs_test(self.predicted_score, o.predicted_score(), s_1, s_2, N_1, N_2)
+            t = Calculator.welchs_test(self.predicted_score(), o.predicted_score(), s_1, s_2, N_1, N_2)
 
             v = Calculator.dof(s_1, s_2, N_1, N_2)
             win_chance = stats.t.cdf(t, v)
             return win_chance
 
     def sample_size(self):
-        '''Returns the average number of completed matches for each of the teams on alliance A'''
+        '''Returns the average number of completed matches for each of the team_calculators on teams A'''
         average = 0.0
-        for team in self.teams:
+        for team in self.team_calculators:
             average += team.num_completed_matches()
-        average /= len(self.teams)
+        average /= len(self.team_calculators)
         return average
 
     def pressure_chance(self):
@@ -161,7 +214,7 @@ class AllianceCalculator:
 
         Note:
             The internal unit in the function is the value of the teleop low goal (as that is the
-            lowest value). This allows a combination of teams to make up a point (e.g. team A does
+            lowest value). This allows a combination of team_calculators to make up a point (e.g. team A does
             4 low goals and team B does 5).
 
 
@@ -175,15 +228,18 @@ class AllianceCalculator:
         auto_low_squared = 0
         teleop_high_squared = 0
         teleop_low_squared = 0
-        for t in self.teams:
-            auto_high += t.calc.auto_high_goal_made.average * 9
-            auto_high_squared += (t.calc.auto_high_goal_made.average * 9)**2
-            auto_low += t.calc.auto_low_goal_made.average * 3
-            auto_low_squared += (t.calc.auto_low_goal_made.average * 3)**2
-            teleop_high += t.calc.teleop_high_goal_made.average * 3
-            teleop_high_squared += (t.calc.teleop_high_goal_made.average * 3)**2
-            teleop_low += t.calc.teleop_low_goal_made.average
-            teleop_low_squared += (t.calc.teleop_low_goal_made.average)**2
+        for team_number in self.team_numbers:
+            team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
+            auto_high += team.auto_shooting.high.made.average * 9
+            auto_high_squared += (team.auto_shooting.high.made.average * 9)**2
+            auto_low += team.auto_shooting.low.made.average * 3
+            auto_low_squared += (team.auto_shooting.low.made.average * 3)**2
+            teleop_high += team.teleop_shooting.high.made.average * 3
+            teleop_high_squared += (team.teleop_shooting.high.made.average * 3)**2
+            teleop_low += team.teleop_shooting.low.made.average
+            teleop_low_squared += (team.teleop_shooting.low.made.average)**2
         mu = auto_high + auto_low + teleop_high + teleop_low
         sigma = math.sqrt(auto_high_squared + auto_low_squared + teleop_high_squared + teleop_low_squared)
         return Calculator.probability_density(x, mu, sigma)
@@ -206,8 +262,11 @@ class AllianceCalculator:
         x = 12  # gears
         mu = 0
         sigma = 0
-        for t in self.teams:
-            mu += t.calc.auto_total_gears_placed.average + t.calc.teleop_total_gears_placed.average
-            sigma += t.calc.auto_total_gears_placed.average**2 + t.calc.teleop_total_gears_placed.average**2
+        for team_number in self.team_numbers:
+            team = self.database.get_team_calculated_data(team_number)
+            if team is None:
+                continue
+            mu += team.auto_gears.total.placed.average + team.teleop_gears.total.placed.average
+            sigma += team.auto_gear.total.placed.average**2 + team.teleop_gears.total.placed.average**2
         sigma = math.sqrt(sigma)
         return Calculator.probability_density(x, mu, sigma)

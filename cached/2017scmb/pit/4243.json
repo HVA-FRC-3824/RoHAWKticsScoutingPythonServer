@@ -1,0 +1,24 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (6 wheel)",
+    "height": 0,
+    "last_modified": 1488480849324,
+    "length": 0,
+    "max_hopper_load": 50,
+    "notes": "",
+    "programming_language": "C++",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/4243_0.jpg",
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/4243_1.jpg"
+    ],
+    "robot_image_urls": [
+        "",
+        ""
+    ],
+    "scout_name": "Liam Schenk",
+    "team_number": 4243,
+    "weight": 0,
+    "width": 0
+}

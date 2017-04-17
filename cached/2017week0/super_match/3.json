@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "4 - Pretty good",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        3,
+        1,
+        2
+    ],
+    "blue_defense": [
+        3,
+        3,
+        1
+    ],
+    "blue_speed": [
+        2,
+        3,
+        1
+    ],
+    "blue_torque": [
+        3,
+        3,
+        3
+    ],
+    "last_modified": 1487429112946,
+    "match_number": 3,
+    "notes": "",
+    "red1_pilot_rating": "3 - Competent",
+    "red2_pilot_rating": "4 - Pretty good",
+    "red3_pilot_rating": "0 - Not a pilot in this match",
+    "red_control": [
+        2,
+        3,
+        1
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        2,
+        1
+    ],
+    "red_torque": [
+        3,
+        3,
+        1
+    ],
+    "scout_name": "Steven Busby"
+}

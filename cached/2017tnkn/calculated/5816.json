@@ -1,0 +1,343 @@
+{
+    "auto_baseline": {
+        "average": 0.625,
+        "max": 1.0,
+        "min": 0.0,
+        "std": 0.4841229182759271,
+        "total": 5.0
+    },
+    "auto_gears": {
+        "center": {
+            "dropped": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.375,
+                "max": 1,
+                "min": 0,
+                "std": 0.4841229182759271,
+                "total": 3
+            }
+        },
+        "far": {
+            "dropped": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.125,
+                "max": 1,
+                "min": 0,
+                "std": 0.33071891388307384,
+                "total": 1
+            }
+        },
+        "near": {
+            "dropped": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.125,
+                "max": 1,
+                "min": 0,
+                "std": 0.33071891388307384,
+                "total": 1
+            }
+        },
+        "total": {
+            "dropped": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.625,
+                "max": 1,
+                "min": 0,
+                "std": 0.4841229182759271,
+                "total": 5
+            }
+        }
+    },
+    "auto_hoppers": {
+        "average": 0.0,
+        "max": 0,
+        "min": 0,
+        "std": 0.0,
+        "total": 0
+    },
+    "auto_points": {
+        "average": 0.0,
+        "max": 0,
+        "min": 0,
+        "std": 0.0,
+        "total": 0
+    },
+    "auto_shooting": {
+        "high": {
+            "last_modified": 0,
+            "made": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "missed": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            }
+        },
+        "last_modified": 0,
+        "low": {
+            "last_modified": 0,
+            "made": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "missed": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            }
+        }
+    },
+    "auto_start_position_center": 5,
+    "auto_start_position_far": 1,
+    "auto_start_position_near": 2,
+    "climb": {
+        "failed": 4,
+        "fell": 1,
+        "foul_credit": 0,
+        "last_modified": 0,
+        "no_attempt": 3,
+        "success": 0,
+        "success_percentage": 0.0,
+        "time": {
+            "average": 0,
+            "max": 0,
+            "min": 0,
+            "std": 0,
+            "total": 0
+        },
+        "total": 8
+    },
+    "dq": {
+        "average": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "std": 0.0,
+        "total": 0
+    },
+    "endgame_points": {
+        "average": 0.0,
+        "max": 0,
+        "min": 0,
+        "std": 0.0,
+        "total": 0
+    },
+    "fouls": {
+        "average": 0.5,
+        "max": 4,
+        "min": 0,
+        "std": 1.3228756555322954,
+        "total": 4
+    },
+    "last_modified": 1490405702744,
+    "no_show": {
+        "average": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "std": 0.0,
+        "total": 0
+    },
+    "red_card": {
+        "average": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "std": 0.0,
+        "total": 0
+    },
+    "stopped_moving": {
+        "average": 0.0,
+        "max": 0.0,
+        "min": 0.0,
+        "std": 0.0,
+        "total": 0
+    },
+    "team_number": 5816,
+    "tech_fouls": {
+        "average": 0.0,
+        "max": 0,
+        "min": 0,
+        "std": 0.0,
+        "total": 0
+    },
+    "teleop_gears": {
+        "center": {
+            "dropped": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.625,
+                "max": 2,
+                "min": 0,
+                "std": 0.8569568250501305,
+                "total": 5
+            }
+        },
+        "far": {
+            "dropped": {
+                "average": 0.375,
+                "max": 2,
+                "min": 0,
+                "std": 0.6959705453537527,
+                "total": 3
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.5,
+                "max": 2,
+                "min": 0,
+                "std": 0.7071067811865476,
+                "total": 4
+            }
+        },
+        "near": {
+            "dropped": {
+                "average": 0.125,
+                "max": 1,
+                "min": 0,
+                "std": 0.33071891388307384,
+                "total": 1
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 0.375,
+                "max": 2,
+                "min": 0,
+                "std": 0.6959705453537527,
+                "total": 3
+            }
+        },
+        "total": {
+            "dropped": {
+                "average": 0.5,
+                "max": 2,
+                "min": 0,
+                "std": 0.8660254037844386,
+                "total": 4
+            },
+            "last_modified": 0,
+            "placed": {
+                "average": 1.5,
+                "max": 3,
+                "min": 0,
+                "std": 1.118033988749895,
+                "total": 12
+            }
+        }
+    },
+    "teleop_hoppers": {
+        "average": 0.375,
+        "max": 1,
+        "min": 0,
+        "std": 0.4841229182759271,
+        "total": 3
+    },
+    "teleop_picked_up_gears": {
+        "average": 0.0,
+        "max": 0,
+        "min": 0,
+        "std": 0.0,
+        "total": 0
+    },
+    "teleop_points": {
+        "average": 0.0,
+        "max": 0,
+        "min": 0,
+        "std": 0.0,
+        "total": 0
+    },
+    "teleop_shooting": {
+        "high": {
+            "last_modified": 0,
+            "made": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "missed": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            }
+        },
+        "last_modified": 0,
+        "low": {
+            "last_modified": 0,
+            "made": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            },
+            "missed": {
+                "average": 0.0,
+                "max": 0,
+                "min": 0,
+                "std": 0.0,
+                "total": 0
+            }
+        }
+    },
+    "total_points": {
+        "average": 0,
+        "max": 0,
+        "min": 0,
+        "std": 0,
+        "total": 0
+    },
+    "yellow_card": {
+        "average": 0.125,
+        "max": 1.0,
+        "min": 0.0,
+        "std": 0.33071891388307384,
+        "total": 1.0
+    }
+}

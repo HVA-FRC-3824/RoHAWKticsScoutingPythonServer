@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1488494091999,
+    "length": 36,
+    "max_hopper_load": 40,
+    "notes": "Active gear intake",
+    "programming_language": "C++",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/283_0.jpg"
+    ],
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Neil Patel",
+    "team_number": 283,
+    "weight": 119,
+    "width": 40
+}

@@ -1,0 +1,17 @@
+{
+    "dnp": true,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345850675,
+    "manual_ranking": -1,
+    "nickname": "Red Storm",
+    "pick_ability": -7.548490378463212,
+    "picked": false,
+    "red_card": false,
+    "robot_picture_filepath": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.67",
+    "stopped_moving": false,
+    "team_number": 509,
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -7.55 Defense: 24 Control: 24 Speed: 13 Torque: 13",
+    "yellow_card": false
+}

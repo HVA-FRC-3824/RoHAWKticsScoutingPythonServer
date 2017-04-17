@@ -1,0 +1,17 @@
+{
+    "dnp": false,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345852730,
+    "manual_ranking": -1,
+    "nickname": "THE GREEN TEAM",
+    "pick_ability": -2.95251277422723,
+    "picked": false,
+    "red_card": false,
+    "robot_picture_filepath": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.00",
+    "stopped_moving": false,
+    "team_number": 885,
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -2.95 Defense: 21 Control: 23 Speed: 18 Torque: 18",
+    "yellow_card": false
+}

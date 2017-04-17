@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "4 - Pretty good",
+    "blue2_pilot_rating": "4 - Pretty good",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        3,
+        3,
+        3
+    ],
+    "blue_defense": [
+        3,
+        3,
+        3
+    ],
+    "blue_speed": [
+        3,
+        3,
+        3
+    ],
+    "blue_torque": [
+        3,
+        3,
+        3
+    ],
+    "last_modified": 1488637245055,
+    "match_number": 61,
+    "notes": "Most of the robots had trouble lining up the climb at the end. Also smells like someone burn out a motor.",
+    "red1_pilot_rating": "3 - Competent",
+    "red2_pilot_rating": "0 - Not a pilot in this match",
+    "red3_pilot_rating": "4 - Pretty good",
+    "red_control": [
+        3,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        3,
+        3
+    ],
+    "red_torque": [
+        3,
+        3,
+        3
+    ],
+    "scout_name": "Philip Hicks"
+}

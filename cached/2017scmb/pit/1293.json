@@ -1,0 +1,19 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank",
+    "height": 24,
+    "last_modified": 1488479865457,
+    "length": 34.25,
+    "max_hopper_load": 0,
+    "notes": "no fuel , pilot no touch in order to release gear",
+    "programming_language": "C++",
+    "robot_image_default": 0,
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 1293,
+    "weight": 92,
+    "width": 38.5
+}

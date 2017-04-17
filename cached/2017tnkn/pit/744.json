@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1490326961939,
+    "length": 36,
+    "max_hopper_load": 25,
+    "notes": "Haven't missed a climb, better gear system",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017tnkn/robot_pictures/744_0.jpg",
+            "url": "/v0/b/rohawktics-scouting-2017.appspot.com/o/2017tnkn/images/robots/744_0.jpg"
+        }
+    ],
+    "scout_name": "Neil Patel",
+    "team_number": 744,
+    "weight": 120,
+    "width": 40
+}

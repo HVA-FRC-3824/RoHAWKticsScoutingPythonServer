@@ -1,0 +1,46 @@
+{
+    "blue_control": {
+        "342": 1,
+        "5508": 2,
+        "6219": 2
+    },
+    "blue_defense": {
+        "342": 3,
+        "5508": 3,
+        "6219": 3
+    },
+    "blue_speed": {
+        "342": 1,
+        "5508": 2,
+        "6219": 2
+    },
+    "blue_torque": {
+        "342": 3,
+        "5508": 2,
+        "6219": 2
+    },
+    "last_modified": 1490369286303,
+    "match_number": 18,
+    "notes": "621\u00f3 stopped in the red teams loading zone.",
+    "red_control": {
+        "1876": 2,
+        "3844": 2,
+        "5492": 2
+    },
+    "red_defense": {
+        "1876": 3,
+        "3844": 3,
+        "5492": 3
+    },
+    "red_speed": {
+        "1876": 2,
+        "3844": 2,
+        "5492": 2
+    },
+    "red_torque": {
+        "1876": 3,
+        "3844": 2,
+        "5492": 2
+    },
+    "scout_name": "Philip Hicks"
+}

@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (4 wheel)",
+    "height": 23,
+    "last_modified": 1488483727383,
+    "length": 39,
+    "max_hopper_load": 16,
+    "notes": "Omni wheels in the back, barely fits inside the A frame",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "robot_image_filepaths": [
+        "/data/user/0/frc3824.rohawkticsscouting2017/files/2017scmb/robot_pictures/6167_0.jpg"
+    ],
+    "robot_image_urls": [
+        ""
+    ],
+    "scout_name": "Abigail Bradfield",
+    "team_number": 6167,
+    "weight": 105,
+    "width": 35
+}

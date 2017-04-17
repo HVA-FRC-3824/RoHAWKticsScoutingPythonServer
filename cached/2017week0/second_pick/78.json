@@ -1,0 +1,17 @@
+{
+    "dnp": false,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1488345835616,
+    "manual_ranking": -1,
+    "nickname": "AIR STRIKE",
+    "pick_ability": -8.630461659832296,
+    "picked": false,
+    "red_card": false,
+    "robot_picture_filepath": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 2.00",
+    "stopped_moving": false,
+    "team_number": 78,
+    "third_line": "Climb: Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: -8.63 Defense: 27 Control: 26 Speed: 1 Torque: 1",
+    "yellow_card": false
+}

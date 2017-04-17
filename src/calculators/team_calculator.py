@@ -1,66 +1,16 @@
-from data_models.alliance import Alliance
-from data_models.match import Match
-
 from calculators.alliance_calculator import AllianceCalculator
-
-from firebase_com import FirebaseCom
 from constants import Constants
 
 
 class TeamCalculator:
     '''Makes all the higher level calculations for a specific team'''
-    def __init__(self, team):
-        self.team = team
-        self.firebase = FirebaseCom()
+    def __init__(self, team_number, database):
+        self.team_number = team_number
+        self.database = database
 
     def num_completed_matches(self):
         '''Number of matches completed by this team'''
         return len(self.team.completed_matches)
-
-    def predicted_ranking_points(self):
-        '''Predicts the number of ranking points at the end of qualifications using the actual
-        ranking points from the completed matches and predicting ranking points acquired
-        from the remaining ones.
-
-        Note:
-            Currently set up based on 2 for wins, 1 for ties, and 0 for loses. Additional
-            RP will need to be added.
-
-        Returns:
-            predicted number of ranking points at the end of qualifications
-        '''
-        actual_RPs = 0
-        for tmd in self.team.completed_matches.values():
-            match = self.firebase.get_match(tmd.match_number)
-            if match.is_blue(self.team.team_number):
-                if match.scores[Match.BLUE] > match.scores[Match.RED]:
-                    actual_RPs += 2
-                elif match.scores[Match.BLUE] == match.scores[Match.RED]:
-                    actual_RPs += 1
-            else:
-                if match.scores[Match.RED] > match.scores[Match.BLUE]:
-                    actual_RPs += 2
-                elif match.scores[Match.RED] == match.scores[Match.BLUE]:
-                    actual_RPs += 1
-        predicted_RPs = 0
-        for match_index in range(len(self.team.completed_matches), len(self.team.info.match_numbers)):
-            match = self.firebase.get_match(self.team.info.match_numbers[match_index])
-            blue_alliance = Alliance(match.teams[0:2])
-            red_alliance = Alliance(match.teams[3:5])
-
-            if match.is_blue(self.team.team_number):
-                ac = AllianceCalculator(blue_alliance, self.firebase)
-
-                # Only predict wins not ties
-                if ac.win_probability_over(red_alliance):
-                    predicted_RPs += 2
-            else:
-                ac = AllianceCalculator(red_alliance, self.firebase)
-
-                # Only predict wins not ties
-                if ac.win_probability_over(blue_alliance):
-                    predicted_RPs += 2
-        return actual_RPs + predicted_RPs
 
     def first_pick_ability(self):
         '''Calculate the first pick ability which is the predicted offensive score that the
@@ -70,7 +20,10 @@ class TeamCalculator:
 
         - predicted_score(A) predicted score of alliance A (this team and our team)
         '''
-        alliance = Alliance(self.team, self.firebase.get_team(Constants.OUR_TEAM_NUMBER))
+        # if Constants.OUR_TEAM_NUMBER in Constants().team_numbers:
+        alliance = [self.team_number, Constants.OUR_TEAM_NUMBER]
+        # else:
+        #    alliance = [self.team_number]
         ac = AllianceCalculator(alliance)
         return ac.predicted_score()
 
@@ -81,23 +34,23 @@ class TeamCalculator:
             (baseline_percentage(T) * 5 + climb_percentage(T) * 50)
         '''
         functional_percentage = (1 - self.dysfunctional_percentage())
-        average_baseline_points = self.team.calc.auto_baseline.average() * 5
-        average_climb_points = self.team.calc.endgame_climb_successful.average * 50
-        auto_gear_contribution = self.team.calc.auto_total_gears_placed.average * 60
-        if auto_gear_contribution > 40:
-            teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 260 / 11
-        else:
-            teleop_gear_contribution = self.team.calc.teleop_total_gears_placed.average * 220 / 12
-        gear_contribution = auto_gear_contribution + teleop_gear_contribution
 
-        # multipliers will be correctly determined later
-        defense_contribution = self.team.calc.zscore_control * 4
-        speed_contribution = self.team.calc.zscore_speed * 2
-        control_contribution = self.team.calc.zscore_control * 4
+        tcd = self.database.get_team_calculated_data(self.team_number)
+        average_baseline_points = tcd.auto_baseline.average * 5
+        average_climb_points = tcd.climb.success_percentage * 50
+        auto_gear_contribution = tcd.auto_gears.total.placed.average * 60
 
-        spa = functional_percentage * (average_baseline_points + gear_contribution +
-                                       defense_contribution + speed_contribution +
-                                       control_contribution + average_climb_points)
+        # TODO: multipliers will be correctly determined later
+        # tqd = self.database.get_team_qualitative_data(self.team_number)
+        # defense_contribution = tqd.defense.zscore * 1
+        # speed_contribution = tqd.speed.zscore * 1
+        # control_contribution = tqd.control.zscore * 1
+        # torque_contribution = tqd.torque.zscore * 1
+
+        spa = functional_percentage * (average_baseline_points + auto_gear_contribution +
+                                       # defense_contribution + speed_contribution +
+                                       # control_contribution + torque_contribution +
+                                       average_climb_points)
         return spa
 
     def third_pick_ability(self):
@@ -109,7 +62,9 @@ class TeamCalculator:
         '''Calculates the percentage of matches in which the robot was either
         not there or stopped moving
         '''
-        dysfunctional_matches = (self.team.calc.dq.total + self.team.calc.no_show.total
-                                 + self.team.calc.stopped_moving.total)
-        total_matches = len(self.team.info.match_numbers)
+        tcd = self.database.get_team_calculated_data(self.team_number)
+        dysfunctional_matches = (tcd.dq.total + tcd.no_show.total
+                                 + tcd.stopped_moving.total)
+        logistics = self.database.get_team_logistics(self.team_number)
+        total_matches = len(logistics.match_numbers)
         return (dysfunctional_matches / total_matches)

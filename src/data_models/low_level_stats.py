@@ -1,5 +1,4 @@
 import math
-import sys
 from .data_model import DataModel
 
 
@@ -9,14 +8,15 @@ class LowLevelStats(DataModel):
     Note:
         This should not be created directly and instead made using :func:`from_list`
     '''
-    def __init__(self, **kwargs):
+    def __init__(self, d=None):
         self.max = 0
         self.min = 0
         self.average = 0
         self.std = 0
         self.total = 0
 
-        self.set(**kwargs)
+        if d is not None:
+            self.set(d)
 
     @staticmethod
     def from_list(list_):
@@ -27,7 +27,7 @@ class LowLevelStats(DataModel):
             the low level statistics
         '''
         if len(list_) == 0:
-            return
+            return LowLevelStats()
 
         if isinstance(list_[0], bool):
             return LowLevelStats.from_boolean(list_)
@@ -67,8 +67,8 @@ class LowLevelStats(DataModel):
     def from_int(list_):
         '''Creates a :class:`LowLevelStats` from a list of ints'''
         l = LowLevelStats()
-        l.max = -float("inf")
-        l.min = float("inf")
+        l.max = list_[0]
+        l.min = list_[0]
 
         for item in list_:
             if item > l.max:
@@ -91,8 +91,8 @@ class LowLevelStats(DataModel):
     def from_float(list_):
         '''Creates a :class:`LowLevelStats` from a list of floats'''
         l = LowLevelStats()
-        l.max = sys.floatmin
-        l.min = sys.floatmax
+        l.max = -float("inf")
+        l.min = float("inf")
 
         for item in list_:
             if item > l.max:

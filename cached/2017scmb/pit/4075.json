@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Mecanum",
+    "height": 0,
+    "last_modified": 1488481595956,
+    "length": 0,
+    "max_hopper_load": 12,
+    "notes": "gears and climbing ",
+    "programming_language": "",
+    "robot_image_default": 0,
+    "scout_name": "Liam Schenk",
+    "team_number": 4075,
+    "weight": 0,
+    "width": 0
+}

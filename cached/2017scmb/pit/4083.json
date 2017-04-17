@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (4 wheel)",
+    "height": 0,
+    "last_modified": 1488481950975,
+    "length": 32,
+    "max_hopper_load": 13,
+    "notes": "gear and climbing",
+    "programming_language": "Java",
+    "robot_image_default": 0,
+    "scout_name": "Liam Schenk",
+    "team_number": 4083,
+    "weight": 40,
+    "width": 26
+}

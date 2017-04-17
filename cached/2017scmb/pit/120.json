@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (4 wheel)",
+    "height": 24,
+    "last_modified": 1488494045374,
+    "length": 36,
+    "max_hopper_load": 80,
+    "notes": "Can feed from low goal robot",
+    "programming_language": "C++",
+    "robot_image_default": 0,
+    "scout_name": "Neil Patel",
+    "team_number": 120,
+    "weight": 120,
+    "width": 40
+}

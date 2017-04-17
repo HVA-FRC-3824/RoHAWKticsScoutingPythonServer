@@ -1,0 +1,52 @@
+{
+    "blue1_pilot_rating": "4 - Pretty good",
+    "blue2_pilot_rating": "3 - Competent",
+    "blue3_pilot_rating": "0 - Not a pilot in this match",
+    "blue_control": [
+        3,
+        3,
+        3
+    ],
+    "blue_defense": [
+        3,
+        2,
+        3
+    ],
+    "blue_speed": [
+        3,
+        2,
+        3
+    ],
+    "blue_torque": [
+        3,
+        3,
+        3
+    ],
+    "last_modified": 1488639342737,
+    "match_number": 65,
+    "notes": "blue alliance's pilots worked well together, but Catholic got a yellow card",
+    "red1_pilot_rating": "0 - Not a pilot in this match",
+    "red2_pilot_rating": "3 - Competent",
+    "red3_pilot_rating": "4 - Pretty good",
+    "red_control": [
+        3,
+        3,
+        3
+    ],
+    "red_defense": [
+        3,
+        3,
+        3
+    ],
+    "red_speed": [
+        3,
+        3,
+        1
+    ],
+    "red_torque": [
+        3,
+        3,
+        2
+    ],
+    "scout_name": "Philip Hicks"
+}

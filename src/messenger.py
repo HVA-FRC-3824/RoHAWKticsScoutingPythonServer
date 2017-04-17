@@ -33,7 +33,7 @@ class Messenger:
             self.use_texting = kwargs.get('use_texting', True)
 
             if self.use_email or self.use_texting:
-                login_file_path = os.path.dirname(__file__) + "/" + kwargs.get('logins_file', '../logins.json')
+                login_file_path = os.path.dirname(__file__) + "/" + kwargs.get('logins_file', '../../logins.json')
                 if(not os.path.isfile(login_file_path)):
                     logger.error("Login file {0:s} does not exist".format(login_file_path))
                     # Real problem... no way to communicate
@@ -73,10 +73,13 @@ class Messenger:
         '''
         self.tlock.acquire()
         self.plock.acquire()
+        print("Sending message")
         if self.use_email:
+            print("Sending email")
             self.email_report(subject, message)
 
         if self.use_texting:
+            print("Sending text")
             self.text_report(subject)
         self.tlock.release()
         self.plock.release()

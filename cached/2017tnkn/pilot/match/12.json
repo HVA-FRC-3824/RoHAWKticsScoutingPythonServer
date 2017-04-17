@@ -1,0 +1,42 @@
+{
+    "last_modified": 1490366413841,
+    "match_number": 12,
+    "teams": [
+        {
+            "drops": 0,
+            "lifts": 4,
+            "rating": "4 - Pretty good",
+            "team_number": 4533
+        },
+        {
+            "drops": 0,
+            "lifts": 0,
+            "rating": "0 - Not a pilot in this match",
+            "team_number": 6517
+        },
+        {
+            "drops": 1,
+            "lifts": 2,
+            "rating": "3 - Competent",
+            "team_number": 4020
+        },
+        {
+            "drops": 0,
+            "lifts": 0,
+            "rating": "0 - Not a pilot in this match",
+            "team_number": 5508
+        },
+        {
+            "drops": 0,
+            "lifts": 4,
+            "rating": "4 - Pretty good",
+            "team_number": 63
+        },
+        {
+            "drops": 0,
+            "lifts": 2,
+            "rating": "3 - Competent",
+            "team_number": 4098
+        }
+    ]
+}
