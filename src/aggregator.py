@@ -35,8 +35,10 @@ class Aggregator:
         logger.info("Updating team pick ability for {}".format(team_number))
         tpa = TeamPickAbility.calculate_first_pick_ability(team_number, database)
         database.set_team_pick_ability(tpa, Database.FIRST_PICK)
-        tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
-        database.set_team_pick_ability(tpa, Database.SECOND_PICK)
+        # tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
+        # database.set_team_pick_ability(tpa, Database.SECOND_PICK)
+        # tpa = TeamPickAbility.calculate_third_pick_ability(team_number, database)
+        # database.set_team_pick_ability(tpa, Database.THIRD_PICK)
 
     @staticmethod
     def match_calc(current_match_number):
@@ -45,12 +47,14 @@ class Aggregator:
 
         match = database.get_match(current_match_number)
 
-        update_match_numbers = []
+        # update_match_numbers = []
 
         # Update the team calculated data
         for team_number in match.team_numbers:
             logger.info("Updating team calculated data for {}".format(team_number))
 
+            Aggregator.team_calc(team_number)
+        '''
             team_info = database.get_team_logistics(team_number)
             tmds = []
             for match_number in team_info.match_numbers:
@@ -81,10 +85,11 @@ class Aggregator:
             logger.info("Updating team pick ability for {}".format(team_number))
             tpa = TeamPickAbility.calculate_first_pick_ability(team_number, database)
             database.set_team_pick_ability(tpa, Database.FIRST_PICK)
-            tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
-            database.set_team_pick_ability(tpa, Database.SECOND_PICK)
+            # tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
+            # database.set_team_pick_ability(tpa, Database.SECOND_PICK)
             # tpa = TeamPickAbility.calculate_third_pick_ability(team_number)
             # database.set_team_pick_ability(tpa, Database.THIRD_PICK)
+        '''
 
     @staticmethod
     def super_calc():
@@ -161,15 +166,20 @@ class Aggregator:
         match = database.get_match(current_match_number)
 
         for team_number in match.team_numbers:
-            logger.info("Updating pilot data for team {}".format(team_number))
-            team_info = database.get_team_logistics(team_number)
-            mtpds = []
-            for match_number in team_info.match_numbers:
-                mpd = database.get_match_pilot_data(match_number)
-                if mpd is not None:
-                    for t in mpd.teams:
-                        if t.team_number == team_number:
-                            mtpds.append(t)
-                            break
-            tpd = TeamPilotData.from_list(mtpds)
-            database.set_team_pilot_data(tpd)
+            Aggregator.team_pilot_calc(team_number)
+
+    @staticmethod
+    def team_pilot_calc(team_number):
+        database = Database()
+        logger.info("Updating pilot data for team {}".format(team_number))
+        team_info = database.get_team_logistics(team_number)
+        mtpds = []
+        for match_number in team_info.match_numbers:
+            mpd = database.get_match_pilot_data(match_number)
+            if mpd is not None:
+                for t in mpd.teams:
+                    if t.team_number == team_number:
+                        mtpds.append(t)
+                        break
+        tpd = TeamPilotData.from_list(mtpds)
+        database.set_team_pilot_data(tpd)
