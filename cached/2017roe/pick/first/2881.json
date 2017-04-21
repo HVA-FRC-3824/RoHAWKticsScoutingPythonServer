@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477896250,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1492786975974,
     "manual_ranking": -1,
     "nickname": "Lady Cans",
-    "pick_ability": 0.0,
+    "pick_ability": 118.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.00, Teleop 2.80",
     "stopped_moving": false,
     "team_number": 2881,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 60.00%, Time 8.33s",
+    "top_line": "PA: 118.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

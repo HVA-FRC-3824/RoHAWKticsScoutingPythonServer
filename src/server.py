@@ -50,7 +50,7 @@ class Server:
 
         self.tba = TheBlueAlliance(self.event_key)
         self.database = Database(self.event_key)
-        self.messenger = Messenger(**kwargs)
+       # self.messenger = Messenger(**kwargs)
 
         self.setup_adb_bridge()
 

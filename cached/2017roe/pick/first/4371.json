@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477915847,
+    "fourth_line": "Weight: 76.00 lbs, PL: Labview",
+    "last_modified": 1492728966484,
     "manual_ranking": -1,
     "nickname": "ART 4371",
-    "pick_ability": 0.0,
+    "pick_ability": 125.83333333333333,
     "picked": false,
     "red_card": false,
-    "robot_picture_filepath": "",
-    "second_line": "",
+    "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/4371_0.jpg",
+    "second_line": "Average Gears: Auto 0.50, Teleop 3.50",
     "stopped_moving": false,
     "team_number": 4371,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 0.00%, Time 0.00s",
+    "top_line": "PA: 125.83 Average High Goal Balls: Auto 0.00, Teleop 2.50",
     "yellow_card": false
 }

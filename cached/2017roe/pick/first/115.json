@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477882332,
+    "fourth_line": "Weight: 75.00 lbs, PL: Java",
+    "last_modified": 1492781096590,
     "manual_ranking": -1,
     "nickname": "MVRT",
-    "pick_ability": 0.0,
+    "pick_ability": 186.0,
     "picked": false,
     "red_card": false,
-    "robot_picture_filepath": "",
-    "second_line": "",
+    "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/115_0.jpg",
+    "second_line": "Average Gears: Auto 0.60, Teleop 4.00",
     "stopped_moving": false,
     "team_number": 115,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 100.00%, Time 8.00s",
+    "top_line": "PA: 186.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

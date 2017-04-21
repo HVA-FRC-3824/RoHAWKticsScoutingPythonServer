@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477920106,
+    "fourth_line": "Weight: 119.00 lbs, PL: Java and C++",
+    "last_modified": 1492723675269,
     "manual_ranking": -1,
     "nickname": "Greenblitz",
-    "pick_ability": 0.0,
+    "pick_ability": 133.91666666666669,
     "picked": false,
     "red_card": false,
-    "robot_picture_filepath": "",
-    "second_line": "",
+    "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/4590_0.jpg",
+    "second_line": "Average Gears: Auto 0.25, Teleop 1.25",
     "stopped_moving": false,
     "team_number": 4590,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 75.00%, Time 8.33s",
+    "top_line": "PA: 133.92 Average High Goal Balls: Auto 14.50, Teleop 5.75",
     "yellow_card": false
 }

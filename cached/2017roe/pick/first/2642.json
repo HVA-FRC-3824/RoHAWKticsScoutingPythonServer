@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477894670,
+    "fourth_line": "Weight: 119.70 lbs, PL: Java",
+    "last_modified": 1492785761921,
     "manual_ranking": -1,
     "nickname": "Pitt Pirates",
-    "pick_ability": 0.0,
+    "pick_ability": 122.4,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.20, Teleop 3.00",
     "stopped_moving": false,
     "team_number": 2642,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 40.00%, Time 7.50s",
+    "top_line": "PA: 122.40 Average High Goal Balls: Auto 0.40, Teleop 0.00",
     "yellow_card": false
 }

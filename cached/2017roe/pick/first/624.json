@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477936453,
+    "fourth_line": "Weight: 118.00 lbs, PL: Labview",
+    "last_modified": 1492780219625,
     "manual_ranking": -1,
     "nickname": "CRyptonite",
-    "pick_ability": 0.0,
+    "pick_ability": 183.2,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.60, Teleop 3.60",
     "stopped_moving": false,
     "team_number": 624,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 100.00%, Time 6.00s",
+    "top_line": "PA: 183.20 Average High Goal Balls: Auto 1.20, Teleop 0.00",
     "yellow_card": false
 }

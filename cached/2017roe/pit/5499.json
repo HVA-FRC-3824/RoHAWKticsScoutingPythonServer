@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "2 Omni 2 fraction ",
+    "height": 0,
+    "last_modified": 1492642120558,
+    "length": 24,
+    "max_hopper_load": 0,
+    "notes": "Very fast, uses steering wheel",
+    "programming_language": "C++",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5499_0.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 5499,
+    "weight": 59,
+    "width": 24
+}

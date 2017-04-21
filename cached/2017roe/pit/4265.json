@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "West coast",
+    "height": 24,
+    "last_modified": 1492642253692,
+    "length": 33,
+    "max_hopper_load": 50,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Alex Bingham",
+    "team_number": 4265,
+    "weight": 117,
+    "width": 29
+}

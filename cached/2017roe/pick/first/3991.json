@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477907520,
+    "fourth_line": "Weight: 100.00 lbs, PL: Labview",
+    "last_modified": 1492725997465,
     "manual_ranking": -1,
     "nickname": "KnightVision",
-    "pick_ability": 0.0,
+    "pick_ability": 142.5,
     "picked": false,
     "red_card": false,
-    "robot_picture_filepath": "",
-    "second_line": "",
+    "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/3991_0.jpg",
+    "second_line": "Average Gears: Auto 0.25, Teleop 3.00",
     "stopped_moving": false,
     "team_number": 3991,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 75.00%, Time 11.67s",
+    "top_line": "PA: 142.50 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

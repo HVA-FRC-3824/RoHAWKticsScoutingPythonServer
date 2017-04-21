@@ -55,7 +55,6 @@ class ClimbResults(DataModel):
                 logger.error("Unknown climb result")
 
         rv.time = LowLevelStats.from_list(time_list)
-
-        rv.success_percentage = rv.success / rv.total
+        rv.success_percentage = rv.success / rv.total if rv.total > 0 else 0
 
         return rv

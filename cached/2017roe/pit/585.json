@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "hybrid holonomic drive",
+    "height": 24,
+    "last_modified": 1492641403699,
+    "length": 36,
+    "max_hopper_load": 0,
+    "notes": "made out of fiber glass and climbing part 3D printed",
+    "programming_language": "Python, labview",
+    "robot_picture_default": 0,
+    "scout_name": "Austin Curlee",
+    "team_number": 585,
+    "weight": 86,
+    "width": 40
+}

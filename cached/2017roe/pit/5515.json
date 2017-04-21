@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "west coast six wheel",
+    "height": 24,
+    "last_modified": 1492640577666,
+    "length": 36,
+    "max_hopper_load": 60,
+    "notes": "fuel in auto, fast climber",
+    "programming_language": "C++",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5515_0.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 5515,
+    "weight": 113,
+    "width": 40
+}

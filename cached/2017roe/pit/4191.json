@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 5,
+    "drive_train": "Tank (6 wheel)",
+    "height": 36,
+    "last_modified": 1492640867527,
+    "length": 32,
+    "max_hopper_load": 20,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/4191_0.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Alex Bingham",
+    "team_number": 4191,
+    "weight": 110.2,
+    "width": 30
+}

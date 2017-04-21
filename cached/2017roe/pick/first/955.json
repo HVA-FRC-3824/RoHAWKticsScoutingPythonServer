@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477944253,
+    "fourth_line": "Weight: 106.00 lbs, PL: Java",
+    "last_modified": 1492726619667,
     "manual_ranking": -1,
     "nickname": "CV Robotics",
-    "pick_ability": 0.0,
+    "pick_ability": 135.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
-    "stopped_moving": false,
+    "second_line": "Average Gears: Auto 0.25, Teleop 1.50",
+    "stopped_moving": true,
     "team_number": 955,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 100.00%, Time 5.00s",
+    "top_line": "PA: 135.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

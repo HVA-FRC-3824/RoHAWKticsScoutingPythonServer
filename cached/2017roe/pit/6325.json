@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 0,
+    "last_modified": 1492647056861,
+    "length": 0,
+    "max_hopper_load": 0,
+    "notes": "camera and can climb 10-15 seconds",
+    "programming_language": "java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/6325_0.jpg",
+            "url": ""
+        }
+    ],
+    "scout_name": "Jovi Yoshioka",
+    "team_number": 6325,
+    "weight": 115,
+    "width": 0
+}

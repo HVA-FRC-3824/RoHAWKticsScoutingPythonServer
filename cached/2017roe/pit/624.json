@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "h- drive",
+    "height": 24,
+    "last_modified": 1492641628197,
+    "length": 26,
+    "max_hopper_load": 35,
+    "notes": "gear running, 7 gears per match, has auto for all places",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Austin Curlee",
+    "team_number": 624,
+    "weight": 118,
+    "width": 32
+}

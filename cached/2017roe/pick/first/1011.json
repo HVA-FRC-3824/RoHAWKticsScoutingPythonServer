@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477881547,
+    "fourth_line": "Weight: 107.00 lbs, PL: Java",
+    "last_modified": 1492780265822,
     "manual_ranking": -1,
     "nickname": "CRUSH",
-    "pick_ability": 0.0,
+    "pick_ability": 150.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.40, Teleop 3.60",
     "stopped_moving": false,
     "team_number": 1011,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 60.00%, Time 8.33s",
+    "top_line": "PA: 150.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

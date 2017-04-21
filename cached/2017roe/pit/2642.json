@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "west coast (custom)",
+    "height": 24,
+    "last_modified": 1492641768338,
+    "length": 35.5,
+    "max_hopper_load": 10,
+    "notes": "",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "scout_name": "Michael Williamson",
+    "team_number": 2642,
+    "weight": 119.7,
+    "width": 39.5
+}

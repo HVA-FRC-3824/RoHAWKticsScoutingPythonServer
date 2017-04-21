@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Tall (30in x 32in x 36in)",
+    "cims": 4,
+    "drive_train": "West coast drive",
+    "height": 36,
+    "last_modified": 1492641706704,
+    "length": 32,
+    "max_hopper_load": 20,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Michael Williamson",
+    "team_number": 2478,
+    "weight": 115,
+    "width": 30
+}
