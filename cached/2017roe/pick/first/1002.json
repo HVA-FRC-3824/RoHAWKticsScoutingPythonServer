@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477880149,
+    "fourth_line": "Weight: 75.00 lbs, PL: Java",
+    "last_modified": 1492860433981,
     "manual_ranking": -1,
     "nickname": "The CircuitRunners",
-    "pick_ability": 0.0,
+    "pick_ability": 146.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.10, Teleop 4.00",
     "stopped_moving": false,
     "team_number": 1002,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 80.00%, Time 6.25s",
+    "top_line": "PA: 146.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

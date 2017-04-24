@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "2 plus 2",
+    "height": 24,
+    "last_modified": 1492641375146,
+    "length": 36,
+    "max_hopper_load": 100,
+    "notes": "",
+    "programming_language": "C++",
+    "robot_picture_default": 0,
+    "scout_name": "Steven Busby",
+    "team_number": 973,
+    "weight": 111,
+    "width": 40
+}

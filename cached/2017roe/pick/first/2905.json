@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477897031,
+    "fourth_line": "Weight: 93.00 lbs, PL: Labview",
+    "last_modified": 1492860603482,
     "manual_ranking": -1,
     "nickname": "Sultans of Turkiye",
-    "pick_ability": 0.0,
+    "pick_ability": 83.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
-    "stopped_moving": false,
+    "second_line": "Average Gears: Auto 0.20, Teleop 1.30",
+    "stopped_moving": true,
     "team_number": 2905,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 10.00%, Time 5.00s",
+    "top_line": "PA: 83.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

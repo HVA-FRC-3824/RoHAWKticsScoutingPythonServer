@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (8 wheel)",
+    "height": 24,
+    "last_modified": 1492641974920,
+    "length": 39,
+    "max_hopper_load": 0,
+    "notes": "unique gear system",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "scout_name": "Austin Curlee",
+    "team_number": 8,
+    "weight": 110,
+    "width": 40
+}

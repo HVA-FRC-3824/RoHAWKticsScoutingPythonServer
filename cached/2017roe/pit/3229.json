@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "Tank (6 wheel)",
+    "height": 20,
+    "last_modified": 1492639887229,
+    "length": 35,
+    "max_hopper_load": 0,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Michael Williamson",
+    "team_number": 3229,
+    "weight": 85,
+    "width": 35
+}

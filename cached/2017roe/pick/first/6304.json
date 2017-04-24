@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477937232,
+    "fourth_line": "Weight: 110.00 lbs, PL: Java",
+    "last_modified": 1492860814036,
     "manual_ranking": -1,
     "nickname": "eagle ",
-    "pick_ability": 0.0,
+    "pick_ability": 110.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.40, Teleop 0.80",
     "stopped_moving": false,
     "team_number": 6304,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 60.00%, Time 13.33s",
+    "top_line": "PA: 110.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

@@ -728,7 +728,7 @@
             "lng": null,
             "location_name": null,
             "motto": "The beauty of all knowledge lies within its application",
-            "name": "3M/Altera/Intuitive Surgical Inc./Smallworks/IBM/Texas Workforce Commission/LASA Robotics Association/FIRST in Texas/Freescale/Dell/solidworks/BAE/National Instruments & Lasa High School",
+            "name": "Atlassian/ARM/SMC Pneumatics/Athena Manufacturing/Westbrook Metals/Solidworks/FIRST/LASA Robotics Association&Lasa High School",
             "nickname": "Purple Haze",
             "postal_code": "78724",
             "rookie_year": 2000,
@@ -843,7 +843,7 @@
             "lng": null,
             "location_name": null,
             "motto": null,
-            "name": "Investment Technology Partners&Robodogs Foundation&Southeast Raleigh Magnet High School",
+            "name": "Investment Technology Partners & Robodogs Foundation",
             "nickname": "Robodogs",
             "postal_code": "27610",
             "rookie_year": 2000,
@@ -1519,5 +1519,5 @@
             "website": "http://www.greybots.com"
         }
     ],
-    "last_modified": 1492435215.0
+    "last_modified": 1492866185.0
 }

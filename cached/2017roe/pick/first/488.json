@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477925182,
+    "fourth_line": "Weight: 120.00 lbs, PL: Java",
+    "last_modified": 1492860747361,
     "manual_ranking": -1,
     "nickname": "Team XBot",
-    "pick_ability": 0.0,
+    "pick_ability": 116.83333333333333,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.10, Teleop 0.40",
     "stopped_moving": false,
     "team_number": 488,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 70.00%, Time 10.00s",
+    "top_line": "PA: 116.83 Average High Goal Balls: Auto 6.30, Teleop 64.60",
     "yellow_card": false
 }

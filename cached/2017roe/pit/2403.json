@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1492660173790,
+    "length": 36,
+    "max_hopper_load": 30,
+    "notes": "",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/2403_0.jpg",
+            "remote": true
+        }
+    ],
+    "scout_name": "Steven Busby",
+    "team_number": 2403,
+    "weight": 112,
+    "width": 40
+}

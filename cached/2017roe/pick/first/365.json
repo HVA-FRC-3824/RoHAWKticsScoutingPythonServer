@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477903614,
+    "fourth_line": "Weight: 0.00 lbs, PL: Java",
+    "last_modified": 1492860644517,
     "manual_ranking": -1,
     "nickname": "Miracle Workerz",
-    "pick_ability": 0.0,
+    "pick_ability": 172.06666666666666,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.40, Teleop 3.70",
     "stopped_moving": false,
     "team_number": 365,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 90.00%, Time 7.78s",
+    "top_line": "PA: 172.07 Average High Goal Balls: Auto 5.30, Teleop 2.30",
     "yellow_card": false
 }

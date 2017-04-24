@@ -35,8 +35,12 @@ class Aggregator:
         database.set_team_calculated_data(tcd)
 
         logger.info("Updating team pick ability for {}".format(team_number))
-        tpa = TeamPickAbility.calculate_first_pick_ability(team_number, database)
-        database.set_team_pick_ability(tpa, Database.FIRST_PICK)
+        try:
+            tpa = TeamPickAbility.calculate_first_pick_ability(team_number, database)
+        except:
+            pass
+        else:
+            database.set_team_pick_ability(tpa, Database.FIRST_PICK)
         # tpa = TeamPickAbility.calculate_second_pick_ability(team_number, database)
         # database.set_team_pick_ability(tpa, Database.SECOND_PICK)
         # tpa = TeamPickAbility.calculate_third_pick_ability(team_number, database)

@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477940373,
+    "fourth_line": "Weight: 54.00 lbs, PL: lab view",
+    "last_modified": 1492860835946,
     "manual_ranking": -1,
     "nickname": "Odrinias",
-    "pick_ability": 0.0,
+    "pick_ability": 61.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
-    "stopped_moving": false,
+    "second_line": "Average Gears: Auto 0.00, Teleop 0.80",
+    "stopped_moving": true,
     "team_number": 6409,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 10.00%, Time 10.00s",
+    "top_line": "PA: 61.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

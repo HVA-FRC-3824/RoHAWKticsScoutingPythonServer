@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Tank (6 wheel)",
+    "height": 0,
+    "last_modified": 1492639648477,
+    "length": 0,
+    "max_hopper_load": 55,
+    "notes": "",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/4561_0.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 4561,
+    "weight": 118,
+    "width": 0
+}

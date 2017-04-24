@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 0,
+    "drive_train": "Tank (8 wheel)",
+    "height": 0,
+    "last_modified": 1492642062497,
+    "length": 0,
+    "max_hopper_load": 60,
+    "notes": "NO CIMS! USES ALL MINI CIMS?!?",
+    "programming_language": "C++",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5803_0.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 5803,
+    "weight": 118,
+    "width": 0
+}

@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477928928,
+    "fourth_line": "Weight: 59.00 lbs, PL: C++",
+    "last_modified": 1492860764027,
     "manual_ranking": -1,
     "nickname": "Bay Orangutans",
-    "pick_ability": 0.0,
+    "pick_ability": 141.0,
     "picked": false,
     "red_card": false,
-    "robot_picture_filepath": "",
-    "second_line": "",
+    "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5499_0.jpg",
+    "second_line": "Average Gears: Auto 0.30, Teleop 4.30",
     "stopped_moving": false,
     "team_number": 5499,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 40.00%, Time 6.25s",
+    "top_line": "PA: 141.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

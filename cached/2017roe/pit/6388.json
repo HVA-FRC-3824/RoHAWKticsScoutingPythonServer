@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1492647274339,
+    "length": 36,
+    "max_hopper_load": 12,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Jovi Yoshioka",
+    "team_number": 6388,
+    "weight": 60,
+    "width": 40
+}

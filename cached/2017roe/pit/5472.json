@@ -1,0 +1,34 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Dual Vex ",
+    "height": 24,
+    "last_modified": 1492642177529,
+    "length": 36,
+    "max_hopper_load": 40,
+    "notes": "Built with love",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5472_0.jpg",
+            "remote": false
+        },
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5472_1.jpg",
+            "remote": false
+        },
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5472_2.jpg",
+            "remote": false
+        },
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5472_3.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Knox Crichton",
+    "team_number": 5472,
+    "weight": 0,
+    "width": 40
+}

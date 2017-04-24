@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477889817,
+    "fourth_line": "Weight: 90.00 lbs, PL: Labview",
+    "last_modified": 1492860557364,
     "manual_ranking": -1,
     "nickname": "Tigerbots",
-    "pick_ability": 0.0,
+    "pick_ability": 113.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
-    "stopped_moving": false,
+    "second_line": "Average Gears: Auto 0.20, Teleop 2.10",
+    "stopped_moving": true,
     "team_number": 2183,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 40.00%, Time 11.67s",
+    "top_line": "PA: 113.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

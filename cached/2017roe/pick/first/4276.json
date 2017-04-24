@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477912834,
+    "fourth_line": "Weight: 110.00 lbs, PL: Java",
+    "last_modified": 1492860703751,
     "manual_ranking": -1,
     "nickname": "Surf City Vikings",
-    "pick_ability": 0.0,
+    "pick_ability": 169.4,
     "picked": false,
     "red_card": false,
-    "robot_picture_filepath": "",
-    "second_line": "",
+    "robot_picture_filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/4276_0.jpg",
+    "second_line": "Average Gears: Auto 0.60, Teleop 3.30",
     "stopped_moving": false,
     "team_number": 4276,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 80.00%, Time 8.75s",
+    "top_line": "PA: 169.40 Average High Goal Balls: Auto 0.00, Teleop 1.20",
     "yellow_card": false
 }

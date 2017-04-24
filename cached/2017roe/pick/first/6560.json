@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477941918,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1492860846820,
     "manual_ranking": -1,
     "nickname": "Charging Champions",
-    "pick_ability": 0.0,
+    "pick_ability": 128.88888888888889,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
-    "stopped_moving": false,
+    "second_line": "Average Gears: Auto 0.22, Teleop 2.22",
+    "stopped_moving": true,
     "team_number": 6560,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 66.67%, Time 10.83s",
+    "top_line": "PA: 128.89 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

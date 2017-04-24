@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 6,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1492640860326,
+    "length": 36,
+    "max_hopper_load": 0,
+    "notes": "",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "scout_name": "Austin Curlee",
+    "team_number": 435,
+    "weight": 90,
+    "width": 40
+}

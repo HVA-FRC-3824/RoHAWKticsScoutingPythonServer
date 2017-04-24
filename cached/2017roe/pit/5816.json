@@ -1,0 +1,21 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 2,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1492640053022,
+    "length": 36,
+    "max_hopper_load": 0,
+    "notes": "short bot",
+    "programming_language": "Java c++",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/5816_0.jpg"
+        }
+    ],
+    "scout_name": "Jovi Yoshioka",
+    "team_number": 5816,
+    "weight": 0,
+    "width": 40
+}

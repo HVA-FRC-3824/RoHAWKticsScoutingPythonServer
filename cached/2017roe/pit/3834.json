@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1492641556407,
+    "length": 32,
+    "max_hopper_load": 50,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Alex Bingham",
+    "team_number": 3834,
+    "weight": 114,
+    "width": 26.5
+}

@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 5,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1492641035089,
+    "length": 36,
+    "max_hopper_load": 70,
+    "notes": "shooting focused, has done 40kpa",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "scout_name": "au",
+    "team_number": 488,
+    "weight": 120,
+    "width": 40
+}

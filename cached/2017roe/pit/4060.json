@@ -1,0 +1,22 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Mecanum",
+    "height": 24,
+    "last_modified": 1492639796386,
+    "length": 28,
+    "max_hopper_load": 0,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "robot_pictures": [
+        {
+            "filepath": "/data/user/0/frc3824.rohawkticsscouting2017/files/2017roe/robot_pictures/4060_0.jpg",
+            "remote": false
+        }
+    ],
+    "scout_name": "Alex Bingham",
+    "team_number": 4060,
+    "weight": 106,
+    "width": 27
+}

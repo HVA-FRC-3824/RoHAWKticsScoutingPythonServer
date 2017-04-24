@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477923664,
+    "fourth_line": "Weight: 0.00 lbs, PL: ",
+    "last_modified": 1492860737372,
     "manual_ranking": -1,
     "nickname": "M3 Mighty Mechanical Mustangs",
-    "pick_ability": 0.0,
+    "pick_ability": 172.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.70, Teleop 3.00",
     "stopped_moving": false,
     "team_number": 4592,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 80.00%, Time 6.25s",
+    "top_line": "PA: 172.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

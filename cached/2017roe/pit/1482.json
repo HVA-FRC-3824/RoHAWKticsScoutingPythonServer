@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (6 wheel)",
+    "height": 24,
+    "last_modified": 1492642188340,
+    "length": 36,
+    "max_hopper_load": 50,
+    "notes": "Says they can play good defense",
+    "programming_language": "Java",
+    "robot_picture_default": 0,
+    "scout_name": "Steven Busby",
+    "team_number": 1482,
+    "weight": 97,
+    "width": 40
+}

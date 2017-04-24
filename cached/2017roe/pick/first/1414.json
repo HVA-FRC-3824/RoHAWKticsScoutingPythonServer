@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477883872,
+    "fourth_line": "Weight: 110.00 lbs, PL: Java",
+    "last_modified": 1492860462711,
     "manual_ranking": -1,
     "nickname": "IHOT",
-    "pick_ability": 0.0,
+    "pick_ability": 187.77777777777777,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.89, Teleop 3.56",
     "stopped_moving": false,
     "team_number": 1414,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 77.78%, Time 7.14s",
+    "top_line": "PA: 187.78 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }

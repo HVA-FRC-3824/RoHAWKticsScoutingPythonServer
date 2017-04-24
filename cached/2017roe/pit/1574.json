@@ -1,0 +1,16 @@
+{
+    "chosen_volume": "Short (40in x 36in x 24in)",
+    "cims": 4,
+    "drive_train": "Tank (8 wheel)",
+    "height": 24,
+    "last_modified": 1492642333795,
+    "length": 36,
+    "max_hopper_load": 65,
+    "notes": "",
+    "programming_language": "Labview",
+    "robot_picture_default": 0,
+    "scout_name": "Steven Busby",
+    "team_number": 1574,
+    "weight": 118,
+    "width": 39
+}

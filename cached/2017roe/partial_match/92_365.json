@@ -1,0 +1,73 @@
+{
+    "alliance_color": "Red",
+    "alliance_number": 3,
+    "auto_baseline": true,
+    "auto_gears": [
+        {
+            "dropped": true,
+            "location": "near",
+            "placed": false
+        }
+    ],
+    "auto_high_goal_correction": 0,
+    "auto_high_goal_made": 4,
+    "auto_high_goal_missed": 0,
+    "auto_hoppers": 0,
+    "auto_low_goal_correction": 0,
+    "auto_low_goal_made": 0,
+    "auto_low_goal_missed": 0,
+    "auto_points": 0,
+    "auto_start_position": "Near",
+    "dq": false,
+    "endgame_climb": "Successful",
+    "endgame_climb_time": "< 15s",
+    "endgame_points": 0,
+    "fouls": 0,
+    "match_number": 92,
+    "no_show": false,
+    "notes": "very fast gear cycles. only one dropped gear",
+    "red_card": false,
+    "scout_name": "Mason Echtinaw",
+    "stopped_moving": false,
+    "tags_blocked_shots": false,
+    "tags_broke": false,
+    "tags_defended_airship": false,
+    "tags_defended_loading_station": false,
+    "tags_dumped_all_hoppers": false,
+    "tags_pinned_robot": false,
+    "team_number": 365,
+    "tech_fouls": 0,
+    "teleop_gears": [
+        {
+            "dropped": false,
+            "location": "near",
+            "placed": true
+        },
+        {
+            "dropped": false,
+            "location": "near",
+            "placed": true
+        },
+        {
+            "dropped": false,
+            "location": "near",
+            "placed": true
+        },
+        {
+            "dropped": true,
+            "location": "center",
+            "placed": false
+        }
+    ],
+    "teleop_high_goal_correction": 0,
+    "teleop_high_goal_made": 0,
+    "teleop_high_goal_missed": 0,
+    "teleop_hoppers": 0,
+    "teleop_low_goal_correction": 0,
+    "teleop_low_goal_made": 0,
+    "teleop_low_goal_missed": 0,
+    "teleop_picked_up_gears": 0,
+    "teleop_points": 0,
+    "total_points": 0,
+    "yellow_card": false
+}

@@ -1,16 +1,17 @@
 {
     "dnp": false,
-    "last_modified": 1492477943472,
+    "fourth_line": "Weight: 110.00 lbs, PL: Java",
+    "last_modified": 1492860858474,
     "manual_ranking": -1,
     "nickname": "Paly Robotics",
-    "pick_ability": 0.0,
+    "pick_ability": 175.0,
     "picked": false,
     "red_card": false,
     "robot_picture_filepath": "",
-    "second_line": "",
+    "second_line": "Average Gears: Auto 0.60, Teleop 3.40",
     "stopped_moving": false,
     "team_number": 8,
-    "third_line": "",
-    "top_line": "",
+    "third_line": "Climb: Success Percentage 90.00%, Time 6.67s",
+    "top_line": "PA: 175.00 Average High Goal Balls: Auto 0.00, Teleop 0.00",
     "yellow_card": false
 }
