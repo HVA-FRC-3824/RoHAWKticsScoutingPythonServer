@@ -17,6 +17,7 @@ from messenger import Messenger
 from led_manager import LedManager
 from database import Database
 from socket_handler import SocketHandler
+from decorator import attr_check, type_check
 
 from ourlogging import setup_logging
 
@@ -27,11 +28,19 @@ logger = logging.getLogger(__name__)
 class ThreadedTCPServer(ThreadingMixIn, TCPServer):
     pass
 
-
+@attr_check
 class Server:
     '''Main server class that interprets the config file and starts various threads'''
 
     LOOP_TIME = 60 * 10  # 10 minutes
+
+    event_key = str
+    led_manager = LedManager
+    tba = TheBlueAlliance
+    database = Database
+    messenger = Messenger
+    socket_server = ThreadedTCPServer
+    adb = str
 
     def __init__(self, **kwargs):
         ''' Initialization of all the server components based on the config
@@ -57,7 +66,8 @@ class Server:
         self.socket_server = ThreadedTCPServer(('localhost', 38240), SocketHandler)
         self.socket_server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    def setup_adb_bridge(self):
+    @type_check
+    def setup_adb_bridge(self): -> None
         '''Sets up reverse port forward for attached android device running DatabaseRelay via the
            android debug bridge (adb)
         '''
@@ -88,12 +98,19 @@ class Server:
             subprocess.call([self.adb, "-s", device, "reverse", "tcp:{0:d}".format(port),
                              "tcp:{0:d}".format(port)])
 
-    def start(self):
+    @type_check
+    def hotplug(self):
+        #TODO: add hotplug
+        pass
+
+    @type_check
+    def start(self): -> None
         '''Starts the main thread loop'''
         self.led_manager.start_up_complete()
         self.socket_server.serve_forever()
 
-    def stop(self):
+    @type_check
+    def stop(self): -> None
         '''Stops all threads'''
         self.socket_server.shutdown()
         self.socket_server.server_close()
@@ -121,7 +138,8 @@ if __name__ == "__main__":
 
     server = Server(**config)
 
-    def signal_handler(signal, frame):
+    @type_check
+    def signal_handler(signal, frame): -> None
         '''Catches control-c and cleanly shuts down the server'''
         logging.info("Control-C caught. Cleanly shutting down the server.")
         t = Thread(target=server.stop())

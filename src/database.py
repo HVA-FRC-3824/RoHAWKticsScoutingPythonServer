@@ -21,10 +21,12 @@ from data_models.team_pilot_data import TeamPilotData
 from data_models.match_pilot_data import MatchPilotData
 from data_models.scout_accuracy import ScoutAccuracy
 
+from decorator import attr_check, type_check, singleton, void
+
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
-
+#@attr_check
 class Database:
     shared_state = {}
 
@@ -37,7 +39,16 @@ class Database:
     THIRD_PICK = "third"
     PICK_OPTIONS = [FIRST_PICK, SECOND_PICK, THIRD_PICK]
 
-    def __init__(self, event_key=None):
+    event_key = str
+    base_ref = str
+    base_filepath = str
+    queued_puts = list
+    firebase = fb.FirebaseApplication
+    plock = PLock
+    tlock = TLock
+
+    @type_check
+    def __init__(self, event_key: str=None):
         self.__dict__ = self.shared_state
 
         if event_key is not None:
@@ -53,20 +64,23 @@ class Database:
             self.tlock = TLock()
             self.instance = True
 
-    def setup_folders(self):
+    @type_check
+    def setup_folders(self) -> void: 
         for ext in ["schedule", "partial_match", "pit", "super", "pilot/match", "pilot/team",
                     "rankings/predicted", "rankings/current", "logistics", "calculated", "qualitative",
                     "pick/first", "pick/second", "pick/third", "scout_accuracy"]:
             os.makedirs(self.base_filepath + ext, 0o777, True)
 
-    def get_match(self, match_number):
+    @type_check
+    def get_match(self, match_number: int) -> (Match, void):
         '''get information about a match'''
         response = self.get_from_firebase("schedule/", str(match_number))
         if response is None:
             return None
         return Match(response)
 
-    def set_match(self, match):
+    @type_check
+    def set_match(self, match: (Match, dict)) -> void:
         '''update the data for a match'''
         if isinstance(match, Match):
             self.set_match(match.to_dict())
@@ -75,7 +89,8 @@ class Database:
         else:
             logger.error("match is not of type Match or dict")
 
-    def set_team_logistics(self, tl):
+    @type_check
+    def set_team_logistics(self, tl: (TeamLogistics, dict)) -> void:
         '''update the logistic information for a team'''
         if isinstance(tl, TeamLogistics):
             self.set_team_logistics(tl.to_dict())
@@ -84,20 +99,32 @@ class Database:
         else:
             logger.error("tl is not of type TeamLogistics or dict")
 
-    def get_team_logistics(self, team_number):
+    @type_check
+    def get_team_logistics(self, team_number: int) -> (TeamLogistics, void):
         response = self.get_from_firebase("logistics/", str(team_number))
         if response is None:
             return None
         return TeamLogistics(response)
 
-    def get_team_match_data(self, team_number, match_number):
+    @type_check
+    def get_team_match_data(self, team_number: int, match_number: int) -> (TeamMatchData, void):
         '''get information about how a team did in a particular match'''
         response = self.get_from_firebase("partial_match/", "{0:d}_{1:d}".format(match_number, team_number))
         if response is None:
             return None
         return TeamMatchData(response)
 
-    def set_team_match_data(self, tmd):
+    def get_all_team_match_data(self) -> dict:
+        '''Get a list of how all teams did in each match'''
+        response = self.get_from_firebase("partial_match/", "")
+        d = {}
+        for key, value in response.items():
+            if value is not None:
+                d[key] = TeamMatchData(value)
+        return d
+
+    @type_check
+    def set_team_match_data(self, tmd: (TeamMatchData, dict)) -> void:
         if isinstance(tmd, TeamMatchData):
             self.set_team_match_data(tmd.to_dict())
         elif isinstance(tmd, dict):
@@ -105,13 +132,15 @@ class Database:
         else:
             logger.error("tmd is not of type TeamMatchData or dict")
 
-    def get_team_pit_data(self, team_number):
+    @type_check
+    def get_team_pit_data(self, team_number: int) -> (TeamPitData, void):
         response = self.get_from_firebase("pit/", str(team_number))
         if response is None:
             return None
         return TeamPitData(response)
 
-    def set_team_calculated_data(self, tcd):
+    @type_check
+    def set_team_calculated_data(self, tcd: (TeamCalculatedData, dict)) -> void:
         if isinstance(tcd, TeamCalculatedData):
             self.set_team_calculated_data(tcd.to_dict())
         elif isinstance(tcd, dict):
@@ -119,19 +148,31 @@ class Database:
         else:
             logger.error("tcd is not of type TeamCalculatedData or dict")
 
-    def get_team_calculated_data(self, team_number):
+    @type_check
+    def get_team_calculated_data(self, team_number: int) -> (TeamCalculatedData, void):
         response = self.get_from_firebase("calculated/", str(team_number))
         if response is None:
             return None
         return TeamCalculatedData(response)
 
-    def get_super_match_data(self, match_number):
+    def get_all_team_calculated_data(self)-> dict:
+        '''Get a list of how all teams did in each match'''
+        response = self.get_from_firebase("calculated/", "")
+        d = {}
+        for key, value in response.items():
+            if value is not None:
+                d[key] = TeamCalculatedData(value)
+        return d
+
+    @type_check
+    def get_super_match_data(self, match_number: int) -> (SuperMatchData, void):
         response = self.get_from_firebase("super/", str(match_number))
         if response is None:
             return None
         return SuperMatchData(response)
 
-    def get_all_super_match_data(self):
+    @type_check
+    def get_all_super_match_data(self) -> dict:
         match_number = 1
         super_matches = {}
         nones = 0
@@ -150,7 +191,8 @@ class Database:
 
         return super_matches
 
-    def set_team_qualitative_data(self, tqd):
+    @type_check
+    def set_team_qualitative_data(self, tqd: (TeamQualitativeData, dict)) -> void:
         if isinstance(tqd, TeamQualitativeData):
             self.set_team_qualitative_data(tqd.to_dict)
         elif isinstance(tqd, dict):
@@ -158,19 +200,22 @@ class Database:
         else:
             logger.error("tqd is not of type TeamQualitativeData or dict")
 
-    def get_team_qualitative_data(self, team_number):
+    @type_check
+    def get_team_qualitative_data(self, team_number: int) ->(TeamQualitativeData, void):
         response = self.get_from_firebase("qualitative/", str(team_number))
         if response is None:
             return None
         return TeamQualitativeData(response)
 
-    def get_match_pilot_data(self, match_number):
+    @type_check
+    def get_match_pilot_data(self, match_number: int) -> (MatchPilotData, void):
         response = self.get_from_firebase("pilot/match/", str(match_number))
         if response is None:
             return None
         return MatchPilotData(response)
 
-    def set_team_pilot_data(self, tpd):
+    @type_check
+    def set_team_pilot_data(self, tpd: (TeamPilotData, dict)) -> void:
         if isinstance(tpd, TeamPilotData):
             self.set_team_pilot_data(tpd.to_dict())
         elif isinstance(tpd, dict):
@@ -178,13 +223,15 @@ class Database:
         else:
             logger.error("tqd is not of type TeamPilotData or dict")
 
-    def get_team_ranking_data(self, team_number, ranking_type):
+    @type_check
+    def get_team_ranking_data(self, team_number: int, ranking_type: str) -> (TeamRankingData, void):
         response = self.get_from_firebase("rankings/{0:s}/".format(ranking_type), str(team_number))
         if response is None:
             return None
         return TeamRankingData(response)
 
-    def set_team_ranking_data(self, trd, ranking_type):
+    @type_check
+    def set_team_ranking_data(self, trd: (TeamRankingData, dict), ranking_type: str) -> void:
         if isinstance(trd, TeamRankingData):
             self.set_team_ranking_data(trd.to_dict(), ranking_type)
         elif isinstance(trd, dict):
@@ -192,13 +239,15 @@ class Database:
         else:
             logger.error("trd is not of type TeamRankingData or dict")
 
-    def get_team_pick_ability(self, team_number, pick_type):
+    @type_check
+    def get_team_pick_ability(self, team_number: int, pick_type: str) -> (TeamPickAbility, void):
         response = self.get_from_firebase("pick/{0:s}/".format(pick_type), str(team_number))
         if response is None:
             return None
         return TeamPickAbility(response)
 
-    def set_team_pick_ability(self, tpa, pick_type):
+    @type_check
+    def set_team_pick_ability(self, tpa: (TeamPickAbility, dict), pick_type: str) -> void:
         if isinstance(tpa, TeamPickAbility):
             self.set_team_pick_ability(tpa.to_dict(), pick_type)
         elif isinstance(tpa, dict):
@@ -206,13 +255,15 @@ class Database:
         else:
             logger.error("tpa is not of type TeamPickAbility or dict")
 
-    def get_scout_accuracy(self, scout_name):
+    @type_check
+    def get_scout_accuracy(self, scout_name: str) -> (ScoutAccuracy, void):
         response = self.get_from_firebase("scout_accuracy/", scout_name)
         if response is not None:
             return None
         return ScoutAccuracy(response)
 
-    def set_scout_accuracy(self, sa):
+    @type_check
+    def set_scout_accuracy(self, sa: (ScoutAccuracy, dict)) -> void:
         if isinstance(sa, ScoutAccuracy):
             self.set_scout_accuracy(sa.to_dict())
         elif isinstance(sa, dict):
@@ -220,7 +271,8 @@ class Database:
         else:
             logger.error("sa is not of type ScoutAccuracy or dict")
 
-    def get_from_firebase(self, location, key):
+    @type_check
+    def get_from_firebase(self, location: str, key: str) -> (dict, void):
         '''Grabs the specified location from firebase. If data has not been updated then local
         cache is used.'''
         if location[-1] != '/':
@@ -289,7 +341,8 @@ class Database:
             # There is no cached version, so return None
             return None
 
-    def put_in_firebase(self, location, key, d, empty_queue=True):
+    @type_check
+    def put_in_firebase(self, location: str, key: str, d: dict, empty_queue: bool=True) -> void:
         '''Updates firebase at the specified location and write to file'''
         self.tlock.acquire()
         self.plock.acquire()

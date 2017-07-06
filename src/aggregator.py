@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 class Aggregator:
     @staticmethod
-    def team_calc(team_number):
+    @type_check
+    def team_calc(team_number: int): -> None
         logger.info("Updating team {}".format(team_number))
         database = Database()
 
@@ -47,7 +48,8 @@ class Aggregator:
         # database.set_team_pick_ability(tpa, Database.THIRD_PICK)
 
     @staticmethod
-    def match_calc(current_match_number):
+    @type_check
+    def match_calc(current_match_number: int): -> None
         logger.info("Updating match {}".format(current_match_number))
         database = Database()
 
@@ -99,7 +101,8 @@ class Aggregator:
         '''
 
     @staticmethod
-    def super_calc():
+    @type_check
+    def super_calc(): -> None
         logger.info("Updating team qualitative data")
         database = Database()
 
@@ -167,7 +170,8 @@ class Aggregator:
             database.set_team_qualitative_data(t)
 
     @staticmethod
-    def pilot_calc(current_match_number):
+    @type_check
+    def pilot_calc(current_match_number: int): -> None
         logger.info("Updating pilot data for match {}".format(current_match_number))
         database = Database()
         match = database.get_match(current_match_number)

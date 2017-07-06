@@ -1,4 +1,5 @@
 from .data_model import DataModel
+from .gear import Gear
 
 
 class TeamMatchData(DataModel):
@@ -17,6 +18,7 @@ class TeamMatchData(DataModel):
         self.auto_start_position = ""
         self.auto_baseline = False
         self.auto_gears = []
+        self.auto_gears_type = Gear
         self.auto_high_goal_made = -1
         self.auto_high_goal_missed = -1
         self.auto_high_goal_correction = -1
@@ -28,6 +30,7 @@ class TeamMatchData(DataModel):
 
         # Teleop
         self.teleop_gears = []
+        self.teleop_gears_type = Gear
         self.teleop_high_goal_made = -1
         self.teleop_high_goal_missed = -1
         self.teleop_high_goal_correction = -1
@@ -54,6 +57,14 @@ class TeamMatchData(DataModel):
         self.tech_fouls = 0
         self.yellow_card = False
         self.red_card = False
+
+        # Tags
+        self.tags_dumped_all_hoppers =  False
+        self.tags_defended_loading_station = False
+        self.tags_broke = False
+        self.tags_defended_airship = False
+        self.tags_blocked_shots = False
+        self.tags_pinned_robot = False
 
         if d is not None:
             self.set(d)

@@ -4,12 +4,14 @@ import os
 from multiprocessing import Lock as PLock
 from threading import Lock as TLock
 from twilio.rest import TwilioRestClient
+from decorator import type_check, attr_check, singleton
 import logging
 from ourlogging import setup_logging
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
 
+@singleton
 class Messenger:
     '''Singleton that sends messages via email and text upon a crash
 
@@ -24,10 +26,7 @@ class Messenger:
 
         login_file (`str`): location of the file containing the login information (not in the repo)
     '''
-    shared_state = {}
-
     def __init__(self, **kwargs):
-        self.__dict__ = self.shared_state
         if not hasattr(self, 'instance'):
             self.use_email = kwargs.get('use_email', True)
             self.use_texting = kwargs.get('use_texting', True)
@@ -63,9 +62,8 @@ class Messenger:
             self.tlock = TLock()
             self.plock = PLock()
 
-            self.instance = True
-
-    def send_message(self, subject, message):
+    @type_check
+    def send_message(self, subject: str, message: str): -> None
         '''Send a message if the server crashed
 
         Args:
@@ -84,7 +82,8 @@ class Messenger:
         self.tlock.release()
         self.plock.release()
 
-    def email_report(self, subject, message):
+    @type_check
+    def email_report(self, subject: str, message: str): -> None
         '''send the message via email
 
         Args:
@@ -95,7 +94,8 @@ class Messenger:
         msg = header + '\n' + message
         self.smtp.sendmail(self.gmail_user, self.emails, msg)
 
-    def text_report(self, subject):
+    @type_check
+    def text_report(self, subject: str): -> None
         '''send the message via text
 
         Args:
