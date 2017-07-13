@@ -26,7 +26,7 @@ from decorator import attr_check, type_check, singleton, void
 setup_logging(__file__)
 logger = logging.getLogger(__name__)
 
-#@attr_check
+# @attr_check
 class Database:
     shared_state = {}
 
@@ -251,7 +251,7 @@ class Database:
         if isinstance(tpa, TeamPickAbility):
             self.set_team_pick_ability(tpa.to_dict(), pick_type)
         elif isinstance(tpa, dict):
-            self.put_in_firebase("pick/{0:s}/".format(pick_type), tpa['team_number'], tpa)
+            self.put_in_firebase("pick/{0:s}/".format(pick_type), str(tpa['team_number']), tpa)
         else:
             logger.error("tpa is not of type TeamPickAbility or dict")
 
